@@ -1,5 +1,6 @@
 const Game = require("../server/game");
 const Constants = require("../shared/constants");
+const Player = require("../server/player");
 const uuidv4 = require("uuid/v4");
 
 class Queue {
@@ -15,7 +16,7 @@ class Queue {
   }
 
   isEnoughPlayers() {
-    return this.waitingPlayers.length > 1;
+    return this.waitingPlayers.length > Constants.MULTIPLAYER;
   }
 
   removePlayer(player) {
@@ -34,12 +35,15 @@ class Queue {
     console.log(`Queue: ${this.waitingPlayers.length} players`);
 
     while (this.isEnoughPlayers()) {
-      let game = new Game(
-        uuidv4(),
-        this.io,
-        this.waitingPlayers.pop(),
-        this.waitingPlayers.pop()
-      );
+      let playerOne = this.waitingPlayers.pop();
+      let playerTwo;
+      if (Constants.MULTIPLAYER) {
+        playerTwo = this.waitingPlayers.pop();
+      } else {
+        playerTwo = new Player(uuidv4(), "Test Player", []);
+      }
+
+      let game = new Game(uuidv4(), this.io, playerOne, playerTwo);
       console.log(`Creating new game ${game.id}`);
     }
   }
