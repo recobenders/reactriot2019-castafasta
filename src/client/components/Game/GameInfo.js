@@ -2,14 +2,14 @@ import React, { Component } from "react";
 import PlayerInfo from "./PlayerInfo";
 import styled from "styled-components";
 
-const Row = styled.section`
+const Row = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   width: 100%;
 `;
 
-const Column = styled.section`
+const Column = styled.div`
   display: flex;
   flex-direction: column;
   flex-basis: 100%;
@@ -25,6 +25,13 @@ class GameInfo extends Component {
       playerOne: props.game.playerOne,
       playerTwo: props.game.playerTwo
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      playerOne: nextProps.game.playerOne,
+      playerTwo: nextProps.game.playerTwo,
+    });
   }
 
   render() {

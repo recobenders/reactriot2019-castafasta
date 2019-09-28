@@ -12,14 +12,19 @@ export class GamePage extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { game: null, loading: true };
+    this.state = {
+      game: null,
+      loading: true
+    };
   }
-
 
   componentDidMount() {
     this.props.socket.on(Constants.MSG.GAME_UPDATE, data => {
       console.log(data);
-      this.setState({ game: data, loading: false });
+      this.setState({
+        game: data,
+        loading: false
+      });
     });
   }
 

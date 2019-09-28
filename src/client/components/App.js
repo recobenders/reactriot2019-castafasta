@@ -88,14 +88,14 @@ class App extends Component {
               exact
               path="/game"
               render={props => (
-                <PCGamePage {...props} socket={this.state.socket} />
+                <PCGamePage {...props} socket={this.state.socket} userId={this.state.userId} />
               )}
             />
             <Route
               exact
               path="/game/controller"
               render={props => (
-                <MobileGamePage {...props} socket={this.state.socket} />
+                <MobileGamePage {...props} socket={this.state.socket} userId={this.state.userId} />
               )}
             />
           </Switch>
