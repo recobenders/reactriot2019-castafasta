@@ -1,17 +1,26 @@
 import React, { Component } from "react";
+import styled from "styled-components";
 import AnimatedImage from "./AnimatedImage"
 import {wizards} from "./config";
 
-class AnimatedWizard extends Component {
+const ImageWrapper = styled.div`
+    ${({tilt}) => tilt && `
+        transform: rotate3d(0, 1, 0, 180deg)
+    `}
+`;
 
-  render() {
-      const {wizardColor, wizardAction, direction } = this.props;
+class AnimatedWizard extends Component {
+    render() {
+      const {wizardColor, wizardAction, repeat, repeatInterval, tilt } = this.props;
       return (
-        <AnimatedImage
-            img={wizards[wizardColor][wizardAction]}
-            width={200}
-            direction={direction}
-        />
+          <ImageWrapper tilt={tilt}>
+              <AnimatedImage
+                  img={wizards[wizardColor][wizardAction]}
+                  width={300}
+                  repeat={repeat}
+                  repeatInterval={repeatInterval}
+              />
+          </ImageWrapper>
       );
   }
 }
