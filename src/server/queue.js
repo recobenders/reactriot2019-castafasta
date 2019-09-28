@@ -11,6 +11,7 @@ class Queue {
 
   addPlayer(player) {
     this.waitingPlayers.push(player);
+    player.queueUp();
   }
 
   isEnoughPlayers() {
@@ -18,7 +19,15 @@ class Queue {
   }
 
   removePlayer(player) {
-    // TODO remove player from waiting players in case of disconnect
+    let i = this.waitingPlayers.indexOf(player);
+
+    if (i == null) {
+      console.log('Player is not present in the queue');
+      return;
+    }
+
+    this.waitingPlayers.splice(i, 1);
+    console.log('Player has been removed from queue');
   }
 
   startNewGames() {
