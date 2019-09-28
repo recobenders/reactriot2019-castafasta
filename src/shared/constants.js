@@ -5,6 +5,9 @@ module.exports = Object.freeze({
 
   CRITICAL_CHANCE: 0.05,
 
+  // Set to 1 if Multiplayer
+  MULTIPLAYER: 0,
+
   GAME_STATES: {
     INIT: "init",
     IN_PROGRESS: "in_progress",
