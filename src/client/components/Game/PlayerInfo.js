@@ -1,5 +1,12 @@
 import React, { Component } from "react";
 import HealthBar from "./HealthBar";
+import styled from "styled-components";
+
+const Wrapper = styled.section`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+`;
 
 class PlayerInfo extends Component {
   constructor(props) {
@@ -12,10 +19,10 @@ class PlayerInfo extends Component {
 
   render() {
     return (
-      <div>
-        <div>{this.state.player.username}</div>
+      <Wrapper>
+        <div>Player: {this.state.player.username}</div>
         <HealthBar hp={this.state.player.hp} />
-      </div>
+      </Wrapper>
     );
   }
 }

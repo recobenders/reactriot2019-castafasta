@@ -5,10 +5,7 @@ import Battleground from "../../Game/Battleground";
 import GameInfo from "../../Game/GameInfo";
 
 const Wrapper = styled.section`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  width: 100%;
 `;
 
 export class GamePage extends Component {
