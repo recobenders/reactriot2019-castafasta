@@ -11,6 +11,12 @@ import Constants from "../../shared/constants";
 import { withCookies } from "react-cookie";
 import { default as UUID } from "node-uuid";
 import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
+import styled from "styled-components";
+
+const Wrapper = styled.section`
+  height: 100vh;
+  width: 100vw;
+`;
 
 class App extends Component {
   constructor(props) {
@@ -37,7 +43,7 @@ class App extends Component {
 
   render() {
     return (
-      <div>
+      <Wrapper>
         <Router>
           <Switch>
             <Route
@@ -94,7 +100,7 @@ class App extends Component {
             />
           </Switch>
         </Router>
-      </div>
+      </Wrapper>
     );
   }
 }
