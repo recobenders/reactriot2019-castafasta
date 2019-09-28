@@ -21,7 +21,7 @@ export class GamePage extends Component {
   render() {
     return (
       <Wrapper>
-        <AnimatedWizard wizardColor="red" wizardAction="attack "/>
+        <AnimatedWizard wizardColor="red" wizardAction="attack"/>
       </Wrapper>
     );
   }

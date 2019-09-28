@@ -18,28 +18,29 @@ class AnimatedImage extends Component {
   }
 
   componentDidMount() {
-    const { image } = this.props;
-    let position = image["width"];
-    const interval = image["width"];
-    setInterval(()=> {
-      this.imageRef.current.style.backgroundPosition = `-${position}px 0px`;
-
-      if(position < image["width"]+image["slices"]){
-        position += image["width"];
-      } else {
-        position = 0;
-      }
-    }, interval);
+    const { img } = this.props;
+    let position = img["width"];
+    const interval = img["width"];
+    // setInterval(()=> {
+    //   this.imageRef.current.style.backgroundPosition = `-${position}px 0px`;
+    //
+    //   if(position < img["width"]+img["slices"]){
+    //     position += img["width"];
+    //   } else {
+    //     position = 0;
+    //   }
+    // }, interval);
   }
 
 
   render() {
-      const { image } = this.props;
+      const { img } = this.props;
+      console.log(img)
       return (
         <AnimatedImageWrapper
-            url={image["source"]}
-            width={image["width"]}
-            height={image["height"]}
+            url={img["source"]}
+            width={img["width"]}
+            height={img["height"]}
             ref={this.imageRef}
         />
       );
