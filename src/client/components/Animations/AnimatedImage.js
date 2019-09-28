@@ -20,16 +20,16 @@ class AnimatedImage extends Component {
   componentDidMount() {
     const { img } = this.props;
     let position = img["width"];
-    const interval = img["width"];
-    // setInterval(()=> {
-    //   this.imageRef.current.style.backgroundPosition = `-${position}px 0px`;
-    //
-    //   if(position < img["width"]+img["slices"]){
-    //     position += img["width"];
-    //   } else {
-    //     position = 0;
-    //   }
-    // }, interval);
+    const interval = img["interval"];
+    setInterval(()=> {
+      this.imageRef.current.style.backgroundPosition = `-${position}px 0px`;
+
+      if(position < img["width"]*img["slices"]){
+        position += img["width"];
+      } else {
+        position = 0;
+      }
+    }, interval);
   }
 
 
