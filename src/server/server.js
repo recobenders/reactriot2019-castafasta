@@ -8,7 +8,7 @@ const Game = require("../server/game");
 const uuidv4 = require("uuid/v4");
 
 //Port from environment variable or default - 4001
-const port = process.env.PORT || 4001;
+const port = process.env.SOCKET_PORT || 4001;
 
 //Setting up express and adding socketIo middleware
 const app = express();
