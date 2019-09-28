@@ -14,7 +14,8 @@
         <b>Frequency:</b>
         <input type="number" value="60" name="frequency" style="width: 70px;" />
         <button id="init" style="width: 70px">init</button>
-        <button id="start" style="width: 70px" disabled="disabled">start</button>
+        <button id="start" class="button-start" style="width: 70px" disabled="disabled">start</button>
+        <button id="start_debug" class="button-start" style="width: 70px" disabled="disabled">debug</button>
         <button id="stop" style="width: 70px" disabled="disabled">stop</button>
         
         <div id="plot"></div>
@@ -28,7 +29,7 @@
             device: <span id="device" rel-log-limit="single"></span>
         </div>
 
-        <div id="direction" style="width:100px; height:100px; font-size: 80px"></div>
+        <div id="direction" style="height:100px; font-size: 50px"></div>
         <div id="cubes"></div>
         <script src="index.js"></script>
     </body>
