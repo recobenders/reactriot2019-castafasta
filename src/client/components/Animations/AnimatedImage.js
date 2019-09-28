@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import {wizards} from "./config";
 
 const AnimatedImageWrapper = styled.div`
-    width: 624px;
-    height: 500px;
-    background: ${({ url }) => `url('${url}') 0px 0px`};
+${({width, height, url}) => `
+    width: ${width}px;
+    height: ${height}px;
+    background: url('${url}') 0px 0px`
+}
 `;
 
 class AnimatedImage extends Component {
@@ -17,13 +18,14 @@ class AnimatedImage extends Component {
   }
 
   componentDidMount() {
-    let position = 624;
-    const interval = 150;
+    const { image } = this.props;
+    let position = image["width"];
+    const interval = image["width"];
     setInterval(()=> {
       this.imageRef.current.style.backgroundPosition = `-${position}px 0px`;
 
-      if(position < 4368){
-        position += 624;
+      if(position < image["width"]+image["slices"]){
+        position += image["width"];
       } else {
         position = 0;
       }
@@ -32,9 +34,15 @@ class AnimatedImage extends Component {
 
 
   render() {
-    return (
-        <AnimatedImageWrapper url={wizards["red"]["attack"]["source"]} ref={this.imageRef}/>
-    );
+      const { image } = this.props;
+      return (
+        <AnimatedImageWrapper
+            url={image["source"]}
+            width={image["width"]}
+            height={image["height"]}
+            ref={this.imageRef}
+        />
+      );
   }
 }
 

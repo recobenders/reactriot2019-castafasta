@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import Constants from "../../../../shared/constants";
-import AnimatedImage from "../../Animations/AnimatedImage";
+import AnimatedWizard from "../../Animations/AnimatedWizard";
 
 const Wrapper = styled.section`
   position: fixed;
@@ -21,7 +21,7 @@ export class GamePage extends Component {
   render() {
     return (
       <Wrapper>
-        <AnimatedImage />
+        <AnimatedWizard wizardColor="red" wizardAction="attack "/>
       </Wrapper>
     );
   }
