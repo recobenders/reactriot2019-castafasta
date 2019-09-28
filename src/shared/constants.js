@@ -20,7 +20,7 @@ module.exports = Object.freeze({
     IN_GAME: "in_game"
   },
 
-  WINNING_TYPES: {
+  RESOLUTION_TYPES: {
     DRAW: "draw",
     VICTORY: "victory"
   },
