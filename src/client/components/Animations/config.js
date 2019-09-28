@@ -32,6 +32,12 @@ import wind_weak from "./assets/spells/wind_weak.png"
 import wind_medium from "./assets/spells/wind_medium.png"
 import wind_strong from "./assets/spells/wind_strong.png"
 
+// shots
+import earth_shot from "./assets/shot/attack_earth.png"
+import ice_shot from "./assets/shot/attack_ice.png"
+import fire_shot from "./assets/shot/attack_fire.png"
+import wind_shot from "./assets/shot/attack_wind.png"
+
 export const wizards = {
     red: {
         init: {
@@ -217,3 +223,34 @@ export const spells = {
         }
     },
 };
+
+export const shots = {
+    earth: {
+        source: earth_shot,
+        width: 500,
+        height: 500,
+        slices: 60,
+        interval: 100,
+    },
+    ice: {
+        source: ice_shot,
+        width: 500,
+        height: 500,
+        slices: 60,
+        interval: 100,
+    },
+    fire: {
+        source: fire_shot,
+        width: 500,
+        height: 500,
+        slices: 60,
+        interval: 100,
+    },
+    wind: {
+        source: wind_shot,
+        width: 500,
+        height: 500,
+        slices: 60,
+        interval: 100,
+    }
+}
