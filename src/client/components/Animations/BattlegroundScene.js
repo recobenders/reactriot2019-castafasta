@@ -1,9 +1,5 @@
 import React, {Component} from "react";
-import styled from "styled-components";
-
 import AnimatedWizard from "../Animations/AnimatedWizard";
-import AnimatedSpell from "../Animations/AnimatedSpell";
-import AnimatedShot from "../Animations/AnimatedShot";
 
 class BattlegroundScene extends Component {
     render() {
