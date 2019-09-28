@@ -4,10 +4,11 @@ class Game {
   constructor() {
     this.sockets = {};
     this.players = {};
-    // Constants.PLAYER_HP;
   }
 
   addPlayer(socket, username) {
     this.sockets[socket.id] = socket;
   }
 }
+
+module.exports = Game;
