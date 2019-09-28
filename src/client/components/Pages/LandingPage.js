@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import QRCode from 'qrcode.react';
-import { default as UUID } from 'node-uuid';
 import styled from 'styled-components';
 
 const Wrapper = styled.section`
@@ -15,7 +14,7 @@ class LandingPage extends Component {
     super(props);
 
     this.state = {
-      qrCode: window.location.host + '/' + UUID.v4()
+      qrCode: window.location.host + '/' //+ UUID.v4()
     }
   }
 
