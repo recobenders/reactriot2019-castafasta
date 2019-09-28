@@ -1,13 +1,13 @@
 const Constants = require("./constants");
 
 const spells = Object.freeze({
-  fireball: { name: "Fireball", max_dmg: 200, numberOfSequences: 4 },
-  tornado: { name: "Tornado", max_dmg: 400, numberOfSequences: 8 }
+  fireball: { id: 1, name: "Fireball", max_dmg: 200, numberOfSequences: 4 },
+  tornado: { id: 2, name: "Tornado", max_dmg: 400, numberOfSequences: 8 }
 });
 
 class Spell {
   static getSpells() {
-    return Object.values(spells);
+    return spells;
   }
 
   static getSpell(name) {
@@ -18,6 +18,7 @@ class Spell {
   constructor({ name, max_dmg, numberOfSequences }) {
     this.name = name;
     this.max_dmg = max_dmg;
+    this.dmg = 0;
 
     this.generateRequiredSequences(numberOfSequences);
     this.capturedAccuracy = [];
@@ -73,12 +74,22 @@ class Spell {
     );
     let avg = sum / this.capturedAccuracy.length;
 
-    let damage = Math.floor(Math.pow(avg, 2) * this.max_dmg);
+    this.dmg = Math.floor(Math.pow(avg, 2) * this.max_dmg);
 
     if (Math.random() < Constants.CRITICAL_CHANCE) {
-      //   damage = 2 * damage;
+      //   this.dmg = 2 * this.dmg;
     }
-    return damage;
+    return this.dmg;
+  }
+
+  serializeForUpdate() {
+    return {
+      id: this.id,
+      name: this.name,
+      max_dmg: this.max_dmg,
+      requiredSequences: this.requiredSequences,
+      capturedAccuracy: this.capturedAccuracy
+    };
   }
 }
 

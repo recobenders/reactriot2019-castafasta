@@ -47,12 +47,16 @@ export class GamePage extends Component {
     );
   }
 
+  handleSpellClick(spellKey) {
+    this.props.socket.emit(Constants.MSG.SPELL_SELECTED, spellKey);
+  }
+
   renderSpellItem(spells) {
-    // spells.map((o, i) => return(<ObjectRow obj={o} key={i})))
-    return spells.map(spell => {
+    return Object.keys(spells).map(key => {
       return (
-        <li>
-          {spell.name} ({spell.max_dmg} dmg, {spell.numberOfSequences} steps)
+        <li onClick={() => this.handleSpellClick(key)} key={spells[key].id}>
+          {spells[key].name} ({spells[key].max_dmg} dmg,{" "}
+          {spells[key].numberOfSequences} steps)
         </li>
       );
     });
