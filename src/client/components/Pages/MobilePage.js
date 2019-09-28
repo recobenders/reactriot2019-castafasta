@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import NameForm from "../Forms/NameForm";
 import styled from "styled-components";
 import Constants from "../../../shared/constants";
 
@@ -10,20 +11,14 @@ const Wrapper = styled.section`
 `;
 
 class MobilePage extends Component {
-  handleSocketTestClick() {
-    this.props.socket.emit(Constants.MSG.NEW_PLAYER, {
-      uuid: this.props.match.params.userId,
-      nickame: "Test"
-    });
-  }
-
   render() {
     return (
       <Wrapper>
         Hello, I am you wand!
-        <button onClick={this.handleSocketTestClick.bind(this)}>
-          Socket test
-        </button>
+        <NameForm
+          userId={this.props.match.params.userId}
+          socket={this.props.socket}
+        />
       </Wrapper>
     );
   }

@@ -43,8 +43,8 @@ class App extends Component {
               render={props => (
                 <LandingPage
                   {...props}
-                  userId={this.state.userId}
                   socket={this.state.socket}
+                  userId={this.state.userId}
                 />
               )}
             />
