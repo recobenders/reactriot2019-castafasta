@@ -1,3 +1,4 @@
+//wizards
 // red
 import red_wizard_init from "./assets/wizards/wiz_red_init.png"
 import red_wizard_attack from "./assets/wizards/wiz_red_attack.png"
@@ -12,6 +13,24 @@ import blue_wizard_idle from "./assets/wizards/wiz_blue_idle.png"
 import blue_wizard_hurt from "./assets/wizards/wiz_blue_hurt.png"
 import blue_wizard_jump from "./assets/wizards/wiz_blue_jump.png"
 import blue_wizard_dead from "./assets/wizards/wiz_blue_dead.png"
+
+//spells
+//earth
+import earth_weak from "./assets/spells/earth_weak.png"
+import earth_medium from "./assets/spells/earth_medium.png"
+import earth_strong from "./assets/spells/earth_strong.png"
+//ice
+import ice_weak from "./assets/spells/ice_weak.png"
+import ice_medium from "./assets/spells/ice_medium.png"
+import ice_strong from "./assets/spells/ice_strong.png"
+//fire
+import fire_weak from "./assets/spells/fire_weak.png"
+import fire_medium from "./assets/spells/fire_medium.png"
+import fire_strong from "./assets/spells/fire_strong.png"
+//wind
+import wind_weak from "./assets/spells/wind_weak.png"
+import wind_medium from "./assets/spells/wind_medium.png"
+import wind_strong from "./assets/spells/wind_strong.png"
 
 export const wizards = {
     red: {
@@ -102,4 +121,99 @@ export const wizards = {
             interval: 200,
         },
   }
+};
+
+export const spells = {
+    earth: {
+      weak: {
+          source: earth_weak,
+          width: 599,
+          height: 559,
+          slices: 35,
+          interval: 100,
+      },
+      medium: {
+          source: earth_medium,
+          width: 620,
+          height: 530,
+          slices: 43,
+          interval: 100,
+      },
+      strong: {
+          source: earth_strong,
+          width: 899,
+          height: 643,
+          slices: 88,
+          interval: 100,
+      }
+    },
+    ice: {
+        weak: {
+            source: ice_weak,
+            width: 483,
+            height: 483,
+            slices: 23,
+            interval: 100,
+        },
+        medium: {
+            source: ice_medium,
+            width: 788,
+            height: 788,
+            slices: 50,
+            interval: 100,
+        },
+        strong: {
+            source: ice_strong,
+            width: 742,
+            height: 742,
+            slices: 51,
+            interval: 100,
+        }
+    },
+    fire: {
+        weak: {
+            source: fire_weak,
+            width: 483,
+            height: 483,
+            slices: 21,
+            interval: 100,
+        },
+        medium: {
+            source: fire_medium,
+            width: 758,
+            height: 540,
+            slices: 38,
+            interval: 100,
+        },
+        strong: {
+            source: fire_strong,
+            width: 727,
+            height: 635,
+            slices: 78,
+            interval: 100,
+        }
+    },
+    wind: {
+        weak: {
+            source: wind_weak,
+            width: 880,
+            height: 704,
+            slices: 34,
+            interval: 100,
+        },
+        medium: {
+            source: wind_medium,
+            width: 660,
+            height: 660,
+            slices: 29,
+            interval: 100,
+        },
+        strong: {
+            source: wind_strong,
+            width: 880,
+            height: 880,
+            slices: 83,
+            interval: 100,
+        }
+    },
 };
