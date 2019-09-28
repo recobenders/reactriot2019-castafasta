@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import styled from "styled-components";
 
 const AnimatedImageWrapper = styled.div`
-${({width, height, url, backgroundWidth}) => `
+${({width, height, url, backgroundWidth, verticalRotation}) => `
     width: ${width}px;
     height: ${height}px;
     background: url('${url}') 0px 0px;
     background-size: ${backgroundWidth}px ${height}px;
+    transform: rotateY(${verticalRotation}deg);
     `
 }
 `;
@@ -15,11 +16,13 @@ class AnimatedImage extends Component {
   imageRef;
   width;
   height;
+  verticalRotation;
 
   constructor(props){
     super(props);
     this.imageRef = React.createRef();
-    const { width, height, img } = props;
+    const { width, height, img, direction } = props;
+    this.verticalRotation = direction === "right" ? 0 : 180;
     if (width) {
         this.width = width;
         if(height){
@@ -65,6 +68,7 @@ class AnimatedImage extends Component {
             backgroundWidth={this.width*img["slices"]}
             height={this.height}
             ref={this.imageRef}
+            verticalRotation={this.verticalRotation}
         />
       );
   }

@@ -6,6 +6,7 @@ const Health = styled.div`
   background-color: green;
   display: block;
   padding: 5px;
+  overflow: visible;
 `;
 
 const HealthContainer = styled.section`
