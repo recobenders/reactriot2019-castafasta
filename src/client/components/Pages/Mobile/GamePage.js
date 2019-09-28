@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import styled from "styled-components";
 import Constants from "../../../../shared/constants";
 import NameForm from "../../Forms/NameForm";
+import Spell from "../../../../shared/spell";
 
 const Wrapper = styled.section`
   position: fixed;
@@ -15,7 +16,7 @@ export class GamePage extends Component {
     super(props);
 
     this.state = {
-      activeCasting: true
+      activeCasting: false
     };
   }
 
@@ -46,12 +47,32 @@ export class GamePage extends Component {
     );
   }
 
-  spellSummaryGamePage() {}
+  renderSpellItem(spells) {
+    // spells.map((o, i) => return(<ObjectRow obj={o} key={i})))
+    return spells.map(spell => {
+      return (
+        <li>
+          {spell.name} ({spell.max_dmg} dmg, {spell.numberOfSequences} steps)
+        </li>
+      );
+    });
+  }
+
+  spellSummaryGamePage() {
+    return (
+      <Fragment>
+        <div>Please select your spell:</div>
+        <div>
+          <ul>{this.renderSpellItem(Spell.getSpells())}</ul>
+        </div>
+      </Fragment>
+    );
+  }
 
   render() {
     return (
       <Wrapper>
-        Mobile in game
+        <div>Mobile in game</div>
         {this.renderGamePage()}
       </Wrapper>
     );
