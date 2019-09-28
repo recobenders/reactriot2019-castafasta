@@ -7,7 +7,7 @@ export const wizards = {
           width: 624,
           height: 500,
           slices: 7,
-          interval: 150,
+          interval: 200,
       }
   }
 };
