@@ -41,7 +41,7 @@ class AnimatedImage extends Component {
     const { img } = this.props;
     let position = this.widows;
     const interval = img["interval"];
-    setInterval(()=> {
+    this.animationIntervalId = setInterval(()=> {
       this.imageRef.current.style.backgroundPosition = `-${position}px 0px`;
 
       if(position < this.width*img["slices"]){
@@ -52,6 +52,9 @@ class AnimatedImage extends Component {
     }, interval);
   }
 
+  componentWillUnmount() {
+    clearInterval(this.animationIntervalId);
+  }
 
   render() {
       const { img } = this.props;

@@ -7,35 +7,57 @@ class Game {
     this.io = io;
     this.channelName = `game${this.id}`;
 
-    this.players = {};
     this.playerOne = player_one;
     this.playerTwo = player_two;
 
     this.state = Constants.GAME_STATES.INIT;
     this.result = {};
+    this.resolutionSent = false;
+    this.endAt = Date.now() + (Constants.ROUND_SECONDS * 1000);
 
     this.playerOne.joinGame(this);
     this.playerTwo.joinGame(this);
 
     this.broadcast(Constants.MSG.GAME_JOINED, this.serializeForUpdate());
-    setInterval(this.update.bind(this), Constants.QUEUE_CHECK_TIME);
+    this.updateIntervalId = setInterval(this.update.bind(this), Constants.QUEUE_CHECK_TIME);
   }
 
   update() {
+    if (this.isFinished()) {
+      if (this.resolutionSent) return;
+
+      this.resolve();
+      this.resolutionSent = true;
+    }
+
     console.log(`Game #${this.id} sending update`);
     this.broadcast(Constants.MSG.GAME_UPDATE, this.serializeForUpdate());
+  }
+
+  isFinished() {
+    return this.playerOne.hp <= 0 || this.playerTwo.hp <= 0 || this.endAt < Date.now()
   }
 
   broadcast(type, data) {
     this.io.sockets.in(this.channelName).emit(type, data);
   }
 
-  resolveWinner(type, winner) {
-    this.result = {
-      type: type,
-      winner: winner
-    };
+  resolve() {
+    if (this.endAt < Date.now()) {
+      this.result = {
+        type: Constants.RESOLUTION_TYPES.DRAW,
+        winner: null
+      };
+    } else {
+      const winner = this.playerOne.hp <= 0 ? this.playerTwo : this.playerOne;
+      this.result = {
+        type: Constants.RESOLUTION_TYPES.VICTORY,
+        winner: winner
+      };
+    }
+
     this.state = Constants.GAME_STATES.FINISHED;
+    clearInterval(this.updateIntervalId);
   }
 
   getOpponent(player) {
@@ -73,6 +95,8 @@ class Game {
   serializeForUpdate() {
     return {
       gameId: this.id,
+      state: this.state,
+      result: this.result,
       playerOne: this.playerOne.serializeForUpdate(),
       playerTwo: this.playerTwo.serializeForUpdate()
     };

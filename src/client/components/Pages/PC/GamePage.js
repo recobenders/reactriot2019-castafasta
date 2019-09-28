@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import styled from "styled-components";
 import Constants from "../../../../shared/constants";
 import Battleground from "../../Game/Battleground";
@@ -14,7 +14,8 @@ export class GamePage extends Component {
 
     this.state = {
       game: null,
-      loading: true
+      loading: true,
+      finished: false
     };
   }
 
@@ -23,21 +24,45 @@ export class GamePage extends Component {
       console.log(data);
       this.setState({
         game: data,
-        loading: false
+        loading: false,
+        finished: data.state === Constants.GAME_STATES.FINISHED
       });
     });
   }
 
-  render() {
+  activeGamePage() {
+    return (
+      <Fragment>
+        <Battleground />
+        <GameInfo game={this.state.game} />
+      </Fragment>
+    );
+  }
+
+  resolvedGamePage() {
+    return (
+      <Fragment>
+        Game finished
+      </Fragment>
+    );
+  }
+
+  renderGamePage() {
     if (this.state.loading) {
       // TODO replace with a loader or make sure we get all the data on initialization
       return (<Wrapper>Loading</Wrapper>);
     }
 
+    if (this.state.finished) {
+      return this.resolvedGamePage();
+    }
+    return this.activeGamePage();
+  }
+
+  render() {
     return (
       <Wrapper>
-        <Battleground />
-        <GameInfo game={this.state.game} />
+        {this.renderGamePage()}
       </Wrapper>
     );
   }

@@ -19,7 +19,8 @@ export class GamePage extends Component {
       currentUserId: this.props.userId,
       activeCasting: false,
       game: null,
-      loading: true
+      loading: true,
+      finished: false
     };
   }
 
@@ -37,7 +38,11 @@ export class GamePage extends Component {
         });
       }
 
-      this.setState({ game: data, loading: false });
+      this.setState({
+        game: data,
+        loading: false,
+        finished: data.state === Constants.GAME_STATES.FINISHED
+      });
     });
   }
 
@@ -51,7 +56,9 @@ export class GamePage extends Component {
       // TODO replace with a loader or make sure we get all the data on initialization
       return (<Wrapper>Loading</Wrapper>);
     }
-
+    if (this.state.finished) {
+      return this.resolvedGamePage();
+    }
     if (this.state.activeCasting) {
       return this.activeCastingGamePage();
     }
@@ -63,6 +70,14 @@ export class GamePage extends Component {
       <Fragment>
         <div>Active Casting</div>
         <NameForm handleFormSubmit={this.handleDamageSubmit.bind(this)} />
+      </Fragment>
+    );
+  }
+
+  resolvedGamePage() {
+    return (
+      <Fragment>
+        Game finished
       </Fragment>
     );
   }
