@@ -1,12 +1,16 @@
 const Constants = require("../shared/constants");
 
 class Player {
-  constructor(id, username, browserSocket) {
+  constructor(id, username, sockets) {
     this.id = id;
     this.username = username;
     this.hp = Constants.PLAYER_MAX_HP;
-    this.sockets = [browserSocket];
-    // this.mobile_socket = mobile_socket;
+    this.sockets = sockets;
+
+    for (let socket of this.sockets) {
+      socket.uuid = this.id;
+      socket.player = this;
+    }
   }
 
   takeDamage(damage) {
@@ -16,6 +20,13 @@ class Player {
   joinGame(game) {
     for (let socket of this.sockets) {
       socket.join(game.channelName);
+      socket.game = game;
+    }
+  }
+
+  broadcast(type, data) {
+    for (let socket of this.sockets) {
+      socket.emit(type, data);
     }
   }
 

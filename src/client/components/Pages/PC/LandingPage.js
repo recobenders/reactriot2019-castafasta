@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import QRCode from "qrcode.react";
 import styled from "styled-components";
-import Constants from "../../../shared/constants";
+import Constants from "../../../../shared/constants";
 
 const Wrapper = styled.section`
   position: fixed;
@@ -15,8 +15,12 @@ class LandingPage extends Component {
     super(props);
 
     this.state = {
-      qrCode: window.location.host + "/" + props.userId
+      qrCode: window.location.host + "/mobile/" + props.userId
     };
+
+    this.props.socket.on(Constants.MSG.WAITING_FOR_GAME, () => {
+      this.props.history.push("/waiting");
+    });
   }
 
   componentDidMount() {
@@ -29,7 +33,9 @@ class LandingPage extends Component {
     return (
       <Wrapper>
         <QRCode value={this.state.qrCode} />
-        <div>{this.props.userId}</div>
+        <div>
+          <a href={`/mobile/${this.props.userId}`}>{this.props.userId}</a>
+        </div>
       </Wrapper>
     );
   }

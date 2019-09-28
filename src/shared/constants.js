@@ -15,6 +15,7 @@ module.exports = Object.freeze({
 
   MSG: {
     PREPARE_PLAYER: "prepare_player",
+    WAITING_FOR_GAME: "waiting_for_game",
     NEW_PLAYER: "new_player",
     GAME_JOINED: "game_joined",
     GAME_STARTED: "game_started",

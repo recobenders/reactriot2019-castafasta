@@ -19,16 +19,13 @@ const incomingPlayers = [];
 
 io.on("connection", socket => {
   socket.on(Constants.MSG.NEW_PLAYER, ({ uuid, name }) => {
-    // This should be called only from mobile
     console.log(`Mobile connected for player ${uuid}, adding to queue`);
-    let browser_socket = connectingWithMobilePlayers[uuid];
+    let browser_socket = incomingPlayers[uuid];
     if (!browser_socket) return;
     removeConnectingPlayer(uuid);
-    let player = new Player(uuid, name, browser_socket, browser_socket);
-    socket.uuid = uuid;
-    socket.player = player;
-    browser_socket.player = player;
+    let player = new Player(uuid, name, [browser_socket, socket]);
     queue.addPlayer(player);
+    player.broadcast(Constants.MSG.WAITING_FOR_GAME);
     console.log(player.serializeForUpdate());
   });
 
@@ -38,14 +35,16 @@ io.on("connection", socket => {
     incomingPlayers[uuid] = socket;
   });
 
-  // socket.on(ConstantsMSG);
-
   socket.on("disconnect", () => {
     if (socket.uuid) {
       removeConnectingPlayer(socket.uuid);
     }
     if (socket.player) {
       queue.removePlayer(socket.player);
+    }
+
+    if (socket.game) {
+      // resolve game disconnect
     }
     console.log("Client disconnected");
   });
@@ -56,7 +55,7 @@ function removeConnectingPlayer(uuid) {
 }
 
 setInterval(() => {
-  console.log(`Incomming player: ${Object.keys(incomingPlayers).length}`);
+  console.log(`Incomming players: ${Object.keys(incomingPlayers).length}`);
 }, 1000);
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
