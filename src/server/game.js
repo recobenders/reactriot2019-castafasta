@@ -21,13 +21,17 @@ class Game {
     this.state = Constants.GAME_STATES.INIT;
     this.result = {};
     this.resolutionSent = false;
-    this.endAt = Date.now() + (Constants.ROUND_SECONDS * (1000 * (2 - Constants.BOT_SPEED)));
+    this.endAt =
+      Date.now() + Constants.ROUND_SECONDS * (1000 * (2 - Constants.BOT_SPEED));
 
     this.playerOne.joinGame(this);
     this.playerTwo.joinGame(this);
 
     this.broadcast(Constants.MSG.GAME_JOINED, this.serializeForUpdate());
-    this.updateIntervalId = setInterval(this.update.bind(this), Constants.QUEUE_CHECK_TIME);
+    this.updateIntervalId = setInterval(
+      this.update.bind(this),
+      Constants.QUEUE_CHECK_TIME
+    );
   }
 
   update() {
@@ -50,10 +54,14 @@ class Game {
     if (!this.bot.isBot()) return;
 
     const availableSpells = Object.keys(this.bot.availableSpells());
-    this.bot.activeSpell =
-      this.bot.availableSpells()[availableSpells[Math.floor(Math.random() * availableSpells.length)]];
+    this.bot.activeSpell = this.bot.availableSpells()[
+      availableSpells[Math.floor(Math.random() * availableSpells.length)]
+    ];
 
-    this.spellSelectedByPlayer(this.bot, this.bot.activeSpell.name.toLocaleLowerCase());
+    this.spellSelectedByPlayer(
+      this.bot,
+      this.bot.activeSpell.name.toLocaleLowerCase()
+    );
 
     let spellTimeout = this.bot.activeSpell.requiredSequences.length * 1000;
 
@@ -62,13 +70,17 @@ class Game {
     });
 
     futureSpellCast.then(() => {
-      this.spellCastedbyPlayer(this.bot, this.bot.activeSpell.requiredSequences); // TODO: randomize accuracies
+      this.spellCastedbyPlayer(this.bot, this.bot.generateRandomAccuracies());
       console.log("Bot cast spell.");
     });
   }
 
   isFinished() {
-    return this.playerOne.hp <= 0 || this.playerTwo.hp <= 0 || this.endAt < Date.now()
+    return (
+      this.playerOne.hp <= 0 ||
+      this.playerTwo.hp <= 0 ||
+      this.endAt < Date.now()
+    );
   }
 
   broadcast(type, data) {
