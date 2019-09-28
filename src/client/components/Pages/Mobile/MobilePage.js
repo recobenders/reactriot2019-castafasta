@@ -15,7 +15,6 @@ class MobilePage extends Component {
     super(props);
 
     this.props.socket.on(Constants.MSG.WAITING_FOR_GAME, () => {
-      console.log("Somethign");
       this.props.history.push("/mobile/waiting");
     });
   }
