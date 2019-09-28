@@ -2,12 +2,11 @@ import React, { Component } from "react";
 import styled from "styled-components";
 
 const AnimatedImageWrapper = styled.div`
-${({width, height, url, backgroundWidth, verticalRotation}) => `
+${({width, height, url, backgroundWidth}) => `
     width: ${width}px;
     height: ${height}px;
     background: url('${url}') 0px 0px;
     background-size: ${backgroundWidth}px ${height}px;
-    transform: rotateY(${verticalRotation}deg);
     `
 }
 `;
@@ -16,13 +15,11 @@ class AnimatedImage extends Component {
   imageRef;
   width;
   height;
-  verticalRotation;
 
   constructor(props){
     super(props);
     this.imageRef = React.createRef();
-    const { width, height, img, direction } = props;
-    this.verticalRotation = direction === "right" ? 0 : 180;
+    const { width, height, img } = props;
     if (width) {
         this.width = width;
         if(height){
@@ -40,19 +37,35 @@ class AnimatedImage extends Component {
 
   }
 
-  componentDidMount() {
+  animate = () => {
     const { img } = this.props;
-    let position = this.widows;
-    const interval = img["interval"];
-    this.animationIntervalId = setInterval(()=> {
-      this.imageRef.current.style.backgroundPosition = `-${position}px 0px`;
 
-      if(position < this.width*img["slices"]){
-        position += this.width;
-      } else {
-        position = 0;
+    let position = 0;
+    const interval = img["interval"];
+
+    clearInterval(this.animation);
+
+    this.animation = setInterval(() => {
+        this.imageRef.current.style.backgroundPosition = `-${position}px 0px`;
+
+        if (position < this.width * img["slices"]) {
+          position += this.width;
+        }  else {
+          this.imageRef.current.style.backgroundPosition = `0px 0px`;
+          clearInterval(this.animation)
+        }
+      }, interval);
+  };
+
+  componentDidUpdate(prevProps, prevState, s) {
+    const { img, repeat, repeatInterval } = this.props;
+    if (prevProps.img !== img || prevProps.repeat !== repeat) {
+      this.animate();
+      clearInterval(this.repetition);
+      if (repeat) {
+        this.repetition = setInterval(this.animate, repeatInterval ? repeatInterval : 10000)
       }
-    }, interval);
+    }
   }
 
   componentWillUnmount() {
@@ -68,7 +81,6 @@ class AnimatedImage extends Component {
             backgroundWidth={this.width*img["slices"]}
             height={this.height}
             ref={this.imageRef}
-            verticalRotation={this.verticalRotation}
         />
       );
   }
