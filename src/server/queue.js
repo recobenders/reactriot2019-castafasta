@@ -22,12 +22,12 @@ class Queue {
     let i = this.waitingPlayers.indexOf(player);
 
     if (i == null) {
-      console.log('Player is not present in the queue');
+      console.log("Player is not present in the queue");
       return;
     }
 
     this.waitingPlayers.splice(i, 1);
-    console.log('Player has been removed from queue');
+    console.log("Player has been removed from queue");
   }
 
   startNewGames() {

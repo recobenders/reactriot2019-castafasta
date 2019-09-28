@@ -29,14 +29,7 @@ class App extends Component {
       userId: userId
     };
 
-    this.state.socket.on(Constants.MSG.GAME_JOINED, () =>
-      console.log("Game Started")
-    );
-    this.state.socket.on(Constants.MSG.GAME_UPDATE, data =>
-      console.log("Game Updated " + data.id)
-    );
-
-    this.state.socket.on(Constants.MSG.ERROR, (data) => {
+    this.state.socket.on(Constants.MSG.ERROR, data => {
       this.setState({ error: data.message });
       this.props.history.push("/error");
     });

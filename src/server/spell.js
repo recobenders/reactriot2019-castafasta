@@ -25,7 +25,11 @@ class Spell {
   }
 
   captureAccuracy(accuracy) {
-    this.capturedAccuracy.push(accuracy);
+    this.capturedAccuracy.push(parseFloat(accuracy));
+  }
+
+  captureAccuracies(accuracies) {
+    this.capturedAccuracy = accuracies.map(Number);
   }
 
   currentRequiredSequence() {
@@ -37,7 +41,7 @@ class Spell {
   }
 
   calculateDamage() {
-    if (!this.isCastingDone()) return;
+    if (!this.isCastingDone) return;
     let sum = this.capturedAccuracy.reduce(
       (previous, current) => (current += previous)
     );
