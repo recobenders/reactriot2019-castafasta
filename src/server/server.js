@@ -4,6 +4,8 @@ const socketIo = require("socket.io");
 const Constants = require("../shared/constants");
 const Player = require("./player");
 const Queue = require("./queue");
+const Game = require("../server/game");
+const uuidv4 = require("uuid/v4");
 
 //Port from environment variable or default - 4001
 const port = process.env.PORT || 4001;
@@ -18,8 +20,15 @@ const queue = new Queue(io);
 const incomingPlayers = [];
 
 io.on("connection", socket => {
-  socket.on(Constants.MSG.NEW_PLAYER, ({ uuid, name }) => {
-    createAndQueuePlayer(uuid, name, socket);
+  socket.on(Constants.MSG.NEW_PLAYER, ({ uuid, name, singlePlayer }) => {
+    let player = createPlayer(uuid, name, socket);
+    player.broadcast(Constants.MSG.WAITING_FOR_GAME);
+
+    if (singlePlayer) {
+      startGameWithBot(io, player);
+    } else {
+      queuePlayer(queue, player);
+    }
   });
 
   socket.on(Constants.MSG.PREPARE_PLAYER, ({ uuid }) => {
@@ -59,7 +68,7 @@ function removeConnectingPlayer(uuid) {
   delete incomingPlayers[uuid];
 }
 
-function createAndQueuePlayer(uuid, name, socket) {
+function createPlayer(uuid, name, socket) {
   console.log(`Mobile connected for player ${uuid}, adding to queue`);
   let browser_socket = incomingPlayers[uuid];
   if (!browser_socket) {
@@ -68,11 +77,17 @@ function createAndQueuePlayer(uuid, name, socket) {
     });
     return;
   }
-  let player = new Player(uuid, name, [browser_socket, socket], false);
-  queue.addPlayer(player);
-  player.broadcast(Constants.MSG.WAITING_FOR_GAME);
   removeConnectingPlayer(uuid);
-  console.log(player.serializeForUpdate());
+  return new Player(uuid, name, [browser_socket, socket], false);
+}
+
+function queuePlayer(queue, player) {
+  queue.addPlayer(player);
+}
+
+function startGameWithBot(io, player) {
+  let botPlayer = new Player(uuidv4(), "Test Player", [], true);
+  new Game(uuidv4(), io, player, botPlayer);
 }
 
 setInterval(() => {

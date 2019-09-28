@@ -16,14 +16,14 @@ class NameForm extends Component {
     this.setState({ name: event.target.value });
   }
 
-  handleSubmit(event) {
+  handleSubmit(event, type) {
     event.preventDefault();
-    this.props.handleFormSubmit(this.state.name);
+    this.props.handleFormSubmit(this.state.name, type);
   }
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form>
         <label>
           Name:
           <input
@@ -32,7 +32,16 @@ class NameForm extends Component {
             onChange={this.handleChange}
           />
         </label>
-        <input type="submit" value="Submit" />
+        <input
+          onClick={event => this.handleSubmit(event, "multiplayer")}
+          type="submit"
+          value="Multiplayer"
+        />
+        <input
+          onClick={event => this.handleSubmit(event, "singleplayer")}
+          type="submit"
+          value="Singleplayer"
+        />
       </form>
     );
   }

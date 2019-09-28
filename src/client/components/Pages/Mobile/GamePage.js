@@ -56,7 +56,7 @@ export class GamePage extends Component {
   renderGamePage() {
     if (this.state.loading) {
       // TODO replace with a loader or make sure we get all the data on initialization
-      return (<Wrapper>Loading</Wrapper>);
+      return <div>Loading</div>;
     }
     if (this.state.finished) {
       return this.resolvedGamePage();
@@ -77,11 +77,7 @@ export class GamePage extends Component {
   }
 
   resolvedGamePage() {
-    return (
-      <Fragment>
-        Game finished
-      </Fragment>
-    );
+    return <Fragment>Game finished</Fragment>;
   }
 
   handleSpellClick(spellKey) {

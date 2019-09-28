@@ -77,8 +77,10 @@ class Game {
     });
 
     futureSpellCast.then(() => {
-      this.spellCastedbyPlayer(this.bot, this.bot.generateRandomAccuracies());
-      console.log("Bot cast spell.");
+      if (!this.isFinished()) {
+        this.spellCastedbyPlayer(this.bot, this.bot.generateRandomAccuracies());
+        console.log("Bot cast spell.");
+      }
     });
   }
 
