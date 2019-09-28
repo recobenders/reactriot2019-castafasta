@@ -19,19 +19,7 @@ const incomingPlayers = [];
 
 io.on("connection", socket => {
   socket.on(Constants.MSG.NEW_PLAYER, ({ uuid, name }) => {
-    console.log(`Mobile connected for player ${uuid}, adding to queue`);
-    let browser_socket = incomingPlayers[uuid];
-    if (!browser_socket) {
-      socket.emit(Constants.MSG.ERROR, {
-        message: "Browser connection is missing."
-      });
-      return;
-    }
-    removeConnectingPlayer(uuid);
-    let player = new Player(uuid, name, [browser_socket, socket]);
-    queue.addPlayer(player);
-    player.broadcast(Constants.MSG.WAITING_FOR_GAME);
-    console.log(player.serializeForUpdate());
+    createAndQueuePlayer(uuid, name, socket);
   });
 
   socket.on(Constants.MSG.PREPARE_PLAYER, ({ uuid }) => {
@@ -57,6 +45,22 @@ io.on("connection", socket => {
 
 function removeConnectingPlayer(uuid) {
   delete incomingPlayers[uuid];
+}
+
+function createAndQueuePlayer(uuid, name, socket) {
+  console.log(`Mobile connected for player ${uuid}, adding to queue`);
+  let browser_socket = incomingPlayers[uuid];
+  if (!browser_socket) {
+    socket.emit(Constants.MSG.ERROR, {
+      message: "Browser connection is missing."
+    });
+    return;
+  }
+  let player = new Player(uuid, name, [browser_socket, socket]);
+  queue.addPlayer(player);
+  player.broadcast(Constants.MSG.WAITING_FOR_GAME);
+  removeConnectingPlayer(uuid);
+  console.log(player.serializeForUpdate());
 }
 
 setInterval(() => {
