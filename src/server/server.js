@@ -15,17 +15,16 @@ const io = socketIo(server);
 
 const queue = new Queue(io);
 
-const connectingWithMobilePlayers = [];
+const incomingPlayers = [];
 
 io.on("connection", socket => {
-  console.log("New client connected");
-
-  socket.on(Constants.MSG.NEW_PLAYER, ({ uuid, nickname }) => {
+  socket.on(Constants.MSG.NEW_PLAYER, ({ uuid, name }) => {
     // This should be called only from mobile
     console.log(`Mobile connected for player ${uuid}, adding to queue`);
     let browser_socket = connectingWithMobilePlayers[uuid];
+    if (!browser_socket) return;
     removeConnectingPlayer(uuid);
-    let player = new Player(uuid, nickname, browser_socket, browser_socket);
+    let player = new Player(uuid, name, browser_socket, browser_socket);
     socket.uuid = uuid;
     socket.player = player;
     browser_socket.player = player;
@@ -34,9 +33,9 @@ io.on("connection", socket => {
   });
 
   socket.on(Constants.MSG.PREPARE_PLAYER, ({ uuid }) => {
-    console.log(`Preparing player ${uuid}, waiting for mobile`);
+    console.log(`New player incoming ${uuid}, waiting for mobile`);
     socket.uuid = uuid;
-    connectingWithMobilePlayers[uuid] = socket;
+    incomingPlayers[uuid] = socket;
   });
 
   // socket.on(ConstantsMSG);
@@ -53,13 +52,11 @@ io.on("connection", socket => {
 });
 
 function removeConnectingPlayer(uuid) {
-  delete connectingWithMobilePlayers[uuid];
+  delete incomingPlayers[uuid];
 }
 
 setInterval(() => {
-  console.log(
-    `Connecting players: ${Object.keys(connectingWithMobilePlayers).length}`
-  );
+  console.log(`Incomming player: ${Object.keys(incomingPlayers).length}`);
 }, 1000);
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
