@@ -4,7 +4,7 @@ import LandingPage from "./Pages/PC/LandingPage";
 import MobilePage from "./Pages/Mobile/MobilePage";
 import { WaitingPage as MobileWaitingPage } from "./Pages/Mobile/WaitingPage";
 import { WaitingPage as PCWaitingPage } from "./Pages/PC/WaitingPage";
-
+import GamePage from "./Pages/GamePage";
 import socketIOClient from "socket.io-client";
 import Constants from "../../shared/constants";
 import { withCookies } from "react-cookie";
@@ -71,6 +71,12 @@ class App extends Component {
                 <PCWaitingPage {...props} socket={this.state.socket} />
               )}
             />
+            <Route
+                exact
+                path="/game"
+                render={props => (
+                    <GamePage {...props} socket={this.state.socket} />
+                )} />
             <Route
               path="/mobile/waiting"
               exact
