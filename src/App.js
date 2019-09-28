@@ -1,8 +1,10 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import socketIOClient from "socket.io-client";
 
 function App() {
+  const socket = socketIOClient("http://127.0.0.1:4001");
   return (
     <div className="App">
       <header className="App-header">
