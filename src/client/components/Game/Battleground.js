@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import AnimatedWizard from "../Animations/AnimatedWizard";
 import AnimatedSpell from "../Animations/AnimatedSpell";
+import AnimatedShot from "../Animations/AnimatedShot";
 
 class Battleground extends Component {
   render() {
@@ -8,6 +9,7 @@ class Battleground extends Component {
       <div>
         <AnimatedWizard wizardColor="blue" wizardAction="jump" />
         <AnimatedSpell spellType="earth" spellPower="strong" />
+        <AnimatedShot shotType="earth" />
       </div>
     );
   }
