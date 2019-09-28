@@ -17,7 +17,7 @@ class Game {
     this.playerOne.joinGame(this);
     this.playerTwo.joinGame(this);
 
-    this.broadcast(Constants.MSG.GAME_JOINED, this);
+    this.broadcast(Constants.MSG.GAME_JOINED, this.serializeForUpdate());
     setInterval(this.update.bind(this), Constants.QUEUE_CHECK_TIME);
   }
 
