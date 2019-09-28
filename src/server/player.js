@@ -1,11 +1,11 @@
 const Constants = require("../shared/constants");
 
 class Player {
-  constructor(id, username, browser_socket) {
+  constructor(id, username, browserSocket) {
     this.id = id;
     this.username = username;
     this.hp = Constants.PLAYER_MAX_HP;
-    this.browser_socket = browser_socket;
+    this.browser_socket = browserSocket;
     // this.mobile_socket = mobile_socket;
   }
 
