@@ -2,13 +2,14 @@ const Constants = require("../shared/constants");
 const Spell = require("../shared/spell");
 
 class Player {
-  constructor(id, username, sockets) {
+  constructor(id, username, sockets, bot) {
     this.id = id;
     this.username = username;
     this.hp = Constants.PLAYER_MAX_HP;
     this.sockets = sockets;
     this.state = Constants.PLAYER_STATES.INIT;
     this.activeSpell = null;
+    this.bot = bot;
 
     for (let socket of this.sockets) {
       socket.uuid = this.id;
@@ -18,6 +19,14 @@ class Player {
 
   takeDamage(damage) {
     this.hp -= damage;
+  }
+
+  isBot() {
+    return this.isBot;
+  }
+
+  availableSpells() {
+    return Spell.getSpells();
   }
 
   selectSpell(spellKey) {
@@ -61,7 +70,8 @@ class Player {
       activeSpell: this.activeSpell
         ? this.activeSpell.serializeForUpdate()
         : null,
-      state: this.state
+      state: this.state,
+      availableSpells: this.availableSpells()
     };
   }
 }
