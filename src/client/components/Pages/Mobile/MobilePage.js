@@ -19,10 +19,12 @@ class MobilePage extends Component {
     });
   }
 
-  handleFormSubmit(name) {
+  handleFormSubmit(name, type) {
+    let singlePlayer = type === "singleplayer";
     this.props.socket.emit(Constants.MSG.NEW_PLAYER, {
       uuid: this.props.match.params.userId,
-      name: name
+      name: name,
+      singlePlayer: singlePlayer
     });
   }
 

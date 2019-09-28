@@ -5,9 +5,6 @@ module.exports = Object.freeze({
   GAME_TICK: 1000,
 
   CRITICAL_CHANCE: 0.05,
-
-  // Set to 1 if Multiplayer
-  MULTIPLAYER: 0,
   BOT_CHANCE_TO_CAST: 0.5,
 
   GAME_STATES: {
