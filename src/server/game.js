@@ -64,7 +64,7 @@ class Game {
     let opponent = this.getOpponent(player);
     opponent.takeDamage(spell.dmg);
     console.log(
-      `Game#${this.id}: Resolving ${spell.dmg} to player ${opponent.id}`
+      `Game#${this.id}: Dealing ${spell.dmg} dmg to player ${opponent.id}`
     );
     this.updatePlayer(opponent);
     this.update();

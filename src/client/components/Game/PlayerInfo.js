@@ -17,6 +17,12 @@ class PlayerInfo extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      player: nextProps.player
+    });
+  }
+
   render() {
     return (
       <Wrapper>

@@ -16,13 +16,28 @@ export class GamePage extends Component {
     super(props);
 
     this.state = {
-      activeCasting: false
+      currentUserId: this.props.userId,
+      activeCasting: false,
+      game: null,
+      loading: true
     };
   }
 
   componentDidMount() {
     this.props.socket.on(Constants.MSG.GAME_UPDATE, data => {
       console.log(data);
+
+      if (data.playerOne.id === this.state.currentUserId) {
+        this.setState({
+          activeCasting: data.playerOne.activeSpell !== null
+        });
+      } else {
+        this.setState({
+          activeCasting: data.playerTwo.activeSpell !== null
+        });
+      }
+
+      this.setState({ game: data, loading: false });
     });
   }
 
@@ -32,6 +47,11 @@ export class GamePage extends Component {
   }
 
   renderGamePage() {
+    if (this.state.loading) {
+      // TODO replace with a loader or make sure we get all the data on initialization
+      return (<Wrapper>Loading</Wrapper>);
+    }
+
     if (this.state.activeCasting) {
       return this.activeCastingGamePage();
     }
