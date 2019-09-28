@@ -14,7 +14,7 @@ class LandingPage extends Component {
     super(props);
 
     this.state = {
-      qrCode: window.location.host + "/" //+ UUID.v4()
+      qrCode: window.location.host + "/" + props.userId
     };
   }
 
