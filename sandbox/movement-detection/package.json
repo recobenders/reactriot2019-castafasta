@@ -1,0 +1,13 @@
+{
+  "name": "movement-detection",
+  "version": "1.0.0",
+  "description": "Text",
+  "main": "index.js",
+  "author": "Martin Konopka",
+  "license": "ISC",
+  "dependencies": {
+    "rx": "^4.1.0",
+    "smoothie": "^1.35.0"
+  },
+  "devDependencies": {}
+}
