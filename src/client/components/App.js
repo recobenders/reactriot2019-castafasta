@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import LandingPage from "./Pages/LandingPage";
+import MobilePage from "./Pages/MobilePage";
 import socketIOClient from "socket.io-client";
 import Constants from "../../shared/constants";
 import { withCookies } from "react-cookie";
 import { default as UUID } from "node-uuid";
+import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
 
 class App extends Component {
   constructor(props) {
@@ -18,7 +20,7 @@ class App extends Component {
     }
 
     this.state = {
-      socket: socketIOClient("http://127.0.0.1:4001"),
+      socket: socketIOClient("http://" + window.location.hostname + ":4001"),
       userId: userId
     };
 
@@ -37,7 +39,12 @@ class App extends Component {
   render() {
     return (
       <div>
-        <LandingPage />
+        <Router>
+          <Switch>
+            <Route exact path="/" render={(props) => <LandingPage {...props} userId={this.state.userId} />} />
+            <Route path="/:userId" component={MobilePage} />
+          </Switch>
+        </Router>
         <span onClick={this.handleSocketTestClick.bind(this)}>Socket test</span>
       </div>
     );
