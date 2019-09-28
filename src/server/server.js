@@ -36,6 +36,7 @@ io.on("connection", socket => {
     if (socket.player) {
       queue.removePlayer(socket.player);
       if (socket.player.isQueued()) {
+        // TODO: Change PLAYER_LEFT_QUEUE to CONTROLLER_DISCONNECTED
         socket.player.broadcast(Constants.MSG.PLAYER_LEFT_QUEUE)
       }
     }

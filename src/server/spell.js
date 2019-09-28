@@ -15,13 +15,33 @@ class Spell {
     this.name = name;
     this.max_dmg = max_dmg;
 
-    this.generateRequiredSequencies(numberOfSequences);
+    this.generateRequiredSequences(numberOfSequences);
     this.capturedAccuracy = [0.8, 0.75, 0.9];
   }
 
-  generateRequiredSequencies(numberOfSequences) {
-    // TODO Calculate required sequences based on GRID
-    this.requiredSequences = [0, 0, 1, 2];
+  generateRequiredSequences(numberOfSequences) {
+    this.requiredSequences = [];
+
+    let position = {
+      x: Math.floor(Constants.SPELL_GRID_SIZE / 2),
+      y: Math.floor(Constants.SPELL_GRID_SIZE / 2)
+    };
+
+    while (this.requiredSequences.length < numberOfSequences) {
+      let possibleMovements = Constants.SPELL_DIRECTIONS.filter(spell =>
+        position.x + spell.x >= 0 &&
+        position.x + spell.x < Constants.SPELL_GRID_SIZE &&
+        position.y + spell.y >= 0 &&
+        position.y + spell.y < Constants.SPELL_GRID_SIZE
+      );
+
+      let movement = possibleMovements[Math.floor(Math.random()*possibleMovements.length)];
+      position.x += movement.x;
+      position.y += movement.y;
+      this.requiredSequences.push(movement.value);
+    }
+
+    return this.requiredSequences;
   }
 
   captureAccuracy(accuracy) {

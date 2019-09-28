@@ -33,5 +33,14 @@ module.exports = Object.freeze({
     ERROR: "error"
   },
 
-  QUEUE_CHECK_TIME: 1000
+  QUEUE_CHECK_TIME: 1000,
+
+  SPELL_GRID_SIZE: 3,
+
+  SPELL_DIRECTIONS: [
+    { value: 0, x: 0, y: 1 }, // UP
+    { value: 1, x: 0, y: -1 }, // DOWN
+    { value: 2, x: 1, y: 0 }, // RIGHT
+    { value: 3, x: -1, y: 0 } // LEFT
+  ]
 });
