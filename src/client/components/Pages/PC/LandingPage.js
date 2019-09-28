@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import QRCode from "qrcode.react";
 import styled from "styled-components";
 import Constants from "../../../../shared/constants";
+import { Link } from 'react-router-dom';
 
 const Wrapper = styled.section`
   position: fixed;
@@ -34,7 +35,7 @@ class LandingPage extends Component {
       <Wrapper>
         <QRCode value={this.state.qrCode} />
         <div>
-          <a href={`/mobile/${this.props.userId}`}>{this.props.userId}</a>
+          <Link to={`/mobile/${this.props.userId}`}>{this.props.userId}</Link>
         </div>
       </Wrapper>
     );

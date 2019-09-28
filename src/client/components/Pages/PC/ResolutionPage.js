@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import Constants from '../../../../shared/constants'
 import AnimatedWizard from "../../Animations/AnimatedWizard";
+import { Link } from 'react-router-dom';
 
 const WizardWrapper = styled.div`
 ${({top, left}) => `
@@ -61,6 +62,7 @@ class ResolutionPage extends Component {
   render() {
     return (
       <div>
+        <Link to="/">Back</Link>
         <WizardWrapper top={25} left={25}>
           <AnimatedWizard wizardColor="red" wizardAction={this.state.redAction} repeat={false} repeatInterval={2000} />
         </WizardWrapper>
