@@ -11,5 +11,10 @@ module.exports = Object.freeze({
   WINNING_TYPES: {
     DRAW: "draw",
     VICTORY: "victory"
+  },
+
+  MSG: {
+    NEW_PLAYER: "new_player",
+    FOUND_MATCH: "found_match"
   }
 });
