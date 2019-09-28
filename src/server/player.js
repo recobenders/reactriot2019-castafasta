@@ -6,6 +6,7 @@ class Player {
     this.username = username;
     this.hp = Constants.PLAYER_MAX_HP;
     this.sockets = sockets;
+    this.state = Constants.PLAYER_STATES.INIT;
 
     for (let socket of this.sockets) {
       socket.uuid = this.id;
@@ -15,6 +16,14 @@ class Player {
 
   takeDamage(damage) {
     this.hp -= damage;
+  }
+
+  queueUp() {
+    this.state = Constants.PLAYER_STATES.QUEUED;
+  }
+
+  isQueued() {
+    return this.state === Constants.PLAYER_STATES.QUEUED;
   }
 
   joinGame(game) {
@@ -34,7 +43,8 @@ class Player {
     return {
       id: this.id,
       username: this.username,
-      hp: this.hp
+      hp: this.hp,
+      state: this.state
     };
   }
 }
