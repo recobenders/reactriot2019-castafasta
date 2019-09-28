@@ -44,17 +44,13 @@ export class GamePage extends Component {
   }
 
   resolvedGamePage() {
-    return (
-      <Fragment>
-        Game finished
-      </Fragment>
-    );
+    return <Fragment>Game finished</Fragment>;
   }
 
   renderGamePage() {
     if (this.state.loading) {
       // TODO replace with a loader or make sure we get all the data on initialization
-      return (<Wrapper>Loading</Wrapper>);
+      return <Wrapper>Loading</Wrapper>;
     }
 
     if (this.state.finished) {
@@ -64,10 +60,6 @@ export class GamePage extends Component {
   }
 
   render() {
-    return (
-      <Wrapper>
-        {this.renderGamePage()}
-      </Wrapper>
-    );
+    return <Wrapper>{this.renderGamePage()}</Wrapper>;
   }
 }

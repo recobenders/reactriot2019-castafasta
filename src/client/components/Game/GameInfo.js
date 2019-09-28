@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import PlayerInfo from "./PlayerInfo";
 import styled from "styled-components";
 
@@ -18,35 +18,27 @@ const Column = styled.div`
 `;
 
 class GameInfo extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      playerOne: props.game.playerOne,
-      playerTwo: props.game.playerTwo
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      playerOne: nextProps.game.playerOne,
-      playerTwo: nextProps.game.playerTwo,
-    });
-  }
-
   render() {
     return (
-      <Row>
-        <Column>
-          <PlayerInfo player={this.state.playerOne} />
-        </Column>
-        <Column>
-          <PlayerInfo player={this.state.playerTwo} />
-        </Column>
-      </Row>
+      <Fragment>
+        <Row>
+          <Column>
+            <div style={{ textAlign: "center" }}>
+              {this.props.game.roundTime}
+            </div>
+          </Column>
+        </Row>
+        <Row>
+          <Column>
+            <PlayerInfo player={this.props.game.playerOne} />
+          </Column>
+          <Column>
+            <PlayerInfo player={this.props.game.playerTwo} />
+          </Column>
+        </Row>
+      </Fragment>
     );
   }
 }
 
 export default GameInfo;
-
