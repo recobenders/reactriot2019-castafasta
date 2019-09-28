@@ -12,16 +12,15 @@ const Wrapper = styled.section`
 
 export class GamePage extends Component {
   componentDidMount() {
-    this.props.socket.on(Constants.MSG.GAME_UPDATE, () => {
-      console.log('Received game update');
+    this.props.socket.on(Constants.MSG.GAME_UPDATE, data => {
+      console.log(data);
     });
   }
-
 
   render() {
     return (
       <Wrapper>
-        <AnimatedWizard wizardColor="red" wizardAction="attack"/>
+        <AnimatedWizard wizardColor="red" wizardAction="attack" />
       </Wrapper>
     );
   }

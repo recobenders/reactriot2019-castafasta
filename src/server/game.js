@@ -1,4 +1,5 @@
 const Constants = require("../shared/constants");
+const Spell = require("./spell");
 
 class Game {
   constructor(id, io, player_one, player_two) {
@@ -7,15 +8,14 @@ class Game {
     this.channelName = `game${this.id}`;
 
     this.players = {};
-    this.players[player_one.id] = player_one;
-    this.players[player_two.id] = player_two;
+    this.playerOne = player_one;
+    this.playerTwo = player_two;
 
     this.state = Constants.GAME_STATES.INIT;
     this.result = {};
 
-    for (let playerId of Object.keys(this.players)) {
-      this.players[playerId].joinGame(this);
-    }
+    this.playerOne.joinGame(this);
+    this.playerTwo.joinGame(this);
 
     this.broadcast(Constants.MSG.GAME_JOINED);
     setInterval(this.update.bind(this), Constants.QUEUE_CHECK_TIME);
@@ -38,9 +38,39 @@ class Game {
     this.state = Constants.GAME_STATES.FINISHED;
   }
 
+  getOpponent(player) {
+    return this.playerOne.id === player.id ? this.playerTwo : this.playerOne;
+  }
+
+  updatePlayer(player) {
+    if (this.playerOne.id === player.id) {
+      this.playerOne = player;
+    } else {
+      this.playerTwo = player;
+    }
+  }
+
+  spellCastedFromPlayer(player, accuracies) {
+    // Retrieve and remove active spell from player
+    let spell = Spell.get_spell("fireball");
+    spell.captureAccuracies(accuracies);
+    let dmg = spell.calculateDamage();
+    console.log(dmg);
+    console.log(accuracies);
+
+    if (dmg === undefined) return;
+
+    let opponent = this.getOpponent(player);
+    opponent.takeDamage(dmg);
+    console.log(`Game#${this.id}: Resolving ${dmg} to player ${opponent.id}`);
+    this.updatePlayer(opponent);
+  }
+
   serializeForUpdate() {
     return {
-      id: this.id
+      gameId: this.id,
+      playerOne: this.playerOne.serializeForUpdate(),
+      playerTwo: this.playerTwo.serializeForUpdate()
     };
   }
 }

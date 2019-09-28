@@ -29,6 +29,10 @@ io.on("connection", socket => {
     incomingPlayers[uuid] = socket;
   });
 
+  socket.on(Constants.MSG.CASTING_DONE, spellAccuracies => {
+    socket.game.spellCastedFromPlayer(socket.player, spellAccuracies);
+  });
+
   socket.on("disconnect", () => {
     if (socket.uuid) {
       removeConnectingPlayer(socket.uuid);
@@ -36,7 +40,7 @@ io.on("connection", socket => {
     if (socket.player) {
       queue.removePlayer(socket.player);
       if (socket.player.isQueued()) {
-        socket.player.broadcast(Constants.MSG.PLAYER_LEFT_QUEUE)
+        socket.player.broadcast(Constants.MSG.PLAYER_LEFT_QUEUE);
       }
     }
 
