@@ -63,7 +63,7 @@ class Game {
 
     futureSpellCast.then(() => {
       this.spellCastedbyPlayer(this.bot, this.bot.activeSpell.requiredSequences); // TODO: randomize accuracies
-      console.log("Bot casted spell.");
+      console.log("Bot cast spell.");
     });
   }
 
@@ -115,6 +115,11 @@ class Game {
   spellCastedbyPlayer(player, accuracies) {
     let spell = player.castSpell(accuracies);
     if (spell.dmg === undefined) return;
+
+    this.broadcast(Constants.MSG.OPPONENT_CAST_SPELL, {
+      opponent: player,
+      spell: spell
+    });
 
     let opponent = this.getOpponent(player);
     opponent.takeDamage(spell.dmg);

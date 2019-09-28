@@ -28,6 +28,10 @@ export class GamePage extends Component {
         finished: data.state === Constants.GAME_STATES.FINISHED
       });
     });
+
+    this.props.socket.on(Constants.MSG.OPPONENT_CAST_SPELL, data => {
+      console.log("Opponent cast spell");
+    });
   }
 
   activeGamePage() {
