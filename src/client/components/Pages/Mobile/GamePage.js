@@ -9,17 +9,14 @@ const Wrapper = styled.section`
   transform: translate(-50%, -50%);
 `;
 
-export class WaitingPage extends Component {
-  constructor(props) {
-    super(props);
-
-    this.props.socket.on(Constants.MSG.GAME_JOINED, () => {
-      console.log('Joining game');
-      this.props.history.push("/game");
+export class GamePage extends Component {
+  componentDidMount() {
+    this.props.socket.on(Constants.MSG.GAME_UPDATE, () => {
+      console.log('Received game update');
     });
   }
 
   render() {
-    return <Wrapper>PC Waiting</Wrapper>;
+    return <Wrapper>Mobile in game</Wrapper>;
   }
 }

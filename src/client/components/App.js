@@ -4,7 +4,8 @@ import LandingPage from "./Pages/PC/LandingPage";
 import MobilePage from "./Pages/Mobile/MobilePage";
 import { WaitingPage as MobileWaitingPage } from "./Pages/Mobile/WaitingPage";
 import { WaitingPage as PCWaitingPage } from "./Pages/PC/WaitingPage";
-import GamePage from "./Pages/GamePage";
+import { GamePage as MobileGamePage } from "./Pages/Mobile/GamePage";
+import { GamePage as PCGamePage } from "./Pages/PC/GamePage";
 import socketIOClient from "socket.io-client";
 import Constants from "../../shared/constants";
 import { withCookies } from "react-cookie";
@@ -28,7 +29,7 @@ class App extends Component {
       userId: userId
     };
 
-    this.state.socket.on(Constants.MSG.GAME_JOINED, data =>
+    this.state.socket.on(Constants.MSG.GAME_JOINED, () =>
       console.log("Game Started")
     );
     this.state.socket.on(Constants.MSG.GAME_UPDATE, data =>
@@ -72,12 +73,6 @@ class App extends Component {
               )}
             />
             <Route
-                exact
-                path="/game"
-                render={props => (
-                    <GamePage {...props} socket={this.state.socket} />
-                )} />
-            <Route
               path="/mobile/waiting"
               exact
               render={props => (
@@ -88,6 +83,20 @@ class App extends Component {
               path="/mobile/:userId"
               render={props => (
                 <MobilePage {...props} socket={this.state.socket} />
+              )}
+            />
+            <Route
+              exact
+              path="/game"
+              render={props => (
+                <PCGamePage {...props} socket={this.state.socket} />
+              )}
+            />
+            <Route
+              exact
+              path="/game/controller"
+              render={props => (
+                <MobileGamePage {...props} socket={this.state.socket} />
               )}
             />
           </Switch>
