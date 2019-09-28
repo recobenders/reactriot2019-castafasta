@@ -532,11 +532,32 @@ function combine(x, y, z) {
 	).share();
 }
 
+function directionChanges2(velocity, windowSize) {
+	windowSize = windowSize || 11; 
+	return velocity.bufferWithCount(windowSize, 1)
+		.where(buffer => buffer.length == windowSize)
+		.select(buffer => { 
+			let avgX = buffer.reduce((sum, item) => sum + item.value.x, 0) / windowSize;
+			let avgY = buffer.reduce((sum, item) => sum + item.value.y, 0) / windowSize;
+			let avgZ = buffer.reduce((sum, item) => sum + item.value.z, 0) / windowSize;
+
+			let change = {
+				x: avgX,
+				y: avgY,
+				z: avgZ
+			};
+
+			let pivot = buffer[Math.floor(buffer.length / 2)];
+			return new Value(change, pivot.timestamp, pivot.id);
+		})
+}
+
+
 // smooth ?
 function directionChanges(xyz, windowSize) {
 	windowSize = windowSize || 11;
-	windowStep = Math.floor(windowSize / 2);
-	return xyz.bufferWithCount(windowSize, windowStep)
+	// windowStep = Math.floor(windowSize / 2);
+	return xyz.bufferWithCount(windowSize, 1)
 			.where(buffer => buffer.length == windowSize)
 			.select(buffer => { return { begin: buffer[0], end: buffer[buffer.length - 1], middle: buffer[Math.floor(buffer.length / 2)] }; })
 			.select(positions =>  {
@@ -569,9 +590,9 @@ function directions(changes, minDiff) {
 			};
 
 			dirVector = {
-				x: dirVector.x > minDiff ? 1.0 : 0.0,
-				y: dirVector.y > minDiff ? 1.0 : 0.0,
-				z: dirVector.z > minDiff ? 1.0 : 0.0
+				x: Math.abs(dirVector.x) > minDiff ? (dirVector.x / Math.abs(dirVector.x)) : 0.0,
+				y: Math.abs(dirVector.y) > minDiff ? (dirVector.y / Math.abs(dirVector.y)) : 0.0,
+				z: Math.abs(dirVector.z) > minDiff ? (dirVector.z / Math.abs(dirVector.z)) : 0.0
 			}
 		}
 
@@ -588,26 +609,25 @@ function plotVector(vectors, target, log) {
 }
 
 function toArrow(directions) {
-	return directions.select(d => d.value)
-			.select((vector) => 
+	return directions.select((vector) => 
 			{ 
-				let fixedX = vector.x.toFixed(0);
-				let fixedY = vector.y.toFixed(0);
-				let fixedZ = vector.z.toFixed(0);
+				let fixedX = vector.value.x.toFixed(0);
+				let fixedY = vector.value.y.toFixed(0);
+				let fixedZ = vector.value.z.toFixed(0);
 
 				let key = `${fixedX}${fixedY}0`;
 				let keyAlt = `${fixedX}${fixedZ}0`;
 				
-				return map[key] || map[keyAlt] || "";
+				return new Value(map[key] || map[keyAlt] || "", vector.timestamp, vector.id);
 			});
 }
 
 
 function showArrow(arrows) {
-	return arrows.do(arrow => document.getElementById("direction").innerHTML = arrow);
+	return arrows.do(arrow => { console.log(arrow); return document.getElementById("direction").innerHTML = arrow; });
 }
 
-function bufferWhile(source, predicate) {
+function bufferUntil(source, predicate) {
 	return Rx.Observable.create((observer) => {
 		let isFirst = true;
 		let firstValue = null;
@@ -627,6 +647,17 @@ function bufferWhile(source, predicate) {
 	 	    .buffer(() => closings)
 	 	    .subscribe(observer);
 	});
+}
+
+function groupArrows(arrows) {
+	return bufferUntil(arrows, (a, b) => a.value !== b.value || b.timestamp - a.timestamp > 400)
+			.select(buffer => {
+				if ((buffer[buffer.length - 1].timestamp - buffer[0].timestamp) > 300) {
+					return buffer[0].value;
+				}
+				return null;
+			})
+			.where(a => a != null);
 }
 
 // public static IObservable<IList<T>> Buffer<T>(this IObservable<T> source, Func<T, bool> closeBufferPredicate)
@@ -675,7 +706,6 @@ function start() {
 
 	const calibrationSamplesCount = Math.round(CALIBRATION_TIME / samplingTime);
 
-
 	// x = x.skip(calibrationSamplesCount).combineLatest(calibrate(x.select(d => d.value), calibrationSamplesCount), (dt, offset) => new Value(dt.value - offset, dt.timestamp, dt.id));
 	// y = y.skip(calibrationSamplesCount).combineLatest(calibrate(y.select(d => d.value), calibrationSamplesCount), (dt, offset) => new Value(dt.value - offset, dt.timestamp, dt.id));
 	// z = z.skip(calibrationSamplesCount).combineLatest(calibrate(z.select(d => d.value), calibrationSamplesCount), (dt, offset) => new Value(dt.value - offset, dt.timestamp, dt.id));
@@ -713,11 +743,15 @@ function start() {
 	y = plot(integrationWithReset(y, 0.02, 4), "velocity", 1, "Y");
 	z = plot(integrationWithReset(z, 0.02, 4), "velocity", 2, "Z");
 
-	x = plot(integration(x), "position", 0, "X");	
-	y = plot(integration(y), "position", 1, "Y");
-	z = plot(integration(z), "position", 2, "Z");
+	// x = plot(integration(x), "position", 0, "X");	
+	// y = plot(integration(y), "position", 1, "Y");
+	// z = plot(integration(z), "position", 2, "Z");
 
-x = x.do(d => console.log(d.id));
+	// x = plot(integrationWithReset(x, 0.4, 5), "position", 0, "X");	
+	// y = plot(integrationWithReset(y, 0.4, 5), "position", 1, "Y");
+	// z = plot(integrationWithReset(z, 0.4, 5), "position", 2, "Z");
+
+	// x = x.do(d => console.log(d.id));
 
 	// x = plot(direction(x, 0.1), "direction", 0, "X");
 	// y = plot(direction(y, 0.1), "direction", 1, "Y");
@@ -726,14 +760,16 @@ x = x.do(d => console.log(d.id));
 	// let dirs = showDirections(x, y, z);
 
 	let dirs = showArrow(
-		toArrow(
-			plotVector(
-				directions(
-					directionChanges(
-						combine(x, y, z)
-					)
-				), 
-				"direction"
+		groupArrows(
+			toArrow(
+				plotVector(
+					directions(
+						directionChanges2(
+							combine(x, y, z)
+						)
+					), 
+					"direction"
+				)
 			)
 		)
 	);
