@@ -8,8 +8,10 @@ const Wrapper = styled.section`
   transform: translate(-50%, -50%);
 `;
 
-export class WaitingPage extends Component {
+export class ErrorPage extends Component {
   render() {
-    return <Wrapper>Mobile Waiting</Wrapper>;
+    return <Wrapper>Error: {this.props.message}</Wrapper>;
   }
 }
+
+export default ErrorPage;

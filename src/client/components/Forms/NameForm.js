@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import styled from "styled-components";
 
 class NameForm extends Component {
   constructor(props) {

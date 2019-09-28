@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import Constants from "../../../../shared/constants";
 
 const Wrapper = styled.section`
   position: fixed;
