@@ -5,11 +5,12 @@ import {wizards} from "./config";
 class AnimatedWizard extends Component {
 
   render() {
-      const {wizardColor, wizardAction } = this.props;
+      const {wizardColor, wizardAction, direction } = this.props;
       return (
         <AnimatedImage
             img={wizards[wizardColor][wizardAction]}
             width={200}
+            direction={direction}
         />
       );
   }
