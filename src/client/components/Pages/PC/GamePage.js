@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Constants from "../../../../shared/constants";
 import Battleground from "../../Game/Battleground";
 import GameInfo from "../../Game/GameInfo";
+import ResolutionPage from "./ResolutionPage";
 
 const Wrapper = styled.section`
   width: 100%;
@@ -48,7 +49,7 @@ export class GamePage extends Component {
   }
 
   resolvedGamePage() {
-    return <Fragment>Game finished</Fragment>;
+    return <Fragment><ResolutionPage game={this.state.game} currentUserId={this.props.userId} /></Fragment>;
   }
 
   renderGamePage() {
