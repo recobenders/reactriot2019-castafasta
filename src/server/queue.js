@@ -40,7 +40,7 @@ class Queue {
       if (Constants.MULTIPLAYER) {
         playerTwo = this.waitingPlayers.pop();
       } else {
-        playerTwo = new Player(uuidv4(), "Test Player", []);
+        playerTwo = new Player(uuidv4(), "Test Player", [], true);
       }
 
       let game = new Game(uuidv4(), this.io, playerOne, playerTwo);

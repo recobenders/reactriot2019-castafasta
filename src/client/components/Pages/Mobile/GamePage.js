@@ -2,7 +2,6 @@ import React, { Component, Fragment } from "react";
 import styled from "styled-components";
 import Constants from "../../../../shared/constants";
 import NameForm from "../../Forms/NameForm";
-import Spell from "../../../../shared/spell";
 
 const Wrapper = styled.section`
   position: fixed;
@@ -20,7 +19,8 @@ export class GamePage extends Component {
       activeCasting: false,
       game: null,
       loading: true,
-      finished: false
+      finished: false,
+      availableSpells: []
     };
   }
 
@@ -30,11 +30,13 @@ export class GamePage extends Component {
 
       if (data.playerOne.id === this.state.currentUserId) {
         this.setState({
-          activeCasting: data.playerOne.activeSpell !== null
+          activeCasting: data.playerOne.activeSpell !== null,
+          availableSpells: data.playerOne.availableSpells
         });
       } else {
         this.setState({
-          activeCasting: data.playerTwo.activeSpell !== null
+          activeCasting: data.playerTwo.activeSpell !== null,
+          availableSpells: data.playerTwo.availableSpells
         });
       }
 
@@ -102,7 +104,7 @@ export class GamePage extends Component {
       <Fragment>
         <div>Please select your spell:</div>
         <div>
-          <ul>{this.renderSpellItem(Spell.getSpells())}</ul>
+          <ul>{this.renderSpellItem(this.state.availableSpells)}</ul>
         </div>
       </Fragment>
     );

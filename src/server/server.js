@@ -68,7 +68,7 @@ function createAndQueuePlayer(uuid, name, socket) {
     });
     return;
   }
-  let player = new Player(uuid, name, [browser_socket, socket]);
+  let player = new Player(uuid, name, [browser_socket, socket], false);
   queue.addPlayer(player);
   player.broadcast(Constants.MSG.WAITING_FOR_GAME);
   removeConnectingPlayer(uuid);
