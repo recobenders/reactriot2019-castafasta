@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import NameForm from '../Forms/NameForm'
 import styled from "styled-components";
 
 const Wrapper = styled.section`
@@ -12,7 +13,7 @@ class MobilePage extends Component {
   render() {
     return (
       <Wrapper>
-        Hello, I am you wand!
+        <NameForm socket={this.props.socket} />
       </Wrapper>
     );
   }

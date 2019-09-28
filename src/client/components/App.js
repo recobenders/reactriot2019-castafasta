@@ -42,7 +42,7 @@ class App extends Component {
         <Router>
           <Switch>
             <Route exact path="/" render={(props) => <LandingPage {...props} userId={this.state.userId} />} />
-            <Route path="/:userId" component={MobilePage} />
+            <Route path="/:userId" render={(props) => <MobilePage {...props} socket={this.state.socket} />} />
           </Switch>
         </Router>
         <span onClick={this.handleSocketTestClick.bind(this)}>Socket test</span>
