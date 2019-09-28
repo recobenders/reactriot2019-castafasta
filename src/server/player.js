@@ -62,6 +62,12 @@ class Player {
     }
   }
 
+  generateRandomAccuracies() {
+    return this.activeSpell.requiredSequences.map(el => {
+      return Math.random();
+    });
+  }
+
   serializeForUpdate() {
     return {
       id: this.id,
