@@ -47,7 +47,9 @@ class Game {
       this.resolutionSent = true;
     } else {
       if (this.bot !== null && this.bot.activeSpell === null) {
-        this.scheduleBotSpell();
+        if (Math.random() >= 1 - Constants.BOT_CHANCE_TO_CAST) {
+          this.scheduleBotSpell();
+        }
       }
     }
 
