@@ -28,8 +28,12 @@ io.on("connection", socket => {
     incomingPlayers[uuid] = socket;
   });
 
+  socket.on(Constants.MSG.SPELL_SELECTED, spellKey => {
+    socket.game.spellSelectedByPlayer(socket.player, spellKey);
+  });
+
   socket.on(Constants.MSG.CASTING_DONE, spellAccuracies => {
-    socket.game.spellCastedFromPlayer(socket.player, spellAccuracies);
+    socket.game.spellCastedbyPlayer(socket.player, spellAccuracies);
   });
 
   socket.on("disconnect", () => {

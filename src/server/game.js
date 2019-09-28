@@ -50,20 +50,24 @@ class Game {
     }
   }
 
-  spellCastedFromPlayer(player, accuracies) {
-    // Retrieve and remove active spell from player
-    let spell = Spell.getSpell("fireball");
-    spell.captureAccuracies(accuracies);
-    let dmg = spell.calculateDamage();
-    console.log(dmg);
-    console.log(accuracies);
+  spellSelectedByPlayer(player, spellKey) {
+    console.log(`Game#${this.id}: Player ${player.id} selected ${spellKey}`);
+    player.selectSpell(spellKey);
+    this.updatePlayer(player);
+    this.update();
+  }
 
-    if (dmg === undefined) return;
+  spellCastedbyPlayer(player, accuracies) {
+    let spell = player.castSpell(accuracies);
+    if (spell.dmg === undefined) return;
 
     let opponent = this.getOpponent(player);
-    opponent.takeDamage(dmg);
-    console.log(`Game#${this.id}: Resolving ${dmg} to player ${opponent.id}`);
+    opponent.takeDamage(spell.dmg);
+    console.log(
+      `Game#${this.id}: Resolving ${spell.dmg} to player ${opponent.id}`
+    );
     this.updatePlayer(opponent);
+    this.update();
   }
 
   serializeForUpdate() {
