@@ -4,6 +4,7 @@ const socketIo = require("socket.io");
 const Constants = require("../shared/constants");
 const Player = require("./player");
 const Queue = require("./queue");
+const Spell = require("./spell");
 
 //Port from environment variable or default - 4001
 const port = process.env.PORT || 4001;
