@@ -4,7 +4,7 @@ class Game {
   constructor(id, io, player_one, player_two) {
     this.id = id;
     this.io = io;
-    this.channel_name = `game${this.id}`;
+    this.channelName = `game${this.id}`;
 
     this.players = {};
     this.players[player_one.id] = player_one;
@@ -27,7 +27,7 @@ class Game {
   }
 
   broadcast(type, data) {
-    this.io.sockets.in(this.channel_name).emit(type, data);
+    this.io.sockets.in(this.channelName).emit(type, data);
   }
 
   resolveWinner(type, winner) {
