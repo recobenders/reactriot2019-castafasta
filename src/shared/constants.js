@@ -8,7 +8,7 @@ module.exports = Object.freeze({
 
   // Set to 1 if Multiplayer
   MULTIPLAYER: 0,
-  BOT_SPEED: 0.5,
+  BOT_CHANCE_TO_CAST: 0.5,
 
   GAME_STATES: {
     INIT: "init",
