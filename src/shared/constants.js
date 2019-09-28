@@ -15,8 +15,10 @@ module.exports = Object.freeze({
 
   MSG: {
     NEW_PLAYER: "new_player",
-    FOUND_MATCH: "found_match"
+    GAME_JOINED: "game_joined",
+    GAME_STARTED: "game_started",
+    GAME_UPDATE: "game_update"
   },
 
-  QUEUE_CHECK_TIME: 5000
+  QUEUE_CHECK_TIME: 1000
 });

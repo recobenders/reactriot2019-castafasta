@@ -5,12 +5,18 @@ class Player {
     this.id = id;
     this.username = username;
     this.hp = Constants.PLAYER_MAX_HP;
-    this.browser_socket = browserSocket;
+    this.sockets = [browserSocket];
     // this.mobile_socket = mobile_socket;
   }
 
   takeDamage(damage) {
     this.hp -= damage;
+  }
+
+  joinGame(game) {
+    for (let socket of this.sockets) {
+      socket.join(game);
+    }
   }
 
   serializeForUpdate() {

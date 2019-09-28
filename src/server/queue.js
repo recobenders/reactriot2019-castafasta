@@ -1,9 +1,11 @@
 const Game = require("../server/game");
 const Constants = require("../shared/constants");
+const uuidv4 = require("uuid/v4");
 
 class Queue {
-  constructor() {
+  constructor(io) {
     this.waitingPlayers = [];
+    this.io = io;
     setInterval(this.startNewGames.bind(this), Constants.QUEUE_CHECK_TIME);
   }
 
@@ -23,10 +25,12 @@ class Queue {
     console.log(`Queue: ${this.waitingPlayers.length} players`);
 
     while (this.isEnoughPlayers()) {
-      let game = new Game(1, [
+      let game = new Game(
+        uuidv4(),
+        this.io,
         this.waitingPlayers.pop(),
         this.waitingPlayers.pop()
-      ]);
+      );
       console.log(`Creating new game ${game.id}`);
     }
   }

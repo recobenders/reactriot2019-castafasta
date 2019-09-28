@@ -13,13 +13,14 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-const queue = new Queue();
+const queue = new Queue(io);
 
 io.on("connection", socket => {
   console.log("New client connected");
 
   socket.on(Constants.MSG.NEW_PLAYER, nickname => {
-    let player = new Player(1, nickname, socket);
+    // Temporarly using socket.id
+    let player = new Player(socket.id, nickname, socket);
     queue.addPlayer(player);
     console.log(player.serializeForUpdate());
   });
