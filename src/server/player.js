@@ -15,7 +15,7 @@ class Player {
 
   joinGame(game) {
     for (let socket of this.sockets) {
-      socket.join(game);
+      socket.join(game.channelName);
     }
   }
 

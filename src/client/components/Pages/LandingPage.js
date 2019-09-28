@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import QRCode from "qrcode.react";
 import styled from "styled-components";
+import Constants from "../../../shared/constants";
 
 const Wrapper = styled.section`
   position: fixed;
@@ -18,10 +19,17 @@ class LandingPage extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.socket.emit(Constants.MSG.PREPARE_PLAYER, {
+      uuid: this.props.userId
+    });
+  }
+
   render() {
     return (
       <Wrapper>
         <QRCode value={this.state.qrCode} />
+        <div>{this.props.userId}</div>
       </Wrapper>
     );
   }

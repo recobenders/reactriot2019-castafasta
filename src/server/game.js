@@ -14,7 +14,7 @@ class Game {
     this.result = {};
 
     for (let playerId of Object.keys(this.players)) {
-      this.players[playerId].joinGame(this.channel_name);
+      this.players[playerId].joinGame(this);
     }
 
     this.broadcast(Constants.MSG.GAME_JOINED);
