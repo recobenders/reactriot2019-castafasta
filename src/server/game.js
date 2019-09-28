@@ -1,13 +1,23 @@
 const Constants = require("../shared/constants");
 
 class Game {
-  constructor() {
-    this.sockets = {};
+  constructor(id) {
+    this.id = id;
     this.players = {};
+    this.state = Constants.GAME_STATES.INIT;
+    this.result = {};
   }
 
-  addPlayer(socket, username) {
-    this.sockets[socket.id] = socket;
+  addPlayer(player) {
+    this.players[player.id] = player;
+  }
+
+  resolveWinner(type, winner) {
+    this.result = {
+      type: type,
+      winner: winner
+    };
+    this.state = Constants.GAME_STATES.FINISHED;
   }
 }
 
