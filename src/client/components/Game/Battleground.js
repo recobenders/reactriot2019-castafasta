@@ -1,41 +1,51 @@
 import React, { Component } from "react";
-import AnimatedWizard from "../Animations/AnimatedWizard";
-import AnimatedSpell from "../Animations/AnimatedSpell";
-import AnimatedShot from "../Animations/AnimatedShot";
-import styled from "styled-components";
+import styled from "styled-components"
+import BattlegroundScene from "../Animations/BattlegroundScene"
 
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  width: 100%;
+
+const BattleGroundBackgroundWrapper = styled.div `
+    width: 100%;
+    background: #424242;
 `;
 
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-basis: 100%;
-  flex: 1;
-  margin: 15px;
+const BattlegroundWrapper = styled.div`
+    display: flef;
+    justify-content: space-between;
+    width: 60%;
+    margin: 0px auto;
 `;
 
 class Battleground extends Component {
-  render() {
-    return (
-      <Row>
-        <Column>
-          <AnimatedWizard wizardColor="blue" wizardAction="jump" direction="right" />
-          <AnimatedSpell spellType="earth" spellPower="strong" direction="right" />
-          <AnimatedShot shotType="earth" direction="right" />
-        </Column>
-        <Column>
-          <AnimatedWizard wizardColor="red" wizardAction="idle" direction="left" />
-          <AnimatedSpell spellType="ice" spellPower="medium" direction="left" />
-          <AnimatedShot shotType="ice" direction="left" />
-        </Column>
-      </Row>
-    );
-  }
+    state = {
+        redConjuring: false,
+        blueConjuring: false,
+        redAttacking: false,
+        blueAttacking: false,
+        redWon: false,
+        blueWon: false,
+    };
+
+    render() {
+        const { redConjuring, blueConjuring, redAttacking, blueAttacking, redWon, blueWon } = this.state;
+
+        console.log(redConjuring, redAttacking, redWon, blueConjuring, blueAttacking, blueWon);
+
+        return (
+            <BattleGroundBackgroundWrapper>
+                <BattlegroundWrapper>
+                   <BattlegroundScene {...this.state} />
+                </BattlegroundWrapper>
+                <button onClick={() => this.setState({redConjuring: true, redAttacking: false, redWon: false})}>Red Conjuring</button>
+                <button onClick={() => this.setState({redAttacking: true, redConjuring: false, redWon: false})}>Red Attacking</button>
+                <button onClick={() => this.setState({redAttacking: false, redConjuring: false, redWon: false})}>Red Idle</button>
+                <button onClick={() => this.setState({redWon: true, redConjuring: false, redAttacking: false})}>Red Won</button>
+                <button onClick={() => this.setState({blueConjuring: true, blueAttacking: false, blueWon: false})}>Blue Conjuring</button>
+                <button onClick={() => this.setState({blueAttacking: true, blueConjuring: false, blueWon: false})}>Blue Attacking</button>
+                <button onClick={() => this.setState({blueAttacking: false, blueConjuring: false, blueWon: false})}>Blue Idle</button>
+                <button onClick={() => this.setState({blueWon: true, blueConjuring: false, blueAttacking: false})}>Blue Won</button>
+            </BattleGroundBackgroundWrapper>
+        );
+    }
 }
 
 export default Battleground;

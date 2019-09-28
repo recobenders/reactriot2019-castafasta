@@ -45,28 +45,28 @@ export const wizards = {
             width: 624,
             height: 500,
             slices: 1,
-            interval: 200,
+            interval: 100,
         },
         attack: {
             source: red_wizard_attack,
             width: 624,
             height: 500,
             slices: 7,
-            interval: 200,
+            interval: 100,
         },
         idle: {
             source: red_wizard_idle,
             width: 624,
             height: 500,
             slices: 4,
-            interval: 200,
+            interval: 300,
         },
         hurt: {
             source: red_wizard_hurt,
             width: 624,
             height: 500,
             slices: 3,
-            interval: 200,
+            interval: 100,
         },
         jump: {
             source: red_wizard_jump,
@@ -89,28 +89,28 @@ export const wizards = {
             width: 624,
             height: 500,
             slices: 1,
-            interval: 200,
+            interval: 100,
         },
         attack: {
             source: blue_wizard_attack,
             width: 624,
             height: 500,
             slices: 7,
-            interval: 200,
+            interval: 100,
         },
         idle: {
             source: blue_wizard_idle,
             width: 624,
             height: 500,
             slices: 4,
-            interval: 200,
+            interval: 300,
         },
         hurt: {
             source: blue_wizard_hurt,
             width: 624,
             height: 500,
             slices: 3,
-            interval: 200,
+            interval: 100,
         },
         jump: {
             source: blue_wizard_jump,
@@ -253,4 +253,4 @@ export const shots = {
         slices: 60,
         interval: 100,
     }
-}
+};
