@@ -9,6 +9,7 @@ class AnimatedWizard extends Component {
       return (
         <AnimatedImage
             img={wizards[wizardColor][wizardAction]}
+            width={200}
         />
       );
   }
