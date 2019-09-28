@@ -3,6 +3,8 @@ module.exports = Object.freeze({
 
   ROUND_SECONDS: 30,
 
+  CRITICAL_CHANCE: 0.05,
+
   GAME_STATES: {
     INIT: "init",
     IN_PROGRESS: "in_progress",
