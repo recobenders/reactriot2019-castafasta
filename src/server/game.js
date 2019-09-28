@@ -135,9 +135,9 @@ class Game {
     let spell = player.castSpell(accuracies);
     if (spell.dmg === undefined) return;
 
-    this.broadcast(Constants.MSG.OPPONENT_CAST_SPELL, {
-      opponent: player,
-      spell: spell
+    this.broadcast(Constants.MSG.PLAYER_CAST_SPELL, {
+      player: player.serializeForUpdate(),
+      spell: spell.serializeForUpdate()
     });
 
     let opponent = this.getOpponent(player);

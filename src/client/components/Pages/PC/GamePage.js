@@ -29,8 +29,12 @@ export class GamePage extends Component {
       });
     });
 
-    this.props.socket.on(Constants.MSG.OPPONENT_CAST_SPELL, data => {
-      console.log("Opponent cast spell");
+    this.props.socket.on(Constants.MSG.PLAYER_CAST_SPELL, data => {
+      if (data.player.id === this.props.userId) {
+        console.log(`I have casted a: ${data.spell.name}`);
+      } else {
+        console.log(`Opponent has casted a: ${data.spell.name}`);
+      }
     });
   }
 
