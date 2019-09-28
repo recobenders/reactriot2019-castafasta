@@ -5,11 +5,12 @@ import {spells} from "./config";
 class AnimatedSpell extends Component {
 
   render() {
-      const {spellType, spellPower } = this.props;
+      const {spellType, spellPower, direction } = this.props;
       return (
         <AnimatedImage
             img={spells[spellType][spellPower]}
             width={200}
+            direction={direction}
         />
       );
   }
