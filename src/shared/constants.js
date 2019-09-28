@@ -10,6 +10,13 @@ module.exports = Object.freeze({
     IN_PROGRESS: "in_progress",
     FINISHED: "finished"
   },
+
+  PLAYER_STATES: {
+    INIT: "init",
+    QUEUED: "queued",
+    IN_GAME: "in_game",
+  },
+
   WINNING_TYPES: {
     DRAW: "draw",
     VICTORY: "victory"

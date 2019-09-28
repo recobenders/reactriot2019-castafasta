@@ -35,6 +35,7 @@ io.on("connection", socket => {
     }
     if (socket.player) {
       queue.removePlayer(socket.player);
+      // TODO notify browser if socket.player.isQueued()
     }
 
     if (socket.game) {
