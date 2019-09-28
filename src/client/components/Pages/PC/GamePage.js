@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import Constants from "../../../../shared/constants";
 import AnimatedWizard from "../../Animations/AnimatedWizard";
+import AnimatedSpell from "../../Animations/AnimatedSpell";
 
 const Wrapper = styled.section`
   position: fixed;
@@ -21,6 +22,7 @@ export class GamePage extends Component {
     return (
       <Wrapper>
         <AnimatedWizard wizardColor="blue" wizardAction="jump" />
+        <AnimatedSpell spellType="earth" spellPower="strong" />
       </Wrapper>
     );
   }
