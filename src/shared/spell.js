@@ -1,12 +1,16 @@
-const Constants = require("../shared/constants");
+const Constants = require("./constants");
 
 const spells = Object.freeze({
-  fireball: { name: "Fireball", max_dmg: 100, numberOfSequences: 4 },
+  fireball: { name: "Fireball", max_dmg: 200, numberOfSequences: 4 },
   tornado: { name: "Tornado", max_dmg: 400, numberOfSequences: 8 }
 });
 
 class Spell {
-  static get_spell(name) {
+  static getSpells() {
+    return Object.values(spells);
+  }
+
+  static getSpell(name) {
     let spellStats = spells[name];
     return new Spell(spellStats);
   }
@@ -16,7 +20,7 @@ class Spell {
     this.max_dmg = max_dmg;
 
     this.generateRequiredSequences(numberOfSequences);
-    this.capturedAccuracy = [0.8, 0.75, 0.9];
+    this.capturedAccuracy = [];
   }
 
   generateRequiredSequences(numberOfSequences) {
@@ -28,14 +32,16 @@ class Spell {
     };
 
     while (this.requiredSequences.length < numberOfSequences) {
-      let possibleMovements = Constants.SPELL_DIRECTIONS.filter(spell =>
-        position.x + spell.x >= 0 &&
-        position.x + spell.x < Constants.SPELL_GRID_SIZE &&
-        position.y + spell.y >= 0 &&
-        position.y + spell.y < Constants.SPELL_GRID_SIZE
+      let possibleMovements = Constants.SPELL_DIRECTIONS.filter(
+        spell =>
+          position.x + spell.x >= 0 &&
+          position.x + spell.x < Constants.SPELL_GRID_SIZE &&
+          position.y + spell.y >= 0 &&
+          position.y + spell.y < Constants.SPELL_GRID_SIZE
       );
 
-      let movement = possibleMovements[Math.floor(Math.random()*possibleMovements.length)];
+      let movement =
+        possibleMovements[Math.floor(Math.random() * possibleMovements.length)];
       position.x += movement.x;
       position.y += movement.y;
       this.requiredSequences.push(movement.value);

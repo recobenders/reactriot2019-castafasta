@@ -1,5 +1,5 @@
 const Constants = require("../shared/constants");
-const Spell = require("./spell");
+const Spell = require("../shared/spell");
 
 class Game {
   constructor(id, io, player_one, player_two) {
@@ -17,7 +17,7 @@ class Game {
     this.playerOne.joinGame(this);
     this.playerTwo.joinGame(this);
 
-    this.broadcast(Constants.MSG.GAME_JOINED);
+    this.broadcast(Constants.MSG.GAME_JOINED, this);
     setInterval(this.update.bind(this), Constants.QUEUE_CHECK_TIME);
   }
 
@@ -52,7 +52,7 @@ class Game {
 
   spellCastedFromPlayer(player, accuracies) {
     // Retrieve and remove active spell from player
-    let spell = Spell.get_spell("fireball");
+    let spell = Spell.getSpell("fireball");
     spell.captureAccuracies(accuracies);
     let dmg = spell.calculateDamage();
     console.log(dmg);
