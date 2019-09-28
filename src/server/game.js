@@ -1,15 +1,16 @@
 const Constants = require("../shared/constants");
 
 class Game {
-  constructor(id) {
+  constructor(id, player_one, player_two) {
     this.id = id;
     this.players = {};
+    this.players[player_one.id] = player_one;
+    this.players[player_two.id] = player_two;
+
     this.state = Constants.GAME_STATES.INIT;
     this.result = {};
-  }
 
-  addPlayer(player) {
-    this.players[player.id] = player;
+    // Player sockets should join the same game room channel
   }
 
   resolveWinner(type, winner) {
