@@ -30,10 +30,11 @@ class App extends Component {
       cookies.set("user_id", userId);
     }
 
-    let socketUrl = "http://" + window.location.hostname + ":" + process.env.SOCKET_PORT
+    let socketUrl = "http://" + window.location.hostname + ":" + 4001;
 
-    if(process.env.NODE_ENV === 'production') {
-      socketUrl = "https://" + window.location.hostname + ":" + process.env.SOCKET_PORT
+    if (process.env.NODE_ENV === "production") {
+      socketUrl =
+        "https://" + window.location.hostname + ":" + process.env.SOCKET_PORT;
     }
 
     this.state = {
@@ -94,14 +95,22 @@ class App extends Component {
               exact
               path="/game"
               render={props => (
-                <PCGamePage {...props} socket={this.state.socket} userId={this.state.userId} />
+                <PCGamePage
+                  {...props}
+                  socket={this.state.socket}
+                  userId={this.state.userId}
+                />
               )}
             />
             <Route
               exact
               path="/game/controller"
               render={props => (
-                <MobileGamePage {...props} socket={this.state.socket} userId={this.state.userId} />
+                <MobileGamePage
+                  {...props}
+                  socket={this.state.socket}
+                  userId={this.state.userId}
+                />
               )}
             />
           </Switch>

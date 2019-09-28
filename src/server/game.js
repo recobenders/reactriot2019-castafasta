@@ -98,15 +98,17 @@ class Game {
 
   resolve() {
     if (this.timeIsOut()) {
+      console.log(`Game #${this.id}: draw!`);
       this.result = {
         type: Constants.RESOLUTION_TYPES.DRAW,
         winner: null
       };
     } else {
       const winner = this.playerOne.hp <= 0 ? this.playerTwo : this.playerOne;
+      console.log(`Game #${this.id}: winner is ${winner.name}`);
       this.result = {
         type: Constants.RESOLUTION_TYPES.VICTORY,
-        winner: winner
+        winner: winner.serializeForUpdate()
       };
     }
 
@@ -127,7 +129,7 @@ class Game {
   }
 
   spellSelectedByPlayer(player, spellKey) {
-    console.log(`Game#${this.id}: Player ${player.id} selected ${spellKey}`);
+    console.log(`Game#${this.id}: Player ${player.name} selected ${spellKey}`);
     player.selectSpell(spellKey);
     this.updatePlayer(player);
     this.update();
@@ -145,7 +147,7 @@ class Game {
     let opponent = this.getOpponent(player);
     opponent.takeDamage(spell.dmg);
     console.log(
-      `Game#${this.id}: Dealing ${spell.dmg} dmg to player ${opponent.id}`
+      `Game#${this.id}: Dealing ${spell.dmg} dmg to player ${opponent.name}`
     );
     this.updatePlayer(opponent);
     this.update();

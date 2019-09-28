@@ -13,7 +13,7 @@ class SpellForm extends Component {
   }
 
   handleChange(event) {
-    this.setState({ name: event.target.value });
+    this.setState({ value: event.target.value });
   }
 
   handleSubmit(event) {
@@ -28,11 +28,15 @@ class SpellForm extends Component {
           Type spell accuracies:
           <input
             type="text"
-            value={this.state.name}
+            value={this.state.value}
             onChange={this.handleChange}
           />
         </label>
-        <input onClick={event => this.handleSubmit(event)} type="Cast" />
+        <input
+          onClick={event => this.handleSubmit(event)}
+          type="submit"
+          value="Cast"
+        />
       </form>
     );
   }
