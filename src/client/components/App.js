@@ -1,6 +1,9 @@
 import React, { Component } from "react";
-import LandingPage from "./Pages/LandingPage";
-import MobilePage from "./Pages/MobilePage";
+import LandingPage from "./Pages/PC/LandingPage";
+import MobilePage from "./Pages/Mobile/MobilePage";
+import { WaitingPage as MobileWaitingPage } from "./Pages/Mobile/WaitingPage";
+import { WaitingPage as PCWaitingPage } from "./Pages/PC/WaitingPage";
+
 import socketIOClient from "socket.io-client";
 import Constants from "../../shared/constants";
 import { withCookies } from "react-cookie";
@@ -49,7 +52,21 @@ class App extends Component {
               )}
             />
             <Route
-              path="/:userId"
+              exact
+              path="/waiting"
+              render={props => (
+                <PCWaitingPage {...props} socket={this.state.socket} />
+              )}
+            />
+            <Route
+              path="/mobile/waiting"
+              exact
+              render={props => (
+                <MobileWaitingPage {...props} socket={this.state.socket} />
+              )}
+            />
+            <Route
+              path="/mobile/:userId"
               render={props => (
                 <MobilePage {...props} socket={this.state.socket} />
               )}

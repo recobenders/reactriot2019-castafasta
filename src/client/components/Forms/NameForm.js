@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import Constants from "../../../shared/constants";
 
 class NameForm extends Component {
   constructor(props) {
@@ -20,11 +19,7 @@ class NameForm extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-
-    this.props.socket.emit(Constants.MSG.NEW_PLAYER, {
-      uuid: this.props.userId,
-      name: this.state.name
-    });
+    this.props.handleFormSubmit(this.state.name);
   }
 
   render() {
