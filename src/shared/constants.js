@@ -19,7 +19,8 @@ module.exports = Object.freeze({
     NEW_PLAYER: "new_player",
     GAME_JOINED: "game_joined",
     GAME_STARTED: "game_started",
-    GAME_UPDATE: "game_update"
+    GAME_UPDATE: "game_update",
+    ERROR: "error"
   },
 
   QUEUE_CHECK_TIME: 1000

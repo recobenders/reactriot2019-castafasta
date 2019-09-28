@@ -21,7 +21,12 @@ io.on("connection", socket => {
   socket.on(Constants.MSG.NEW_PLAYER, ({ uuid, name }) => {
     console.log(`Mobile connected for player ${uuid}, adding to queue`);
     let browser_socket = incomingPlayers[uuid];
-    if (!browser_socket) return;
+    if (!browser_socket) {
+      socket.emit(Constants.MSG.ERROR, {
+        message: "Browser connection is missing."
+      });
+      return;
+    }
     removeConnectingPlayer(uuid);
     let player = new Player(uuid, name, [browser_socket, socket]);
     queue.addPlayer(player);

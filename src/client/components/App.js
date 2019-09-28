@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ErrorPage from "./Pages/ErrorPage";
 import LandingPage from "./Pages/PC/LandingPage";
 import MobilePage from "./Pages/Mobile/MobilePage";
 import { WaitingPage as MobileWaitingPage } from "./Pages/Mobile/WaitingPage";
@@ -33,6 +34,11 @@ class App extends Component {
     this.state.socket.on(Constants.MSG.GAME_UPDATE, data =>
       console.log("Game Updated " + data.id)
     );
+
+    this.state.socket.on(Constants.MSG.ERROR, (data) => {
+      this.setState({ error: data.message });
+      this.props.history.push("/error");
+    });
   }
 
   render() {
@@ -49,6 +55,13 @@ class App extends Component {
                   socket={this.state.socket}
                   userId={this.state.userId}
                 />
+              )}
+            />
+            <Route
+              exact
+              path="/error"
+              render={props => (
+                <ErrorPage {...props} error={this.state.error} />
               )}
             />
             <Route
