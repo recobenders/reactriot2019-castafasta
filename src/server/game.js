@@ -21,17 +21,22 @@ class Game {
     this.state = Constants.GAME_STATES.INIT;
     this.result = {};
     this.resolutionSent = false;
-    this.endAt =
-      Date.now() + Constants.ROUND_SECONDS * (1000 * (2 - Constants.BOT_SPEED));
+
+    this.roundTime = Constants.ROUND_SECONDS;
 
     this.playerOne.joinGame(this);
     this.playerTwo.joinGame(this);
 
     this.broadcast(Constants.MSG.GAME_JOINED, this.serializeForUpdate());
     this.updateIntervalId = setInterval(
-      this.update.bind(this),
-      Constants.QUEUE_CHECK_TIME
+      this.updateTimer.bind(this),
+      Constants.GAME_TICK
     );
+  }
+
+  updateTimer() {
+    this.roundTime -= 1;
+    this.update();
   }
 
   update() {
@@ -76,11 +81,11 @@ class Game {
   }
 
   isFinished() {
-    return (
-      this.playerOne.hp <= 0 ||
-      this.playerTwo.hp <= 0 ||
-      this.endAt < Date.now()
-    );
+    return this.playerOne.hp <= 0 || this.playerTwo.hp <= 0 || this.timeIsOut();
+  }
+
+  timeIsOut() {
+    return this.roundTime <= 0;
   }
 
   broadcast(type, data) {
@@ -88,7 +93,7 @@ class Game {
   }
 
   resolve() {
-    if (this.endAt < Date.now()) {
+    if (this.timeIsOut()) {
       this.result = {
         type: Constants.RESOLUTION_TYPES.DRAW,
         winner: null
@@ -148,7 +153,8 @@ class Game {
       state: this.state,
       result: this.result,
       playerOne: this.playerOne.serializeForUpdate(),
-      playerTwo: this.playerTwo.serializeForUpdate()
+      playerTwo: this.playerTwo.serializeForUpdate(),
+      roundTime: this.roundTime
     };
   }
 }
