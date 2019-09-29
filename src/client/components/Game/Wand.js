@@ -28,6 +28,7 @@ class Wand extends Component {
     super(props);
 
     this.state = {
+      message: null,
       code: null,
       x: null,
       y: null,
@@ -56,7 +57,6 @@ class Wand extends Component {
     if (config.PIPELINE) {
       config.PIPELINE.forEach(group => {
         let series = applyFilters({ x: x, y: y, z: z }, group.FILTERS);
-        
         x = series.x;
         y = series.y;
         z = series.z;
@@ -80,27 +80,48 @@ class Wand extends Component {
       this.getMaxDirection(config.DIRECTION.DISTANCE_THRESHOLD_MIN),
       this.groupDirections(config.DIRECTION.GROUP_DURATION_MIN, config.DIRECTION.GROUP_DURATION_MAX),
       map(d => new Value(Object.assign({ code: findSpellDirectionIndex(d.value) }, d.value), d.timestamp, d.id)),
-      tap(d => {
-        console.log(d.value.code);
-        console.log(`${d.value.x} ${d.value.y} ${d.value.weight}`);
-      }),
-      tap(d => this.setState({
-          code: d.value.code,
-          x: d.value.x,
-          y: d.value.y,
-          weight: d.value.weight
-        })
-      )
+      this.filterOutRepeatingValues(2000)
     )
     .subscribe(
-      d => this.props.socket.emit(Constants.MSG.CASTING_STEP, d.code, d.weight),
-      err => this.setState({
+      d => {
+        if (d.value.code >= 0) {
+          this.props.socket.emit(Constants.MSG.CASTING_STEP, { code: d.value.code, weight: d.value.weight })
+        }
+      },
+      err => this.setState({ // TODO remove
         code: err,
         x: -1,
         y: -1,
         weight: 0
       })
     );
+  }
+
+  filterOutRepeatingValues(maxThreshold) {
+    return source => {
+      return Observable.create(observer => {
+        let previous = null;
+        let counter = 0;
+        return source.subscribe(current => {
+          if (previous == null || current.value.code !== previous.value.code) {
+            previous = current;
+            observer.next(current);
+          }
+          else if (current.timestamp - previous.timestamp > maxThreshold) {
+            // ignore direction
+            let resetValue = Object.assign({}, current.value);
+            resetValue.code = -1;
+
+            observer.next(new Value(resetValue, current.timestamp, current.id));
+          }
+
+          this.setState( {
+            message: `${previous.value.code}  ${current.value.code}`,
+            code: counter
+          });
+        });
+      });
+    }
   }
 
   observeEvents(config) {
@@ -119,27 +140,8 @@ class Wand extends Component {
     return events;
   }
 
-  zipToVector3(x, y, z) {
-    return x.pipe(
-      zip(y, z),
-      map(([x, y, z]) => 
-        new Value(
-          {
-            x: x.value,
-            y: y.value,
-            z: z.value
-          },
-          x.timestamp,
-          x.id
-        )
-      ),
-      share()
-    );
-  }
-
   getMaxDirection(threshold) {
-    return velocities => velocities.pipe(
-        map(v => {
+    return map(v => {
         let x = v.value.x;
         let y = v.value.y;
         let z = v.value.z;
@@ -161,12 +163,11 @@ class Wand extends Component {
         }
 
         return new Value(direction, v.timestamp, v.id);
-      })
-    );
+      });
   }
 
   groupDirections(minThreshold, maxThreshold) {
-    return directions => this.bufferUntil(directions, (a, b) => (a.value.x !== b.value.x  || a.value.y !== b.value.y) || b.timestamp - a.timestamp > maxThreshold)
+    return directions => this.bufferUntil(directions, (a, b) => (a.value.x !== b.value.x  || a.value.y !== b.value.y || b.timestamp - a.timestamp > maxThreshold))
       .pipe(
         map(buffer => {
           let duration = Math.abs(buffer[buffer.length - 1].timestamp - buffer[0].timestamp);
@@ -186,8 +187,7 @@ class Wand extends Component {
       let isFirst = true;
       let firstValue = null;
       let closings = new Subject();
-      return source
-        .pipe(
+      return source.pipe(
           tap(v => {
             if (isFirst) {
               isFirst = false;
@@ -220,7 +220,8 @@ class Wand extends Component {
         <>
           <WandImage red={player1} />
           <div>
-            WAND
+            WAND <br />
+            Message: <b>{this.state.message}</b> <br />
             Code: {this.state.code}
             X: {this.state.x}
             Y: {this.state.y}

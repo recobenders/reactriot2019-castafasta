@@ -43,7 +43,7 @@ io.on("connection", socket => {
   });
 
   socket.on(Constants.MSG.USER_INFO, callback => {
-    if (!socket.game || socket.game === undefined) {
+    if (!socket.game) {
       callback(null);
       return;
     }
@@ -56,10 +56,10 @@ io.on("connection", socket => {
     socket.game.spellSelectedByPlayer(socket.player, spellKey);
   });
 
-  socket.on(Constants.MSG.CASTING_STEP, (code, weight) => {
+  socket.on(Constants.MSG.CASTING_STEP, ({code, weight}) => {
     if (!socket.game) return;
     console.log(`received step: ${code} with weight: ${weight}`);
-    socket.game.processCastStepbyPlayer(socket.player, weight, code);
+    socket.game.processCastStepbyPlayer(socket.player, parseFloat(weight), parseInt(code));
   });
 
   socket.on(Constants.MSG.ANOTHER_GAME, ({ singlePlayer }) => {
