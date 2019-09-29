@@ -66,7 +66,7 @@ export class GamePage extends Component {
     const { Content, Footer, Header } = Layout;
 
     return (
-      <Layout style={{height:"100vh", background: `url('${background_castafasta}') 0px 85%`, backgroundSize: "cover", backgroundPosition: "bottom"}}>
+      <Layout style={{height:"100vh", background: `url('${background_castafasta}') 0px 85%`, backgroundSize: "1920px 1090px", backgroundPosition: "bottom"}}>
         <Header style={{
           background: "transparent",
           marginTop: "auto",
@@ -81,7 +81,7 @@ export class GamePage extends Component {
         }}>
           <Instructions style={{zIndex: "1000", margin: "auto"}} spell={this.state.activeSpell} />
         </Header>
-          <Content style={{background: "transparent", display: "flex"}}>
+          <Content style={{background: "transparent", width:"100%", display: "flex", position: "absolute", bottom: "200px"}}>
             <Battleground
               animation={this.state.animation}
               updateBattleground={this.state.updateBattleground}
