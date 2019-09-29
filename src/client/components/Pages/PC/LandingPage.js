@@ -1,10 +1,6 @@
 import React, { Component } from "react";
 import QRCode from "qrcode.react";
-<<<<<<< HEAD
-import styled, { css } from "styled-components";
-=======
 import styled from "styled-components";
->>>>>>> dcb306f1d0f289e71a594241b19a0d0ed13031ed
 import Constants from "../../../../shared/constants";
 import { Card, Divider } from "antd";
 import Title from "antd/lib/typography/Title";
