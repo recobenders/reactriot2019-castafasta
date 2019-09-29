@@ -30,12 +30,7 @@ class App extends Component {
       cookies.set("user_id", userId);
     }
 
-    let socketUrl = "http://" + window.location.hostname + ":" + 4001;
-
-    if (process.env.NODE_ENV === "production") {
-      socketUrl =
-        "https://" + window.location.hostname + ":" + process.env.SOCKET_PORT;
-    }
+    let socketUrl = "http://localhost:4001";
 
     this.state = {
       socket: socketIOClient(socketUrl),
