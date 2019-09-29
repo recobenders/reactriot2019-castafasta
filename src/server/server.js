@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors")
 const http = require("http");
 const socketIo = require("socket.io");
 const Constants = require("../shared/constants");
@@ -12,6 +13,7 @@ const port = process.env.SOCKET_PORT || 4001;
 
 //Setting up express and adding socketIo middleware
 const app = express();
+app.use(cors());
 const server = http.createServer(app);
 const io = socketIo(server);
 
