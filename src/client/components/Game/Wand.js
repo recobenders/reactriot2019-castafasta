@@ -65,14 +65,17 @@ class Wand extends Component {
       tap(d => {
         console.log(d.value.code);
         console.log(`${d.value.x} ${d.value.y} ${d.value.weight}`);
-      })
-    )
-    .subscribe(d => this.setState({
-        code: d.value.code,
-        x: d.value.x,
-        y: d.value.y,
-        weight: d.value.weight
       }),
+      tap(d => this.setState({
+          code: d.value.code,
+          x: d.value.x,
+          y: d.value.y,
+          weight: d.value.weight
+        })
+      )
+    )
+    .subscribe(
+      d => this.props.socket.emit(Constants.MSG.CASTING_STEP, d.code, d.weight),
       err => this.setState({
         code: err,
         x: -1,
