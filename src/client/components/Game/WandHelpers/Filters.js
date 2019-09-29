@@ -4,37 +4,44 @@ import { map, bufferCount, scan } from "rxjs/operators";
 
 export function applyFilters(series, filters) {
   Object.keys(series).forEach((key) => {
-    filters.forEach(filter => {
-      switch (filter.TYPE) {
+    filters.forEach(filterConfig => {
+      let filter = null;
+
+      switch (filterConfig.TYPE) {
         case Constants.DIRECTION_DETECTION.SUPPORTED_FILTERS.LOW_PASS:
-          series[key] = lowPassSmoothingFilter(series[key], filter.WINDOW_SIZE, v => v.value, w => w.length);
+          filter = lowPassSmoothingFilter(filterConfig.WINDOW_SIZE, v => v.value, w => w.length);
           break;
         case Constants.DIRECTION_DETECTION.SUPPORTED_FILTERS.CLAMP:
-          series[key] = clampFilter(series[key], filter.LIMIT);
+          filter = clampFilter(filterConfig.LIMIT);
           break;
         case Constants.DIRECTION_DETECTION.SUPPORTED_FILTERS.ZERO:
-          series[key] = zeroFilter(series[key], key, filter.AXES);
+          filter = zeroFilter(key, filterConfig.AXES);
           break;
         default:
           // Do nothing
           break;
       }
 
-      console.log(filter.TYPE);
+      if (filter) {
+        series[key] = series[key].pipe(filter);
+      }
+
+      console.log(filterConfig.TYPE);
     });
   });
 
   return series;
 }
 
-function lowPassSmoothingFilter(source, windowSize, getValue, getWindowSize) {
+function lowPassSmoothingFilter(windowSize, getValue, getWindowSize) {
   windowSize = windowSize || 5;
   getValue = getValue || (item => (item && item.value) || 0);
   getWindowSize = getWindowSize || (arr => (arr && arr.length) || 0);
 
-  return source.pipe(bufferCount(windowSize, 1))
-    .pipe(bufferCount(2, 1))
-    .pipe(scan((previous, buffers) => {
+  return source => source.pipe(
+    bufferCount(windowSize, 1),
+    bufferCount(2, 1),
+    scan((previous, buffers) => {
       let value = 0;
       let size = 0;
       if (previous == null) {	// if first window, sum all the values
@@ -47,26 +54,31 @@ function lowPassSmoothingFilter(source, windowSize, getValue, getWindowSize) {
       }
       let pivot = buffers[1][Math.floor(buffers[1].length / 2)];
       return { value: value, pivot: pivot, size: size };
-    }, null))
-    .pipe(map(window => new Value(window.value / window.size, window.pivot.timestamp, window.pivot.id)));
+    }, null),
+    map(window => new Value(window.value / window.size, window.pivot.timestamp, window.pivot.id))
+  );
 }
 
-function clampFilter(source, limit) {
+function clampFilter(limit) {
   limit = limit || Number.MAX_VALUE;
-  return source.pipe(map(v => {
-    return new Value(
-      (v.value > limit) ? limit : (v.value < -limit ? -limit : v.value),
-      v.timestamp,
-      v.id
-    );
-  }));
+
+  return source => source.pipe(
+    map(v => {
+      return new Value(
+        (v.value > limit) ? limit : (v.value < -limit ? -limit : v.value),
+        v.timestamp,
+        v.id
+      );
+    })
+  );
 }
 
-function zeroFilter(source, channel, channels) {
+function zeroFilter(channel, channels) {
   if (channels && channels.includes(channel)) {
-    return source.pipe(map(v => new Value(0.0, v.timestamp, v.id)));
+    return source => source.pipe(map(v => new Value(0.0, v.timestamp, v.id)));
+    // return map(v => new Value(0.0, v.timestamp, v.id));
   }
   else {
-    return source;
+    return source => source;
   }
 }
