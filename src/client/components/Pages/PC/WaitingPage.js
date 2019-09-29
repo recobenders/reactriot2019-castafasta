@@ -1,12 +1,20 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import Constants from "../../../../shared/constants";
+import Title from "antd/lib/typography/Title";
+import {Spin} from "antd";
+import AnimatedWizard from "../../Animations/AnimatedWizard";
 
 const Wrapper = styled.section`
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  text-align: center;
+`;
+
+const ImagesWrapper = styled.div`
+  margin-left: 150px;
 `;
 
 export class WaitingPage extends Component {
@@ -26,6 +34,14 @@ export class WaitingPage extends Component {
   }
 
   render() {
-    return <Wrapper>PC Waiting</Wrapper>;
+    return (
+        <Wrapper>
+        <ImagesWrapper>
+          <AnimatedWizard wizardColor={"red"} wizardAction={"idle"} repeat={true} repeatInterval={2000} update={true}/>
+        </ImagesWrapper>
+        <Title level={2} style={{marginBottom: "30px"}}>Waiting for Duel oponent</Title>
+        <Spin/>
+      </Wrapper>
+    );
   }
 }
