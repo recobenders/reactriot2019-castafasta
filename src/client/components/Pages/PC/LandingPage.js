@@ -33,8 +33,8 @@ const Description = styled.section`
 const Image = styled.img`
     position: absolute;
     width: 480px;
-    bottom: -70px;
-    ${({left}) => left ? "left: -130px;" : "right: -130px;"}
+    bottom: -80px;
+    ${({left}) => left ? "left: -130px;" : "right: -120px;"}
     ${({left}) => `transform: 
         rotate3d(0, ${left ? 0 : 1}, 0, 180deg)`
     };
@@ -44,8 +44,8 @@ const Image = styled.img`
 const Tree = styled.img`
     position: absolute;
     width: ${({left}) => left ? "350px" : "420px"}
-    bottom: -60px;
-    ${({left}) => left ? "left: -300px;" : "right: -330px;"}
+    bottom: -70px;
+    ${({left}) => left ? "left: -300px;" : "right: -320px;"}
     ${({left}) => `transform: 
         rotate3d(0, ${left ? 0 : 1}, 0, 180deg)
         `
