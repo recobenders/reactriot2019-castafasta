@@ -1,5 +1,5 @@
 const express = require("express");
-const cors = require("cors")
+const cors = require("cors");
 const http = require("http");
 const socketIo = require("socket.io");
 const Constants = require("../shared/constants");
@@ -7,7 +7,7 @@ const Player = require("./player");
 const Queue = require("./queue");
 const Game = require("../server/game");
 const uuidv4 = require("uuid/v4");
-const path = require('path');
+const path = require("path");
 
 //Port from environment variable or default - 4001
 const port = process.env.PORT || 4001;
@@ -15,11 +15,11 @@ const port = process.env.PORT || 4001;
 //Setting up express and adding socketIo middleware
 const app = express();
 app.use(cors());
-app.use(express.static(path.join(__dirname, '../../build')));
+app.use(express.static(path.join(__dirname, "../../build")));
 const server = http.createServer(app);
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../build', 'index.html'))
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../../build", "index.html"));
 });
 
 const io = socketIo(server);
@@ -27,7 +27,6 @@ const io = socketIo(server);
 const queue = new Queue(io);
 
 const incomingPlayers = [];
-
 
 io.on("connection", socket => {
   socket.on(Constants.MSG.NEW_PLAYER, ({ uuid, name, singlePlayer }) => {
@@ -39,6 +38,11 @@ io.on("connection", socket => {
     console.log(`New player incoming ${uuid}, waiting for mobile`);
     socket.uuid = uuid;
     incomingPlayers[uuid] = socket;
+  });
+
+  socket.on(Constants.MSG.USER_INFO, callback => {
+    let result = socket.game.whichPlayer(socket.player);
+    callback(result);
   });
 
   socket.on(Constants.MSG.SPELL_SELECTED, spellKey => {

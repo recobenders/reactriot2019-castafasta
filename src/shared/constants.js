@@ -25,6 +25,7 @@ module.exports = Object.freeze({
   },
 
   MSG: {
+    USER_INFO: "user_info",
     PREPARE_PLAYER: "prepare_player",
     WAITING_FOR_GAME: "waiting_for_game",
     NEW_PLAYER: "new_player",
@@ -69,8 +70,8 @@ module.exports = Object.freeze({
             NAME: "raw",
             FILTERS: [
               {
-                TYPE: "zero",	// TODO linear transform
-                AXES: [ "y" ]	// TODO transform matrix instead
+                TYPE: "zero", // TODO linear transform
+                AXES: ["y"] // TODO transform matrix instead
               }
             ]
           },
@@ -95,8 +96,8 @@ module.exports = Object.freeze({
         ],
         DIRECTION: {
           DISTANCE_THRESHOLD_MIN: 8,
-          GROUP_DURATION_MIN : 100,
-          GROUP_DURATION_MAX : 400,
+          GROUP_DURATION_MIN: 100,
+          GROUP_DURATION_MAX: 400
         }
       },
       {
@@ -124,7 +125,7 @@ module.exports = Object.freeze({
                 RESET: {
                   THRESHOLD_VALUE: 0.02,
                   SAMPLES_COUNT_LIMIT: 4
-                },
+                }
               },
               {
                 TYPE: "threshold",
@@ -139,8 +140,8 @@ module.exports = Object.freeze({
         ],
         DIRECTION: {
           DISTANCE_THRESHOLD_MIN: 0.2,
-          GROUP_DURATION_MIN : 100,
-          GROUP_DURATION_MAX : 400,
+          GROUP_DURATION_MIN: 100,
+          GROUP_DURATION_MAX: 400
         }
       }
     ]
