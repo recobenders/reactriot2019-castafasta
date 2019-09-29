@@ -12,14 +12,11 @@ ${({width, height, url, backgroundWidth}) => `
 `;
 
 class AnimatedImage extends Component {
-  imageRef;
-  width;
-  height;
 
   constructor(props){
     super(props);
-    this.imageRef = React.createRef();
     const { width, height, img } = props;
+    this.ref = React.createRef();
     if (width) {
         this.width = width;
         if(height){
@@ -34,7 +31,6 @@ class AnimatedImage extends Component {
         this.width = img["width"];
         this.height = img["height"];
       }
-
   }
 
   animate = () => {
@@ -45,31 +41,35 @@ class AnimatedImage extends Component {
 
     clearInterval(this.animation);
 
-    this.animation = setInterval(() => {
-        this.imageRef.current.style.backgroundPosition = `-${position}px 0px`;
+    this.animationId = setInterval(() => {
+      this.ref.current.style.backgroundPosition = `-${position}px 0px`;
 
-        if (position < this.width * img["slices"]) {
-          position += this.width;
-        }  else {
-          this.imageRef.current.style.backgroundPosition = `0px 0px`;
-          clearInterval(this.animation)
-        }
-      }, interval);
+      if (position < this.width * img["slices"]) {
+        position += this.width;
+      } else {
+        this.ref.current.style.backgroundPosition = `0px 0px`;
+        clearInterval(this.animationId)
+      }
+    }, interval);
   };
 
+  componentDidMount() {
+    this.animate();
+  }
+
   componentDidUpdate(prevProps, prevState, s) {
-    const { img, repeat, repeatInterval } = this.props;
-    if (prevProps.img !== img || prevProps.repeat !== repeat) {
+    const { repeat, repeatInterval } = this.props;
+      clearInterval(this.repetitionId);
+      clearInterval(this.animationId);
       this.animate();
-      clearInterval(this.repetition);
       if (repeat) {
-        this.repetition = setInterval(this.animate, repeatInterval ? repeatInterval : 10000)
+        this.repetitionId = setInterval(this.animate, repeatInterval ? repeatInterval : 10000)
       }
-    }
   }
 
   componentWillUnmount() {
-    clearInterval(this.animationIntervalId);
+    clearInterval(this.animationId);
+    clearInterval(this.repetitionId);
   }
 
   render() {
@@ -80,7 +80,7 @@ class AnimatedImage extends Component {
             width={this.width}
             backgroundWidth={this.width*img["slices"]}
             height={this.height}
-            ref={this.imageRef}
+            ref={this.ref}
         />
       );
   }

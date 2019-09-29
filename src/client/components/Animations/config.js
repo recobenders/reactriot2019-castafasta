@@ -137,6 +137,8 @@ export const spells = {
           height: 559,
           slices: 35,
           interval: 100,
+          bottom: 20,
+          left: -120,
       },
       medium: {
           source: earth_medium,
@@ -144,6 +146,8 @@ export const spells = {
           height: 530,
           slices: 43,
           interval: 100,
+          bottom: 20,
+          left: -120,
       },
       strong: {
           source: earth_strong,
@@ -151,6 +155,8 @@ export const spells = {
           height: 643,
           slices: 88,
           interval: 100,
+          bottom: 20,
+          left: -120,
       }
     },
     ice: {
@@ -160,6 +166,8 @@ export const spells = {
             height: 483,
             slices: 23,
             interval: 100,
+            bottom: 20,
+            left: -120,
         },
         medium: {
             source: ice_medium,
@@ -167,6 +175,8 @@ export const spells = {
             height: 788,
             slices: 50,
             interval: 100,
+            bottom: 20,
+            left: -120,
         },
         strong: {
             source: ice_strong,
@@ -174,6 +184,8 @@ export const spells = {
             height: 742,
             slices: 51,
             interval: 100,
+            bottom: 20,
+            left: -120,
         }
     },
     fire: {
@@ -183,6 +195,8 @@ export const spells = {
             height: 483,
             slices: 21,
             interval: 100,
+            bottom: 20,
+            left: -120,
         },
         medium: {
             source: fire_medium,
@@ -190,6 +204,8 @@ export const spells = {
             height: 540,
             slices: 38,
             interval: 100,
+            bottom: 20,
+            left: -120,
         },
         strong: {
             source: fire_strong,
@@ -197,6 +213,8 @@ export const spells = {
             height: 635,
             slices: 78,
             interval: 100,
+            bottom: 20,
+            left: -80,
         }
     },
     wind: {
@@ -206,6 +224,8 @@ export const spells = {
             height: 704,
             slices: 34,
             interval: 100,
+            bottom: 20,
+            left: -120,
         },
         medium: {
             source: wind_medium,
@@ -213,6 +233,8 @@ export const spells = {
             height: 660,
             slices: 29,
             interval: 100,
+            bottom: 20,
+            left: -120,
         },
         strong: {
             source: wind_strong,
@@ -220,6 +242,8 @@ export const spells = {
             height: 880,
             slices: 83,
             interval: 100,
+            bottom: 20,
+            left: -120,
         }
     },
 };
@@ -230,27 +254,27 @@ export const shots = {
         width: 500,
         height: 500,
         slices: 60,
-        interval: 100,
+        interval: 10,
     },
     ice: {
         source: ice_shot,
         width: 500,
         height: 500,
         slices: 60,
-        interval: 100,
+        interval: 10,
     },
     fire: {
         source: fire_shot,
         width: 500,
         height: 500,
         slices: 60,
-        interval: 100,
+        interval: 10,
     },
     wind: {
         source: wind_shot,
         width: 500,
         height: 500,
         slices: 60,
-        interval: 100,
+        interval: 10,
     }
 };
