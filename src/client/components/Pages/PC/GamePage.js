@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Constants from "../../../../shared/constants";
 import Battleground from "../../Game/Battleground";
 import GameInfo from "../../Game/GameInfo";
+import Instructions from "../../Game/Instructions";
 import ResolutionPage from "./ResolutionPage";
 import { Spin, Layout } from "antd";
 
@@ -26,7 +27,8 @@ export class GamePage extends Component {
       animation: null,
       updateBattleground: false,
       loading: true,
-      finished: false
+      finished: false,
+      activeSpell: null
     };
   }
 
@@ -38,6 +40,17 @@ export class GamePage extends Component {
         loading: false,
         finished: data.state === Constants.GAME_STATES.FINISHED
       });
+
+      if (data.playerOne.id === this.props.userId) {
+        this.setState({
+          activeSpell: data.playerOne.activeSpell
+        });
+      } else {
+        this.setState({
+          activeSpell: data.playerTwo.activeSpell
+        });
+      }
+
     });
 
     this.props.socket.on(Constants.MSG.ANIMATIONS, data => {
@@ -49,15 +62,28 @@ export class GamePage extends Component {
   }
 
   activeGamePage() {
-    const { Content, Footer } = Layout;
+    const { Content, Footer, Header } = Layout;
 
     return (
       <Layout style={{height:"100vh"}}>
-        <Content style={{background: "#424242", display: "flex"}}>
-          <Battleground
-            animation={this.state.animation}
-            updateBattleground={this.state.updateBattleground}
-          />
+        <Header style={{
+          background: "#424242",
+          marginTop: "auto",
+          height: "40vh",
+          textAlign: "center",
+          verticalAlign: "middle",
+          fontSize: "15em",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}>
+          <Instructions spell={this.state.activeSpell} />
+        </Header>
+          <Content style={{background: "#424242", display: "flex"}}>
+            <Battleground
+              animation={this.state.animation}
+              updateBattleground={this.state.updateBattleground}
+            />
         </Content>
         <Footer style={{background: "#424242"}}>
           <GameInfo game={this.state.game} />
