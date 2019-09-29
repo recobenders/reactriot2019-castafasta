@@ -55,7 +55,6 @@ class Battleground extends Component {
                     this.setState({...defaultState, redAttacking: true, ...this.getSpell(spell)});
                     break;
                 case "blueAttacking":
-                    console.log(this.getSpell(spell))
                     this.setState({...defaultState, blueAttacking: true, ...this.getSpell(spell)});
                     break;
                 case "redWon":
