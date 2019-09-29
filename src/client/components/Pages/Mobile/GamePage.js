@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Constants from "../../../../shared/constants";
 import SpellForm from "../../Forms/SpellForm";
 import Wand from "../../Game/Wand";
+import { Spin } from "antd";
 
 const Wrapper = styled.section`
   position: fixed;
@@ -64,7 +65,7 @@ export class GamePage extends Component {
   renderGamePage() {
     if (this.state.loading) {
       // TODO replace with a loader or make sure we get all the data on initialization
-      return <div>Loading</div>;
+      return <Spin size="large" />;
     }
     if (this.state.finished) {
       return this.resolvedGamePage();
@@ -136,11 +137,6 @@ export class GamePage extends Component {
   }
 
   render() {
-    return (
-      <Wrapper>
-        <div>Mobile in game</div>
-        {this.renderGamePage()}
-      </Wrapper>
-    );
+    return <Wrapper>{this.renderGamePage()}</Wrapper>;
   }
 }
