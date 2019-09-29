@@ -28,7 +28,6 @@ const Description = styled.section`
   text-align: center;
   font-size: 1.5em;
   font-weight: bold;
-  padding: 50px;
 `;
 
 const Image = styled.img`
@@ -213,7 +212,7 @@ class LandingPage extends Component {
             <canvas id="canvas" style={{width: "100%", height: "100%", backgroundImage: "linear-gradient(#1a1aff, cyan)", zIndex: -1}} />
           </div>
         <Wrapper>
-          <Card style={{position: "relative", background: "rgba(255, 255, 255, .8)", borderRadius: "5px", maxWidth:"60vw"}}>
+          <Card style={{position: "relative", background: "rgba(255, 255, 255, .8)", borderRadius: "5px", maxWidth:"65vw"}}>
             <Centered>
               <HoverAnimation>
                   <Title style={{
@@ -233,7 +232,7 @@ class LandingPage extends Component {
               <QRCode value={this.state.qrCode} style={{zIndex: 100}} />
             </Centered>
             <Divider dashed />
-            <Description level={5} style={{padding: 5}}>
+            <Description level={5} style={{padding: 5, zIndex: 200}}>
               or visit this link to start a game:
             </Description>
             <Centered>
