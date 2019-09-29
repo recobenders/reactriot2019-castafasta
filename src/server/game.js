@@ -67,7 +67,7 @@ class Game {
 
     this.spellSelectedByPlayer(
       this.bot,
-      this.bot.activeSpell.name.toLocaleLowerCase()
+      this.bot.activeSpell.key.toLocaleLowerCase()
     );
 
     let spellTimeout = this.bot.activeSpell.requiredSequences.length * 1000;
