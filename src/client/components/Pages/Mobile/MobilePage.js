@@ -21,7 +21,8 @@ const ImagesRow = styled.div`
   display: flex,
   justify-content: space-around;
   margin-bottom: 20px;
-  align-items: flex-end
+  align-items: flex-end;
+  margin-top: 20px;
 `;
 
 const Image = styled.img`
@@ -72,7 +73,7 @@ class MobilePage extends Component {
           <Image src={wandRed} left/>
           <Image src={wandBlue}/>
         </ImagesRow>
-        <Title level={2} style={{fontFamily: "OurFont", fontSize: "4em", fontWeight: 5}}>Hello, I am your wand!</Title>
+        <Title level={2} style={{fontFamily: "OurFont", fontSize: "4em", fontWeight: 5}}>This is your wand!</Title>
         <NameForm
           handleFormSubmit={this.handleFormSubmit.bind(this)}
           userName={this.state.userName}

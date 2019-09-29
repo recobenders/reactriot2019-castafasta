@@ -143,7 +143,7 @@ export class ErrorPage extends Component {
         <Wrapper>
           <Card style={{background: "rgba(255, 175, 175, .8)", borderRadius: "5px"}}>
               <Centered>
-                <Title style={{fontFamily: "OurFont", fontSize: "8em", fontWeight: 5}}>{ title }</Title>
+                <Title style={{fontFamily: "OurFont", fontSize: "6em", fontWeight: 5}}>{ title }</Title>
               </Centered>
               <Description level={5}>
                 {this.props.location.state.message}
