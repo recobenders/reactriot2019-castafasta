@@ -17,10 +17,10 @@ class Instructions extends Component {
   }
 
   render() {
-    if (!this.state.castingSpell) return(<></>);
+    if (this.state.castingSpell == null) return(<></>);
 
     const { spell } = this.props;
-    const direction = spell.requiredSequences[spell.capturedAccuracy.length];
+    const direction = spell && spell.requiredSequences[spell.capturedAccuracy.length];
 
     return (
       <Arrow direction={direction} />

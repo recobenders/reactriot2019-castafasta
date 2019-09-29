@@ -84,7 +84,7 @@ class App extends Component {
               exact
               path="/error"
               render={props => (
-                <ErrorPage {...props} error={this.state.error} />
+                <ErrorPage {...props} message={this.state.error} />
               )}
             />
             <Route
