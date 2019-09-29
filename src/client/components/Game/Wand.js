@@ -75,7 +75,7 @@ class Wand extends Component {
       )
     )
     .subscribe(
-      d => this.props.socket.emit(Constants.MSG.CASTING_STEP, d.code, d.weight),
+      d => { }, // this.props.socket.emit(Constants.MSG.CASTING_STEP, d.code, d.weight)
       err => this.setState({
         code: err,
         x: -1,
