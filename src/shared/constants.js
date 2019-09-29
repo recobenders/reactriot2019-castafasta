@@ -1,5 +1,5 @@
 module.exports = Object.freeze({
-  PLAYER_MAX_HP: 1000,
+  PLAYER_MAX_HP: 2000,
 
   ROUND_SECONDS: 90,
   GAME_TICK: 1000,
