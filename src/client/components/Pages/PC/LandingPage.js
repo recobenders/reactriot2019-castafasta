@@ -213,7 +213,7 @@ class LandingPage extends Component {
             }
         }
       }
-    }
+
 
     setInterval(function() {
       ctx.clearRect(0, 0, Canvas.width, Canvas.height);
