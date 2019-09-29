@@ -86,22 +86,20 @@ class LandingPage extends Component {
 
   fetchTinyUrl(url) {
     return new Promise((resolve, reject) => {
-      fetch(
-        'https://tinyurl.com/api-create.php?url=' + encodeURIComponent(url),
-        {
-          method: 'GET',
-          mode: 'no-cors'
-        }
-        )
-        .then((response) => {
-          console.log(response);
-          if (response.body === null) {
-            reject(response);
-          }
-          resolve(response.body);
-        }).catch((response) => {
+      fetch('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(url), {
+          // mode: 'no-cors',
+          method: 'GET'
+        },
+      ).then(response => {
+        console.log(response);
+        if (response.ok) {
+          response.text().then(body => {
+            resolve(body);
+          });
+        } else {
           reject(response);
-        });
+        }
+      });
     })
   }
 
