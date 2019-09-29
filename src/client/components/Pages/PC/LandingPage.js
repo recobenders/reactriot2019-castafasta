@@ -5,6 +5,7 @@ import Constants from "../../../../shared/constants";
 import { Link } from "react-router-dom";
 import { Card, Divider } from "antd";
 import Title from "antd/lib/typography/Title";
+import TinyURL from "tinyurl";
 
 const Wrapper = styled.section`
   position: fixed;
@@ -31,10 +32,19 @@ class LandingPage extends Component {
     super(props);
 
     this.canvas = React.createRef();
+    const url = window.location.protocol + "//" + window.location.host + "/mobile/" + props.userId;
 
     this.state = {
-      qrCode: window.location.protocol + "//" + window.location.host + "/mobile/" + props.userId
+      qrCode: url
     };
+
+    TinyURL.shorten(url).then(res => {
+      console.log(res);
+      this.setState({ tinyUrl: res });
+    }, err => {
+      console.log(err);
+      this.setState({ tinyUrl: url });
+    });
 
     this.props.socket.on(Constants.MSG.WAITING_FOR_GAME, () => {
       this.props.history.push("/waiting");
@@ -164,8 +174,11 @@ class LandingPage extends Component {
             <Centered>
               <QRCode value={this.state.qrCode} />
             </Centered>
+            <Divider dashed />
             <Centered>
-              <Link to={`/mobile/${this.props.userId}`}>{this.props.userId}</Link>
+              <a href={this.state.tinyUrl}>
+                Or visit this link to join the game.
+              </a>
             </Centered>
           </Card>
         </Wrapper>
