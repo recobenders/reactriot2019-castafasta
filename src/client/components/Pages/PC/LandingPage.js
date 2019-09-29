@@ -148,10 +148,10 @@ class LandingPage extends Component {
     return (
       <>
           <div style={{position: "fixed", width: "100vw", height: "100vh"}}>
-            <canvas id="canvas" style={{width: "100%", height: "100%", backgroundColor: "#04BBD3", zIndex: -1}} />
+            <canvas id="canvas" style={{width: "100%", height: "100%", backgroundImage: "linear-gradient(#1a1aff, cyan)", zIndex: -1}} />
           </div>
         <Wrapper>
-          <Card>
+          <Card style={{background: "rgba(255, 255, 255, .8)", borderRadius: "5px"}}>
             <Centered>
               <Title style={{fontFamily: "OurFont", fontSize: "8em", fontWeight: 5}}>Casta Fasta</Title>
             </Centered>
