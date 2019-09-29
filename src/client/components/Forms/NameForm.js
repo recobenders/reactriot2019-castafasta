@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Input, Icon, Button, Form } from "antd";
 
 class NameForm extends Component {
   constructor(props) {
@@ -23,26 +24,35 @@ class NameForm extends Component {
 
   render() {
     return (
-      <form>
-        <label>
-          Name:
-          <input
-            type="text"
+      <Form>
+        <Form.Item>
+          <Input
+            prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
+            placeholder="What's your name?"
             value={this.state.name}
             onChange={this.handleChange}
           />
-        </label>
-        <input
+        </Form.Item>
+
+        <Button
           onClick={event => this.handleSubmit(event, "multiplayer")}
-          type="submit"
-          value="Multiplayer"
-        />
-        <input
+          type="primary"
+          style={{ marginBottom: "0.5em" }}
+          size="large"
+          htmlType="submit"
+          icon="smile"
+        >
+          I'm prepared, please find me some other player
+        </Button>
+        <Button
+          htmlType="submit"
+          icon="meh"
+          size="large"
           onClick={event => this.handleSubmit(event, "singleplayer")}
-          type="submit"
-          value="Singleplayer"
-        />
-      </form>
+        >
+          I'm not sure, give me Bot player to practice
+        </Button>
+      </Form>
     );
   }
 }

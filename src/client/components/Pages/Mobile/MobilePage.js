@@ -3,6 +3,7 @@ import { withCookies } from "react-cookie";
 import NameForm from "../../Forms/NameForm";
 import styled from "styled-components";
 import Constants from "../../../../shared/constants";
+import Title from "antd/lib/typography/Title";
 
 const Wrapper = styled.section`
   position: fixed;
@@ -39,8 +40,11 @@ class MobilePage extends Component {
   render() {
     return (
       <Wrapper>
-        Hello, I am your wand!
-        <NameForm handleFormSubmit={this.handleFormSubmit.bind(this)} userName={this.state.userName} />
+        <Title level={2}>Hello, I am your wand!</Title>
+        <NameForm
+          handleFormSubmit={this.handleFormSubmit.bind(this)}
+          userName={this.state.userName}
+        />
       </Wrapper>
     );
   }
