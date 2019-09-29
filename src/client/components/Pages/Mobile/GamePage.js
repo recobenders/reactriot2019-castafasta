@@ -27,7 +27,8 @@ export class GamePage extends Component {
       game: null,
       loading: true,
       finished: false,
-      availableSpells: []
+      availableSpells: [],
+      player: null,
     };
   }
 
@@ -57,6 +58,10 @@ export class GamePage extends Component {
     this.props.socket.on(Constants.MSG.WAITING_FOR_GAME, () => {
       this.props.history.push("/mobile/waiting");
     });
+
+    this.props.socket.emit(Constants.MSG.USER_INFO, data => {
+      this.setState({player: data});
+    });
   }
 
   handleDamageSubmit(code, weight) {
@@ -80,7 +85,7 @@ export class GamePage extends Component {
   activeCastingGamePage() {
     return (
       <Fragment>
-        <Wand spell={this.state.activeSpell} socket={this.props.socket} />
+        <Wand spell={this.state.activeSpell} socket={this.props.socket} player={this.state.player} />
         <SpellForm handleFormSubmit={this.handleDamageSubmit.bind(this)} />
       </Fragment>
     );
