@@ -23,10 +23,7 @@ class Wand extends Component {
     const config = Constants.DIRECTION_DETECTION.MODES.find(config => config.MODE === selectedMode);
 
     let data = this.observeEvents(config)
-      .map(ev => Object.assign({ timestamp: new Date().getTime() }, ev))
-      .share();
-
-    // console.log(data);
+      .pipe(map(ev => Object.assign({ timestamp: new Date().getTime() }, ev)));
 
     let x = data.pipe(map(d => new Value(d.x, d.timestamp, d.id)));
     let y = data.pipe(map(d => new Value(d.y, d.timestamp, d.id)));
@@ -70,7 +67,7 @@ class Wand extends Component {
 
     if (selectedMode === "orientation") {
       events = Observable.fromEvent(window, "deviceorientation")
-        .map(event => ({ x: event.gamma, y: event.alpha, z: event.beta }));
+        .pipe(map(event => ({ x: event.gamma, y: event.alpha, z: event.beta })));
     } else {
       console.log('Unsupported mode');
     }
