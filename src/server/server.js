@@ -31,7 +31,9 @@ const incomingPlayers = [];
 io.on("connection", socket => {
   socket.on(Constants.MSG.NEW_PLAYER, ({ uuid, name, singlePlayer }) => {
     let player = createPlayer(uuid, name, socket);
-    broadcastWaitAndHandleStart(io, player, queue, singlePlayer);
+    if (player) {
+      broadcastWaitAndHandleStart(io, player, queue, singlePlayer);
+    }
   });
 
   socket.on(Constants.MSG.PREPARE_PLAYER, ({ uuid }) => {
