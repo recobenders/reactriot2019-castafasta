@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import QRCode from "qrcode.react";
+<<<<<<< HEAD
 import styled, { css } from "styled-components";
+=======
+import styled from "styled-components";
+>>>>>>> dcb306f1d0f289e71a594241b19a0d0ed13031ed
 import Constants from "../../../../shared/constants";
 import { Card, Divider } from "antd";
 import Title from "antd/lib/typography/Title";
@@ -202,24 +206,15 @@ class LandingPage extends Component {
       };
     };
 
-    for (var x = 0; x < Canvas.width; x++) {
-      for (var y = 0; y < Canvas.height; y++) {
-        if (Math.round(Math.random() * 8000) == 1) {
-          var s = (Math.random() * 5 + 1) / 10;
-          if (Math.round(Math.random()) == 1)
-            elements.push(presets.o(x, y, s, 0, 0));
-          else
-            elements.push(
-              presets.x(
-                x,
-                y,
-                s,
-                0,
-                0,
-                (Math.random() * 3 - 1) / 10,
-                Math.random() * 360
-              )
-            );
+    for(var x = 0; x < Canvas.width; x++) {
+        for(var y = 0; y < Canvas.height; y++) {
+            if(Math.round(Math.random() * 8000) === 1) {
+                var s = ((Math.random() * 5) + 1) / 10;
+                if(Math.round(Math.random()) === 1)
+                    elements.push(presets.o(x, y, s, 0, 0));
+                else
+                    elements.push(presets.x(x, y, s, 0, 0, ((Math.random() * 3) - 1) / 10, (Math.random() * 360)));
+            }
         }
       }
     }

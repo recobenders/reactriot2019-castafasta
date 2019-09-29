@@ -4,6 +4,8 @@ import BattlegroundScene from "../Animations/BattlegroundScene"
 
 const BattleGroundBackgroundWrapper = styled.div `
     width: 100%;
+    display: flex;
+    justify-content: space-between;
     // background: #424242;
     align-self: flex-end;
 `;
