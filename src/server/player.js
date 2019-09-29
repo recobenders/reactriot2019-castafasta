@@ -37,9 +37,9 @@ class Player {
   }
 
   processSpellStep(weight, capturedCode) {
-    if (this.activeSpell === null) return null;
+    if (!this.activeSpell) return null;
 
-    if (this.activeSpell.currentRequiredSequence !== capturedCode) {
+    if (this.activeSpell.currentRequiredSequence() !== capturedCode) {
       return null;
     }
     this.activeSpell.captureAccuracy(weight);
