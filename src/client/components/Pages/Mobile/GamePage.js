@@ -6,6 +6,9 @@ import Wand from "../../Game/Wand";
 import { Spin, Button } from "antd";
 import Title from "antd/lib/typography/Title";
 import SpellSelector from "../../Game/SpellSelector";
+import red from "../../Game/assets/red.png";
+import blue from "../../Game/assets/blue.png";
+
 
 const Wrapper = styled.section`
   display: flex;
@@ -14,6 +17,11 @@ const Wrapper = styled.section`
   height: 100vh;
   justify-content: center;
   align-items: center;
+`;
+
+const Image = styled.img`
+    width: 100px;
+    margin-bottom: 20px;
 `;
 
 export class GamePage extends Component {
@@ -99,8 +107,10 @@ export class GamePage extends Component {
   }
 
   resolvedGamePage() {
+    const isPlayerOne = this.state.player === "playerOne";
     return (
       <Fragment>
+        <Image src={isPlayerOne ? red : blue} />
         <Title level={2}>Game finished</Title>
         <Title level={4}>One more time?</Title>
         <div>
