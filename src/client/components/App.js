@@ -50,12 +50,9 @@ class App extends Component {
       this.setState({ error: data.message });
       const args = {
         message: "Something went wrong",
-        description: `We are really sorry Young Cast-a Padawan, this mistake is on our side. Click on this notification to be redirected to our home page and pair your mobile phone once again. But Fast-a.`,
+        description: `We are really sorry Young Cast-a Padawan, this mistake is on our side. Please go to landing page with browser and try to connect again. But Fast-a.`,
         icon: <Icon type="frown" style={{ color: "#108ee9" }} />,
-        duration: 10,
-        onClick: function() {
-          window.location.href = "/";
-        }
+        duration: 10
       };
       notification.error(args);
     });
