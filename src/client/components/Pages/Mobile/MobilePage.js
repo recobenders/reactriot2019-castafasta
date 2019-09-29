@@ -38,7 +38,7 @@ class MobilePage extends Component {
       this.props.history.push({
         pathname: "/error",
         state: {
-          message: "Your device or browser does not support orientation events. Try use different web browser.",
+          message: "Your device or browser does not support orientation events. Try a different web browser.",
           flair: "A true Casta need a true wand-a."
         }
       });
