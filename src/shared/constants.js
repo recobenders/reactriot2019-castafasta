@@ -96,7 +96,7 @@ module.exports = Object.freeze({
         DIRECTION: {
           DISTANCE_THRESHOLD_MIN: 8,
           GROUP_DURATION_MIN: 100,
-          GROUP_DURATION_MAX: 400
+          GROUP_DURATION_MAX: 300
         }
       },
       {
