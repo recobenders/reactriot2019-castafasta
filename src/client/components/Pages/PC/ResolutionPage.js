@@ -64,13 +64,13 @@ class ResolutionPage extends Component {
       <div>
         <Link to="/">Back</Link>
         <WizardWrapper top={25} left={25}>
-          <AnimatedWizard wizardColor="red" wizardAction={this.state.redAction} repeat={false} repeatInterval={2000} />
+          <AnimatedWizard wizardColor="red" wizardAction={this.state.redAction} repeat={true} repeatInterval={2000} />
         </WizardWrapper>
         <TitleWrapper>
           <Title style={{fontFamily: "OurFont", fontSize: "17em", fontWeight: 5, margin: 0}}>{this.state.title}</Title>
         </TitleWrapper>
         <WizardWrapper top={75} left={75}>
-          <AnimatedWizard wizardColor="blue" wizardAction={this.state.blueAction} repeat={false} repeatInterval={2000} tilt />
+          <AnimatedWizard wizardColor="blue" wizardAction={this.state.blueAction} repeat={true} repeatInterval={2000} tilt />
         </WizardWrapper>
       </div>
     );
