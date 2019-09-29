@@ -55,7 +55,7 @@ class NameForm extends Component {
           htmlType="submit"
           icon="smile"
         >
-          I'm prepared, please find me some other player
+          I'm prepared. Find me a worthy opponent, please.
         </Button>
         <Button
           htmlType="submit"
@@ -64,7 +64,7 @@ class NameForm extends Component {
           size="large"
           onClick={event => this.handleSubmit(event, "singleplayer")}
         >
-          I'm not sure, give me Bot player to practice
+          I'm not sure. Let me practice with a Bot.
         </Button>
       </Form>
     );

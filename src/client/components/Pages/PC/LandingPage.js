@@ -28,14 +28,13 @@ const Description = styled.section`
   text-align: center;
   font-size: 1.5em;
   font-weight: bold;
-  padding: 50px;
 `;
 
 const Image = styled.img`
     position: absolute;
     width: 480px;
-    bottom: -70px;
-    ${({left}) => left ? "left: -150px;" : "right: -150px;"}
+    bottom: -80px;
+    ${({left}) => left ? "left: -130px;" : "right: -120px;"}
     ${({left}) => `transform: 
         rotate3d(0, ${left ? 0 : 1}, 0, 180deg)`
     };
@@ -45,8 +44,8 @@ const Image = styled.img`
 const Tree = styled.img`
     position: absolute;
     width: ${({left}) => left ? "350px" : "420px"}
-    bottom: -60px;
-    ${({left}) => left ? "left: -300px;" : "right: -350px;"}
+    bottom: -70px;
+    ${({left}) => left ? "left: -300px;" : "right: -320px;"}
     ${({left}) => `transform: 
         rotate3d(0, ${left ? 0 : 1}, 0, 180deg)
         `
@@ -70,38 +69,39 @@ class LandingPage extends Component {
     const url = window.location.protocol + "//" + window.location.host + "/mobile/" + props.userId;
 
     this.state = {
-      qrCode: url
+      qrCode: url,
+      tinyUrl: url
     };
 
-    this.fetchTinyUrl(url).then(res => {
-      this.setState({ tinyUrl: res });
-    }, _ => {
-      this.setState({ tinyUrl: url });
-    });
+    // this.fetchTinyUrl(url).then(res => {
+    //   this.setState({ tinyUrl: res });
+    // }, _ => {
+    //   this.setState({ tinyUrl: url });
+    // });
 
     this.props.socket.on(Constants.MSG.WAITING_FOR_GAME, () => {
       this.props.history.push("/waiting");
     });
   }
 
-  fetchTinyUrl(url) {
-    return new Promise((resolve, reject) => {
-      fetch('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(url), {
-          // mode: 'no-cors',
-          method: 'GET'
-        },
-      ).then(response => {
-        console.log(response);
-        if (response.ok) {
-          response.text().then(body => {
-            resolve(body);
-          });
-        } else {
-          reject(response);
-        }
-      });
-    })
-  }
+  // fetchTinyUrl(url) {
+  //   return new Promise((resolve, reject) => {
+  //     fetch('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(url), {
+  //         // mode: 'no-cors',
+  //         method: 'GET'
+  //       },
+  //     ).then(response => {
+  //       console.log(response);
+  //       if (response.ok) {
+  //         response.text().then(body => {
+  //           resolve(body);
+  //         });
+  //       } else {
+  //         reject(response);
+  //       }
+  //     });
+  //   })
+  // }
 
   componentDidMount() {
     this.props.socket.emit(Constants.MSG.PREPARE_PLAYER, {
@@ -213,7 +213,7 @@ class LandingPage extends Component {
             <canvas id="canvas" style={{width: "100%", height: "100%", backgroundImage: "linear-gradient(#1a1aff, cyan)", zIndex: -1}} />
           </div>
         <Wrapper>
-          <Card style={{position: "relative", background: "rgba(255, 255, 255, .8)", borderRadius: "5px", maxWidth:"60vw"}}>
+          <Card style={{position: "relative", background: "rgba(255, 255, 255, .8)", borderRadius: "5px", maxWidth:"65vw"}}>
             <Centered>
               <HoverAnimation>
                   <Title style={{
@@ -230,14 +230,14 @@ class LandingPage extends Component {
             </Description>
             <Divider dashed />
             <Centered>
-              <QRCode value={this.state.qrCode} />
+              <QRCode value={this.state.qrCode} style={{zIndex: 100}} />
             </Centered>
             <Divider dashed />
-            <Description level={5} style={{padding: 5}}>
-              or visit this link to start a game:
+            <Description level={5} style={{padding: 5, zIndex: 200}}>
+              or visit this address on your mobile device:
             </Description>
             <Centered>
-              <a href={this.state.tinyUrl}>
+              <a href={this.state.tinyUrl} style={{zIndex: 100}}>
                 {this.state.tinyUrl}
               </a>
             </Centered>
