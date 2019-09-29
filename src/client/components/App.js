@@ -13,6 +13,8 @@ import { default as UUID } from "node-uuid";
 import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
 import styled from "styled-components";
 
+import "antd/dist/antd.css";
+
 const Wrapper = styled.section`
   height: 100vh;
   width: 100vw;
@@ -32,7 +34,7 @@ class App extends Component {
 
     let socketUrl = "http://localhost:4001";
 
-    if(process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       socketUrl = "http://" + window.location.hostname + ":4001";
     }
 
