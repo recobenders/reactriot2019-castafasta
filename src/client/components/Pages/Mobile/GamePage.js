@@ -110,7 +110,7 @@ export class GamePage extends Component {
     return (
       <Fragment>
         <Image src={isPlayerOne ? red : blue} />
-        <Title level={2}>Game finished</Title>
+        <Title level={2} style={{fontFamily: "OurFont", fontSize: "5em", fontWeight: 5}}>Game finished</Title>
         <Title level={4}>One more time?</Title>
         <div>
           <Button

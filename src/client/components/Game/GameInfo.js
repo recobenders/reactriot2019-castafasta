@@ -22,18 +22,18 @@ class GameInfo extends Component {
   render() {
     return (
       <Fragment>
-        <Row>
-          <Column>
-            <Title level={4} style={{ textAlign: "center" }}>
+        <Row style={{ marginTop: 0, marginBottom: 0 }}>
+          <Column style={{ margin: 0 }}>
+            <Title level={4} style={{ textAlign: "center", fontFamily: "HarryFont", fontSize: "5em", fontWeight: 5 }}>
               {this.props.game.roundTime}
             </Title>
           </Column>
         </Row>
-        <Row>
-          <Column>
+        <Row style={{ marginTop: 0, marginBottom: 0 }}>
+          <Column style={{ marginTop: 0, marginBottom: 0 }}>
             <PlayerInfo player={this.props.game.playerOne} />
           </Column>
-          <Column>
+          <Column style={{ marginTop: 0, marginBottom: 0 }}>
             <PlayerInfo player={this.props.game.playerTwo} tilt />
           </Column>
         </Row>
