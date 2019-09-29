@@ -27,13 +27,14 @@ class SpellSelector extends Component {
   render() {
     console.log(this.props.spells);
 
-    let preparedPairs = _.chunk(this.props.spells, 2);
+    let preparedPairs = _.chunk(this.props.spells, 3);
     console.log(preparedPairs.length);
-    let spellRows = preparedPairs.map(pair => {
+    let spellRows = preparedPairs.map(triplet => {
       return (
         <Row justify="center" type="flex" gutter={120}>
-          {this.renderSpellItem(pair[0])}
-          {this.renderSpellItem(pair[1])}
+          {this.renderSpellItem(triplet[0])}
+          {this.renderSpellItem(triplet[1])}
+          {this.renderSpellItem(triplet[2])}
         </Row>
       );
     });
