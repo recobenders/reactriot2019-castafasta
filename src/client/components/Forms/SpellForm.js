@@ -5,31 +5,43 @@ class SpellForm extends Component {
     super(props);
 
     this.state = {
-      value: ""
+      weight: "",
+      code: ""
     };
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleWeightChange = this.handleWeightChange.bind(this);
+    this.handleCodeChange = this.handleCodeChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event) {
-    this.setState({ value: event.target.value });
+  handleWeightChange(event) {
+    this.setState({ weight: event.target.value });
+  }
+
+  handleCodeChange(event) {
+    this.setState({ code: event.target.value });
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    this.props.handleFormSubmit(this.state.value);
+    this.props.handleFormSubmit(this.state.code, this.state.weight);
   }
 
   render() {
     return (
       <form>
         <label>
-          Type spell accuracies:
+          Type code:
           <input
             type="text"
-            value={this.state.value}
-            onChange={this.handleChange}
+            weight={this.state.weight}
+            onChange={this.handleWeightChange}
+          />
+          Type weight:
+          <input
+            type="text"
+            value={this.state.code}
+            onChange={this.handleCodeChange}
           />
         </label>
         <input

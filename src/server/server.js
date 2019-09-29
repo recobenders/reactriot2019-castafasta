@@ -15,7 +15,7 @@ const port = process.env.PORT || 4001;
 //Setting up express and adding socketIo middleware
 const app = express();
 app.use(cors());
-app.use(express.static(path.join(__dirname, "../../build")));
+app.use(express.static(path.join(__dirname, "build")));
 const server = http.createServer(app);
 
 app.get("*", (req, res) => {
@@ -49,8 +49,8 @@ io.on("connection", socket => {
     socket.game.spellSelectedByPlayer(socket.player, spellKey);
   });
 
-  socket.on(Constants.MSG.CASTING_DONE, spellAccuracies => {
-    socket.game.spellCastedbyPlayer(socket.player, spellAccuracies);
+  socket.on(Constants.MSG.CASTING_STEP, (code, weight) => {
+    socket.game.processCastStepbyPlayer(socket.player, weight, code);
   });
 
   socket.on(Constants.MSG.ANOTHER_GAME, ({ singlePlayer }) => {

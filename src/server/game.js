@@ -78,7 +78,7 @@ class Game {
 
     futureSpellCast.then(() => {
       if (!this.isFinished()) {
-        this.spellCastedbyPlayer(this.bot, this.bot.generateRandomAccuracies());
+        this.spellCastedbyBot(this.bot, this.bot.generateRandomAccuracies());
         console.log("Bot cast spell.");
       }
     });
@@ -121,8 +121,8 @@ class Game {
     return this.playerOne.id === player.id ? this.playerTwo : this.playerOne;
   }
 
-  whichPlayer(player){
-    return this.playerOne.id === player.id ? "playerOne": "playerTwo";
+  whichPlayer(player) {
+    return this.playerOne.id === player.id ? "playerOne" : "playerTwo";
   }
 
   updatePlayer(player) {
@@ -144,18 +144,48 @@ class Game {
     this.update();
   }
 
-  spellCastedbyPlayer(player, accuracies) {
-    let spell = player.castSpell(accuracies);
-    if (spell == null || spell.dmg === undefined) return;
+  processCastStepbyPlayer(player, weight, capturedCode) {
+    let returnedSpell = player.processSpellStep(weight, capturedCode);
 
+    if (!returnedSpell) return;
+    console.log(
+      `Game#${this.id}: Player ${player.username} captured step ${capturedCode} with weight: ${weight}.`
+    );
+
+    if (returnedSpell.isCastingDone()) {
+      this.animateAndDealDamage(player);
+      returnedSpell.calculateDamage();
+      this.animateEvent(player, "Attacking", returnedSpell.key);
+      let opponent = this.getOpponent(player);
+      opponent.takeDamage(returnedSpell.dmg);
+      console.log(
+        `Game#${this.id}: Player ${player.username} is dealing ${returnedSpell.dmg} dmg to player ${opponent.username}`
+      );
+    }
+    this.updatePlayer(player);
+    this.update();
+  }
+
+  animateAndDealDamage(player) {
+    let spell = player.castSpell();
     this.animateEvent(player, "Attacking", spell.key);
 
-    let opponent = this.getOpponent(player);
+    let opponent = this.getOpponent(spell);
     opponent.takeDamage(spell.dmg);
-    console.log(
-      `Game#${this.id}: Dealing ${spell.dmg} dmg to player ${opponent.username}`
-    );
     this.updatePlayer(opponent);
+    console.log(
+      `Game#${this.id}: Bot dealing ${spell.dmg} dmg to player ${opponent.username}`
+    );
+  }
+
+  spellCastedbyBot(bot, accuracies) {
+    if (!bot.activeSpell) return;
+    let spell = bot.activeSpell;
+    for (let accuracy of accuracies) {
+      spell.captureAccuracy(accuracy);
+    }
+    this.animateAndDealDamage(bot);
+    this.updatePlayer(bot);
     this.update();
   }
 

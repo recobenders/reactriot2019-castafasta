@@ -41,8 +41,7 @@ class Spell {
     return new Spell(spellStats);
   }
 
-  constructor({ id, key, name, max_dmg, numberOfSequences }) {
-    this.id = id;
+  constructor({ key, name, max_dmg, numberOfSequences }) {
     this.key = key;
     this.name = name;
     this.max_dmg = max_dmg;
