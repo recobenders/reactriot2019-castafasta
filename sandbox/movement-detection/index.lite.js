@@ -396,7 +396,7 @@ function clampFilter(source, limit) {
 
 
 function zeroFilter(source, channel, channels) {
-	if (channels.includes(channel || [])) {
+	if (channels && channels.includes(channel)) {
 		return source.select(v => new Value(0.0, v.timestamp, v.id));	
 	}
 	else {
