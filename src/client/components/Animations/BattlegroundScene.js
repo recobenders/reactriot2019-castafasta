@@ -139,7 +139,8 @@ class BattlegroundScene extends Component {
             initedBlueSpell,
         } = this.state;
 
-        const {spellType, spellPower} = this.props;
+        const spellType = this.props.spellType;
+        const spellPower = this.props.spellPower;
 
         return (
             <>

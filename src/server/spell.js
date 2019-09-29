@@ -11,11 +11,13 @@ class Spell {
     return new Spell(spellStats);
   }
 
-  constructor({ key, name, max_dmg, numberOfSequences }) {
+  constructor({ key, name, max_dmg, numberOfSequences, spellType, spellPower }) {
     this.key = key;
     this.name = name;
     this.max_dmg = max_dmg;
     this.dmg = 0;
+    this.spellType = spellType;
+    this.spellPower = spellPower;
 
     this.generateRequiredSequences(numberOfSequences);
     this.capturedAccuracy = [];
@@ -85,7 +87,9 @@ class Spell {
       name: this.name,
       max_dmg: this.max_dmg,
       requiredSequences: this.requiredSequences,
-      capturedAccuracy: this.capturedAccuracy
+      capturedAccuracy: this.capturedAccuracy,
+      spellType: this.spellType,
+      spellPower: this.spellPower
     };
   }
 }

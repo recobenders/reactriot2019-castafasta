@@ -151,7 +151,7 @@ class Game {
     if (returnedSpell.isCastingDone()) {
       this.animateAndDealDamage(player);
       returnedSpell.calculateDamage();
-      this.animateEvent(player, "Attacking", returnedSpell.key);
+      this.animateEvent(player, "Attacking", returnedSpell);
       let opponent = this.getOpponent(player);
       opponent.takeDamage(returnedSpell.dmg);
       console.log(
@@ -164,7 +164,7 @@ class Game {
 
   animateAndDealDamage(player) {
     let spell = player.castSpell();
-    this.animateEvent(player, "Attacking", spell.key);
+    this.animateEvent(player, "Attacking", spell);
 
     let opponent = this.getOpponent(spell);
     opponent.takeDamage(spell.dmg);
@@ -185,12 +185,12 @@ class Game {
     this.update();
   }
 
-  animateEvent(player, type, spellKey) {
+  animateEvent(player, type, spell) {
     let color = player.id === this.playerOne.id ? "red" : "blue";
     let eventName = `${color}${type}`;
     this.broadcast(Constants.MSG.ANIMATIONS, {
       event: eventName,
-      spell: spellKey
+      spell: spell
     });
   }
 
