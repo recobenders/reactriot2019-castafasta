@@ -4,13 +4,17 @@ import styled, {css} from "styled-components";
 import Constants from "../../../../shared/constants";
 import { Card, Divider } from "antd";
 import Title from "antd/lib/typography/Title";
+import wiz_red from "./assets/redLP.png"
+import wiz_blue from "./assets/blueLP.png"
+
 const http = require("http");
 
 const Wrapper = styled.section`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Centered = styled.section`
@@ -23,6 +27,24 @@ const Description = styled.section`
   justify-content: center;
   text-align: center;
   font-size: 1.5em;
+  font-weight: bold;
+`;
+
+const Image = styled.img`
+    position: absolute;
+    width: 480px;
+    bottom: -70px;
+    ${({left}) => left ? "left: -200px;" : "right: -200px;"}
+    ${({left}) => `transform: 
+        rotate3d(0, ${left ? 0 : 1}, 0, 180deg)`
+    };
+`;
+
+const HoverAnimation = styled.div`
+       transition: all 1s ease-in-out
+       &:hover{
+           transform: scale(1.2)
+       }
 `;
 
 class LandingPage extends Component {
@@ -172,9 +194,15 @@ class LandingPage extends Component {
             <canvas id="canvas" style={{width: "100%", height: "100%", backgroundImage: "linear-gradient(#1a1aff, cyan)", zIndex: -1}} />
           </div>
         <Wrapper>
-          <Card style={{background: "rgba(255, 255, 255, .8)", borderRadius: "5px"}}>
+          <Card style={{position: "relative", background: "rgba(255, 255, 255, .8)", borderRadius: "5px", maxWidth:"60vw"}}>
             <Centered>
-              <Title style={{fontFamily: "OurFont", fontSize: "8em", fontWeight: 5}}>Casta Fasta</Title>
+              <HoverAnimation>
+                  <Title style={{
+                      fontFamily: "OurFont",
+                      fontSize: "10em",
+                      fontWeight: 10
+                  }}>Casta Fasta</Title>
+              </HoverAnimation>
             </Centered>
             <Description level={5}>
               Prepare yourself for some really fast magic duels with a very
@@ -191,6 +219,8 @@ class LandingPage extends Component {
                 Or visit this link to join the game.
               </a>
             </Centered>
+            <Image src={wiz_red} left />
+            <Image src={wiz_blue} />
           </Card>
         </Wrapper>
       </>
