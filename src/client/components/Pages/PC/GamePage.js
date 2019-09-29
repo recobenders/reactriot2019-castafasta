@@ -22,7 +22,6 @@ export class GamePage extends Component {
 
   componentDidMount() {
     this.props.socket.on(Constants.MSG.GAME_UPDATE, data => {
-      console.log(data);
       this.setState({
         game: data,
         loading: false,
@@ -30,12 +29,9 @@ export class GamePage extends Component {
       });
     });
 
-    this.props.socket.on(Constants.MSG.PLAYER_CAST_SPELL, data => {
-      if (data.player.id === this.props.userId) {
-        console.log(`I have casted a: ${data.spell.name}`);
-      } else {
-        console.log(`Opponent has casted a: ${data.spell.name}`);
-      }
+    this.props.socket.on(Constants.MSG.ANIMATIONS, ({ event, spell }) => {
+      console.log(event);
+      console.log(spell);
     });
   }
 
@@ -49,7 +45,14 @@ export class GamePage extends Component {
   }
 
   resolvedGamePage() {
-    return <Fragment><ResolutionPage game={this.state.game} currentUserId={this.props.userId} /></Fragment>;
+    return (
+      <Fragment>
+        <ResolutionPage
+          game={this.state.game}
+          currentUserId={this.props.userId}
+        />
+      </Fragment>
+    );
   }
 
   renderGamePage() {

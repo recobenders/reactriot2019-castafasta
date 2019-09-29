@@ -1,8 +1,20 @@
 const Constants = require("./constants");
 
 const spells = Object.freeze({
-  fireball: { id: 1, name: "Fireball", max_dmg: 200, numberOfSequences: 4 },
-  tornado: { id: 2, name: "Tornado", max_dmg: 400, numberOfSequences: 8 }
+  fireball: {
+    id: 1,
+    key: "fireball",
+    name: "Fireball",
+    max_dmg: 200,
+    numberOfSequences: 4
+  },
+  tornado: {
+    id: 2,
+    key: "tornado",
+    name: "Tornado",
+    max_dmg: 400,
+    numberOfSequences: 8
+  }
 });
 
 class Spell {
@@ -15,7 +27,9 @@ class Spell {
     return new Spell(spellStats);
   }
 
-  constructor({ name, max_dmg, numberOfSequences }) {
+  constructor({ id, key, name, max_dmg, numberOfSequences }) {
+    this.id = id;
+    this.key = key;
     this.name = name;
     this.max_dmg = max_dmg;
     this.dmg = 0;
