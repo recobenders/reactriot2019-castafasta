@@ -1,19 +1,22 @@
 import React, { Component } from "react";
+import styled from "styled-components"
 import AnimatedImage from "./AnimatedImage"
-import {spells} from "./config";
 
 class AnimatedSpell extends Component {
 
-  render() {
-      const {spellType, spellPower, direction } = this.props;
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        return nextProps.update;
+    }
+
+    render() {
+      const { spell } = this.props;
       return (
         <AnimatedImage
-            img={spells[spellType][spellPower]}
-            width={200}
-            direction={direction}
+            img={spell}
+            width={300}
         />
       );
-  }
+    }
 }
 
 export default AnimatedSpell
