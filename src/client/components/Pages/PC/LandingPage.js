@@ -6,6 +6,7 @@ import { Card, Divider } from "antd";
 import Title from "antd/lib/typography/Title";
 import wiz_red from "./assets/redLP.png"
 import wiz_blue from "./assets/blueLP.png"
+import tree from "./assets/tree.png"
 
 const http = require("http");
 
@@ -28,16 +29,30 @@ const Description = styled.section`
   text-align: center;
   font-size: 1.5em;
   font-weight: bold;
+  padding: 50px;
 `;
 
 const Image = styled.img`
     position: absolute;
     width: 480px;
     bottom: -70px;
-    ${({left}) => left ? "left: -200px;" : "right: -200px;"}
+    ${({left}) => left ? "left: -150px;" : "right: -150px;"}
     ${({left}) => `transform: 
         rotate3d(0, ${left ? 0 : 1}, 0, 180deg)`
     };
+    z-index: 10;
+`;
+
+const Tree = styled.img`
+    position: absolute;
+    width: ${({left}) => left ? "350px" : "420px"}
+    bottom: -60px;
+    ${({left}) => left ? "left: -300px;" : "right: -350px;"}
+    ${({left}) => `transform: 
+        rotate3d(0, ${left ? 0 : 1}, 0, 180deg)
+        `
+    };
+    z-index: 5;
 `;
 
 const HoverAnimation = styled.div`
@@ -109,7 +124,7 @@ class LandingPage extends Component {
         return {
             x: x,
             y: y,
-            r: 12 * s,
+            r: 20 * s,
             w: 5 * s,
             dx: dx,
             dy: dy,
@@ -204,7 +219,7 @@ class LandingPage extends Component {
                   }}>Casta Fasta</Title>
               </HoverAnimation>
             </Centered>
-            <Description level={5}>
+            <Description>
               Prepare yourself for some really fast magic duels with a very
               extraordinary twist. All you need to do is to keep this page opened
               and scan QR code on this page with your mobile phone.
@@ -221,6 +236,8 @@ class LandingPage extends Component {
             </Centered>
             <Image src={wiz_red} left />
             <Image src={wiz_blue} />
+            {/*<Tree src={tree} left />*/}
+            <Tree src={tree}  />
           </Card>
         </Wrapper>
       </>
