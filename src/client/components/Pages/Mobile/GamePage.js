@@ -8,7 +8,7 @@ import Title from "antd/lib/typography/Title";
 import SpellSelector from "../../Game/SpellSelector";
 import red from "../../Game/assets/red.png";
 import blue from "../../Game/assets/blue.png";
-
+import spells from "../../../../shared/spells";
 
 const Wrapper = styled.section`
   display: flex;
@@ -20,8 +20,8 @@ const Wrapper = styled.section`
 `;
 
 const Image = styled.img`
-    width: 100px;
-    margin-bottom: 20px;
+  width: 100px;
+  margin-bottom: 20px;
 `;
 
 export class GamePage extends Component {
@@ -29,30 +29,27 @@ export class GamePage extends Component {
     super(props);
 
     this.state = {
-      currentUserId: this.props.userId,
       activeCasting: false,
       activeSpell: null,
       game: null,
       loading: true,
       finished: false,
-      availableSpells: [],
-      player: null,
+      player: null
     };
   }
 
   componentDidMount() {
     this.props.socket.on(Constants.MSG.GAME_UPDATE, data => {
-      if (data.playerOne.id === this.state.currentUserId) {
+      if (data.playerOne.id === this.props.userId) {
         this.setState({
           activeCasting: data.playerOne.activeSpell !== null,
-          activeSpell: data.playerOne.activeSpell,
-          availableSpells: data.playerOne.availableSpells
+          activeSpell: data.playerOne.activeSpell
         });
-      } else {
+      }
+      if (data.playerTwo.id === this.props.userId) {
         this.setState({
           activeCasting: data.playerTwo.activeSpell !== null,
-          activeSpell: data.playerTwo.activeSpell,
-          availableSpells: data.playerTwo.availableSpells
+          activeSpell: data.playerTwo.activeSpell
         });
       }
 
@@ -68,7 +65,7 @@ export class GamePage extends Component {
     });
 
     this.props.socket.emit(Constants.MSG.USER_INFO, data => {
-      this.setState({player: data});
+      this.setState({ player: data });
     });
   }
 
@@ -93,7 +90,11 @@ export class GamePage extends Component {
   activeCastingGamePage() {
     return (
       <Fragment>
-        <Wand spell={this.state.activeSpell} socket={this.props.socket} player={this.state.player} />
+        <Wand
+          spell={this.state.activeSpell}
+          socket={this.props.socket}
+          player={this.state.player}
+        />
         <SpellForm handleFormSubmit={this.handleDamageSubmit.bind(this)} />
       </Fragment>
     );
@@ -148,7 +149,7 @@ export class GamePage extends Component {
       <Fragment>
         <div>Please select your spell:</div>
         <SpellSelector
-          spells={Object.values(this.state.availableSpells)}
+          spells={Object.values(spells)}
           handleSpellSelected={this.handleSpellClick.bind(this)}
         />
       </Fragment>

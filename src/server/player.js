@@ -1,5 +1,5 @@
 const Constants = require("../shared/constants");
-const Spell = require("../shared/spell");
+const Spell = require("./spell");
 
 class Player {
   constructor(id, username, sockets, bot) {
@@ -37,7 +37,7 @@ class Player {
   }
 
   processSpellStep(weight, capturedCode) {
-    if (!this.activeSpell) return null;
+    if (this.activeSpell) return null;
 
     if (this.activeSpell.currentRequiredSequence !== capturedCode) {
       return null;
@@ -90,8 +90,7 @@ class Player {
       activeSpell: this.activeSpell
         ? this.activeSpell.serializeForUpdate()
         : null,
-      state: this.state,
-      availableSpells: this.availableSpells()
+      state: this.state
     };
   }
 }

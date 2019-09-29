@@ -1,5 +1,5 @@
 const Constants = require("../shared/constants");
-const Spell = require("../shared/spell");
+const Spell = require("./spell");
 
 class Game {
   constructor(id, io, player_one, player_two) {
@@ -65,10 +65,7 @@ class Game {
       availableSpells[Math.floor(Math.random() * availableSpells.length)]
     ];
 
-    this.spellSelectedByPlayer(
-      this.bot,
-      this.bot.activeSpell.key
-    );
+    this.spellSelectedByPlayer(this.bot, this.bot.activeSpell.key);
 
     let spellTimeout = this.bot.activeSpell.requiredSequences.length * 1000;
 
@@ -139,7 +136,6 @@ class Game {
     );
     player.selectSpell(spellKey);
     this.animateEvent(player, "Conjuring");
-
     this.updatePlayer(player);
     this.update();
   }
