@@ -611,9 +611,16 @@ function start(debug) {
 		} 
 	}
 
-	subscription = observeMovementDirections(debugPlotDataCallback, fake)
-						.do(d => showDirection(d, "direction"))
-						.subscribe(direction => { }, (e) => console.log(e), () => { });
+	let directions = observeMovementDirections(debugPlotDataCallback, fake)
+	
+	if (debug) {
+		directions = directions.do(d => showDirection(d, "direction"));
+	}
+						
+	subscription = directions.subscribe(d => { 
+		console.log(d.value.code);
+      	console.log(`${d.value.x} ${d.value.y} ${d.value.weight}`);
+	}, (e) => console.log(e), () => { });
 }
 
 
