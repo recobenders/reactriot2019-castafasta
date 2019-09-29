@@ -8,9 +8,9 @@ const spells = Object.freeze({
     max_dmg: 200,
     numberOfSequences: 4
   },
-  ice: {
+  iceblast: {
     id: 2,
-    key: "ice-blast",
+    key: "iceblast",
     name: "Ice Blast",
     max_dmg: 250,
     numberOfSequences: 5
@@ -36,8 +36,8 @@ class Spell {
     return spells;
   }
 
-  static getSpell(name) {
-    let spellStats = spells[name];
+  static getSpell(key) {
+    let spellStats = spells[key];
     return new Spell(spellStats);
   }
 
