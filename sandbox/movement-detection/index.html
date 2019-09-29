@@ -5,24 +5,14 @@
     </head>
     <body>
         <b>Sensor:</b>
-        <input type="radio" name="sensor" value="fake" /> fake
-        <input type="radio" name="sensor" value="event" /> event
-        <input type="radio" name="sensor" value="api" /> api
-        <input type="radio" name="sensor" value="orientation" checked="checked"  /> orientation
-        |
         <input type="checkbox" name="sensor" value="fake" id="fake-switch" /> fake
-        |
-        <b>Frequency:</b>
-        <input type="number" value="60" name="frequency" style="width: 70px;" />
-        <button id="init" style="width: 70px">init</button>
+       
         <button id="start" class="button-start" style="width: 70px">start</button>
         <button id="start_debug" class="button-start" style="width: 70px">debug</button>
         <button id="stop" style="width: 70px" disabled="disabled">stop</button>
         
         <div id="plot"></div>
     
-        <!-- <canvas id="chart" style="width:100%; height:200px"></canvas> -->
-        
         <div id="charts" style="width:100%"></div>
 
         <div>
