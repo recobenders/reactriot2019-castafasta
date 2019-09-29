@@ -21,6 +21,7 @@ const Hp = styled.section`
   align-items: center
   z-index: 10
   font-weight: bold
+  font-size: 1.2em
   text-shadow: 2px 2px 3px #000000
 `;
 
