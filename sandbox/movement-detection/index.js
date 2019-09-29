@@ -6,12 +6,64 @@
 // https://stackoverflow.com/questions/42176603/getting-a-trajectory-from-accelerometer-and-gyroscope-imu
 
 // https://codepen.io/vankusik/pen/MWgRvNN
-function log(id, value) { 
+function log(id, value) {
 	document.getElementById(id).innerHTML = value;
 }
 
 
-const EventTargetBase = (function() {
+const Constants = Object.freeze({
+	DIRECTION_DETECTION: {
+		SUPPORTED_FILTERS: {
+			LOW_PASS: "lowPass",
+			EXPONENTIAL: "exponential",
+			THRESHOLD: "threshold",
+			INTEGRATION: "integrate",
+		},
+		PIPELINE: [
+			{
+				NAME: "smooth_raw",
+				FILTERS: [
+					{
+						TYPE: "lowPass",
+						WINDOW_SIZE: 5
+					},
+					{ 
+						TYPE: "threshold",
+						THRESHOLD_VALUE: 0.07 
+					}
+				]
+			},
+			{
+				NAME: "velocity",
+				FILTERS: [
+				{
+					TYPE: "integrate",
+					RESET: {
+						THRESHOLD_VALUE: 0.02,
+						SAMPLES_COUNT_LIMIT: 4
+					},
+				},
+				{ 
+					TYPE: "threshold",
+					THRESHOLD_VALUE: 0.02 
+				},
+				{ 
+					TYPE: "lowPass",
+					THRESHOLD_VALUE: 15
+				}
+			]
+		}
+		],
+		DIRECTION: {
+			DISTANCE_THRESHOLD_MIN: 0.2,
+			GROUP_THRESHOLD_MIN : 100,
+			GROUP_THRESHOLD_MAX : 400,
+		}
+	}
+});
+
+
+const EventTargetBase = (function () {
 	function EventTargetBase() {
 		this.listeners = {};
 	}
@@ -19,65 +71,65 @@ const EventTargetBase = (function() {
 	const proto = EventTargetBase.prototype;
 	proto.listeners = null;
 
-	proto.addEventListener = function(type, callback) {
-	  console.log("listener");
-	  if (!(type in this.listeners)) {
-		this.listeners[type] = [];
-	  }
-	  this.listeners[type].push(callback);
-	};
-	
-	proto.removeEventListener = function(type, callback) {
-	  if (!(type in this.listeners)) {
-		return;
-	  }
-	  var stack = this.listeners[type];
-	  for (var i = 0, l = stack.length; i < l; i++) {
-		if (stack[i] === callback){
-		  stack.splice(i, 1);
-		  return;
+	proto.addEventListener = function (type, callback) {
+		console.log("listener");
+		if (!(type in this.listeners)) {
+			this.listeners[type] = [];
 		}
-	  }
+		this.listeners[type].push(callback);
 	};
-	
-	proto.dispatchEvent = function(event) {
-	  if (!(event.type in this.listeners)) {
-		return true;
-	  }
-	  var stack = this.listeners[event.type].slice();
-	
-	  for (var i = 0, l = stack.length; i < l; i++) {
-		stack[i].call(this, event);
-	  }
-	  return !event.defaultPrevented;
+
+	proto.removeEventListener = function (type, callback) {
+		if (!(type in this.listeners)) {
+			return;
+		}
+		var stack = this.listeners[type];
+		for (var i = 0, l = stack.length; i < l; i++) {
+			if (stack[i] === callback) {
+				stack.splice(i, 1);
+				return;
+			}
+		}
+	};
+
+	proto.dispatchEvent = function (event) {
+		if (!(event.type in this.listeners)) {
+			return true;
+		}
+		var stack = this.listeners[event.type].slice();
+
+		for (var i = 0, l = stack.length; i < l; i++) {
+			stack[i].call(this, event);
+		}
+		return !event.defaultPrevented;
 	};
 
 	return EventTargetBase;
 })();
 
 
-const Helpers = (function() {
+const Helpers = (function () {
 	function Helpers() { }
 
-	Helpers.extend = function(thisClass, extendedClass) {
-        thisClass.prototype = Object.create(extendedClass.prototype);
-        thisClass.prototype.constructor = thisClass;
+	Helpers.extend = function (thisClass, extendedClass) {
+		thisClass.prototype = Object.create(extendedClass.prototype);
+		thisClass.prototype.constructor = thisClass;
 
-        return thisClass.prototype;
+		return thisClass.prototype;
 	};
-	
+
 	return Helpers;
 })();
 
 
-const FakeAccelerometer = (function() {
+const FakeAccelerometer = (function () {
 	function FakeAccelerometer(frequency) {
 		this._interval = null;
 		this._frequency = frequency;
 
 		EventTargetBase.prototype.constructor.call(this);
 	}
-	
+
 	const proto = Helpers.extend(FakeAccelerometer, EventTargetBase);
 
 	function next(target) {
@@ -86,16 +138,16 @@ const FakeAccelerometer = (function() {
 		target.z = (Math.random() - 0.5) * 10;
 	}
 
-	proto.start = function() {
+	proto.start = function () {
 		console.log("start");
-		this._interval = setInterval(() => { 
+		this._interval = setInterval(() => {
 			let ev = new Event("reading");
 			next(ev);
 			this.dispatchEvent(ev);
 		}, Math.round(1000.0 / this._frequency));
 	}
 
-	proto.stop = function() {
+	proto.stop = function () {
 		console.log("stop");
 		if (this._interval) {
 			clearInterval(this._interval);
@@ -107,7 +159,7 @@ const FakeAccelerometer = (function() {
 })();
 
 
-const EventBasedAccelerometer = (function() {
+const EventBasedAccelerometer = (function () {
 	function EventBasedAccelerometer(frequency, includeGravity) {
 		if (!window.DeviceMotionEvent) {
 			let error = new Error("not supported");
@@ -120,7 +172,7 @@ const EventBasedAccelerometer = (function() {
 
 		EventTargetBase.prototype.constructor.call(this);
 	}
-	
+
 	const proto = Helpers.extend(EventBasedAccelerometer, EventTargetBase);
 
 	function createListener(target) {
@@ -134,7 +186,7 @@ const EventBasedAccelerometer = (function() {
 		};
 	}
 
-	proto.start = function() {
+	proto.start = function () {
 		console.log("start");
 
 		let listener = createListener(this);
@@ -146,11 +198,11 @@ const EventBasedAccelerometer = (function() {
 		window.addEventListener("devicemotion", listener);
 	}
 
-	proto.stop = function() {
+	proto.stop = function () {
 		console.log("stop");
 		let subscription = this._subscription;
 		this._subscription = null;
-		
+
 		if (subscription) {
 			subscription.dispose();
 		}
@@ -160,20 +212,20 @@ const EventBasedAccelerometer = (function() {
 })();
 
 
-const SensorAPIAccelerometer = (function() {
+const SensorAPIAccelerometer = (function () {
 	function SensorAPIAccelerometer(frequency, includeGravity) {
 		let sensorConstructor = includeGravity ? Accelerometer : LinearAccelerationSensor;
-		
-		this._sensor = new sensorConstructor({ referenceFrame: "device", frequency: frequency})
+
+		this._sensor = new sensorConstructor({ referenceFrame: "device", frequency: frequency })
 		this._frequency = frequency;
 		this._subscription = null;
 
 		EventTargetBase.prototype.constructor.call(this);
 	}
-	
+
 	const proto = Helpers.extend(SensorAPIAccelerometer, EventTargetBase);
 
-	proto.start = function() {
+	proto.start = function () {
 		console.log("start");
 
 		let listener = (event) => {
@@ -192,7 +244,7 @@ const SensorAPIAccelerometer = (function() {
 		this._sensor.start();
 	}
 
-	proto.stop = function() {
+	proto.stop = function () {
 		console.log("stop");
 		if (this._subscription) {
 			this._subscription.dispose();
@@ -221,14 +273,14 @@ function init(frequency) {
 
 	let selectedSensor = null;
 	switch (selectedSensorName) {
-		case "fake" :
+		case "fake":
 			selectedSensor = FakeAccelerometer;
 			break;
 		case "api":
 			selectedSensor = SensorAPIAccelerometer;
 			break;
 		default:
-		case "event": 
+		case "event":
 			selectedSensor = EventBasedAccelerometer;
 			break;
 	}
@@ -244,7 +296,7 @@ function init(frequency) {
 	} catch (error) {
 		accelerometer = new FakeAccelerometer(frequency);
 		log("device", "fake");
-		
+
 		// Handle construction errors.
 		if (error.name === "SecurityError") {
 			// See the note above about feature policy.
@@ -256,7 +308,7 @@ function init(frequency) {
 		}
 	}
 
-	document.getElementById("start").disabled = false;
+	Array.from(document.getElementsByClassName("button-start")).forEach(b => b.disabled = false);
 
 	return accelerometer;
 }
@@ -265,37 +317,40 @@ function init(frequency) {
 function watchSensor(sensor, listener) {
 	if (sensor) {
 		return Rx.Observable.create((observer) => {
-			let eventListener = (ev) => listener(sensor, observer, ev);	
-			
-			sensor.addEventListener("reading", eventListener);
+			let eventListener = (ev) => listener(sensor, observer, ev);
+
 			sensor.start();
-			
+			sensor.addEventListener("reading", eventListener);
+
 			return Rx.Disposable.create(() => {
 				sensor.stop();
-				sensor.removeEventListener("reading", eventListener);	
+				sensor.removeEventListener("reading", eventListener);
 			});
 		});
 	}
 }
 
+
+/// <begin>
+/// for debug only:
 const chartsRootElement = document.getElementById("charts");
 const charts = {};
 
-const colors = [ [0, 255, 0], [255, 0, 0], [0, 0, 255] ];
+const colors = [[0, 255, 0], [255, 0, 0], [0, 0, 255]];
+
 function createBrush(color, alpha) {
 	return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`;
 }
 
-
 function addLabel(observable, parentElement, name) {
 	let seriesLabel = document.createElement("span");
-		
+
 	parentElement.appendChild(seriesLabel);
-	
+
 	seriesLabel.innerHTML = `${name}: `;
 
 	let seriesValueLabel = document.createElement("span");
-	
+
 	seriesValueLabel.setAttribute("style", "width: 50px; display: inline-block");
 
 	seriesLabel.appendChild(seriesValueLabel);
@@ -304,9 +359,8 @@ function addLabel(observable, parentElement, name) {
 	return observable.do(d => seriesValueLabel.innerHTML = d.value.toFixed(2));
 }
 
-
 function plot(observable, target, color, label, log) {
-	let chart = (target && charts[target]) || new SmoothieChart({responsive: true});
+	let chart = (target && charts[target]) || new SmoothieChart({ responsive: true });
 
 	let series = new TimeSeries();
 	chart.addTimeSeries(series, { strokeStyle: createBrush(colors[color], 1), fillStyle: createBrush(colors[color], 0.2), lineWidth: 4 });
@@ -324,18 +378,18 @@ function plot(observable, target, color, label, log) {
 		chartPanel.appendChild(chartLabel);
 		chartLabel.innerHTML = `${target}: `;
 		chartLabel.classList.add("chart-label");
-		
+
 		chartPanel.appendChild(document.createElement("br"));
 
 		chartElement = document.createElement("canvas");
 		chartElement.setAttribute("id", chartElementId);
 		chartElement.setAttribute("style", "width:100%; height:200px");
-		
+
 		chartPanel.appendChild(chartElement);
 
 		chart.streamTo(chartElement, 500);
 	}
-	
+
 	if (label) {
 		observable = addLabel(observable, chartElement.parentElement.getElementsByClassName("chart-label")[0], label);
 	}
@@ -352,6 +406,21 @@ function plot(observable, target, color, label, log) {
 }
 
 
+function showDirections(directions, elementId) {
+	const map = {
+		  "LEFT": "&lArr;"
+		, "UP": "&uArr;"
+		, "RIGHT": "&rArr;"
+		, "DOWN": "&dArr;"
+	};
+  
+	return directions.do(d => { 
+		console.log(`${d.value.x} ${d.value.y} ${d.value.weight}`); 
+		document.getElementById(elementId).innerHTML = `${(d.value.code && map[d.value.code]) || ""} ${parseFloat(d.value.weight).toFixed(2)}`; 
+	});
+}
+/// <end> 
+
 
 var subscription = null;
 
@@ -361,141 +430,111 @@ function exponentialSmoothing(previous, current, alpha) {
 }
 
 
-function smoothMovingAverage(source, windowSize) {
-	return source.bufferWithCount(windowSize, 1)
-					.bufferWithCount(2, 1)
-					.scan((previous, buffers) => {
-						let sum = 0;
-						if (previous == null) {
-							sum = buffers[1].reduce((a, b) => a + b.value, 0); // sum of current 
-						}
-						else {
-							sum = previous.value - buffers[0][0].value + buffers[1][buffers[1].length - 1].value;
-						}
-						return new Value(sum, buffers[1][buffers[1].length - 1].timestamp, buffers[1][buffers[1].length - 1].id);
-					}, null)
-					.select(sum => new Value(sum.value / windowSize, sum.timestamp, sum.id));
-}
-
-
-function smoothExponential(x, alpha) {
+function exponentialSmoothingFilter(source, alpha) {
 	alpha = alpha || 0.3;
-	return x.scan((previous, current) => new Value(exponentialSmoothing(previous.value, current.value, alpha), current.timestamp, current.id));
+	return source.scan((previous, current) => new Value(exponentialSmoothing(previous.value, current.value, alpha), current.timestamp, current.id));
 }
 
 
-function integrationWithReset(x, resetSize, resetLimit) {
-	resetSize  = resetSize  || 0.05;
-	resetLimit = resetLimit || 25;
+function mapArrayOverlapping(arr, callback) {
+	result = [];
+	for (let i = 1; i < arr.length; i++) {
+		result.push(callback(arr[i - 1], arr[i]));
+	}
+
+	return result;
+}
+
+function lowPassSmoothingFilter(source, windowSize, getValue, getWindowSize) {
+	windowSize = windowSize || 5;
+	getValue = getValue || (item => (item && item.value) || 0);
+	getWindowSize = getWindowSize || (arr => (arr && arr.length) || 0);
+
+	return source.bufferWithCount(windowSize, 1)
+		.bufferWithCount(2, 1)
+		.scan((previous, buffers) => {
+			let value = 0;
+			let size = 0;
+			if (previous == null) {	// if first window, sum all the values
+				value = buffers[1].reduce((a, b) => a + getValue(b), 0);
+				size = getWindowSize(buffers[1]);
+			}
+			else {	// otherwise, subtract first value of the previous window and add only the last value from the new window (windows overlap with 1 sample)
+				value = previous.value - getValue(buffers[0][0]) + getValue(buffers[1][buffers[1].length - 1]);
+				size = previous.size - getWindowSize([ buffers[0][0], buffers[1][0] ]) + getWindowSize([ buffers[0][buffers[0].length - 1], buffers[1][buffers[1].length - 1] ]); 
+			}
+			let pivot = buffers[1][Math.floor(buffers[1].length / 2)];
+			return { value: value, pivot: pivot, size: size };
+		}, null)
+		.select(window => new Value(window.value / window.size, window.pivot.timestamp, window.pivot.id));
+}
+
+
+function integrate(fa, fb, a, b) {
+	return ((fa + fb) / 2) * (b - a);
+}
+
+
+// cumulative
+function integrationWithReset(x, resetThreshold, resetCountLimit) {
+	resetThreshold = resetThreshold || 0.05;
+	resetCountLimit = resetCountLimit || 25;
 
 	let count = 0;
 
 	return x.bufferWithCount(2, 1)
-			.where(buffer => buffer.length > 1)
-			.select(buffer => { return { previous: buffer[0], current: buffer[buffer.length - 1] }; })
-			.scan((result, samples) => {
-				let previousResult = result ? result.value : 0;
+		.where(buffer => buffer.length == 2)
+		.select(buffer => { return { previous: buffer[0], current: buffer[buffer.length - 1] }; })
+		.scan((result, samples) => {
+			let previousResult = result ? result.value : 0;
 
-				if (samples.current.value >= -resetSize && samples.current.value <= resetSize) {
-					count++;
-				}
-				else {
-					count = 0;
-				}
+			if (samples.current.value >= -resetThreshold && samples.current.value <= resetThreshold) {
+				count++;
+			}
+			else {
+				count = 0;
+			}
 
-				if (result && result.id === samples.current.id) {
-					console.log("SAME ID: integrationWithReset");
-				}
-
-				if (count < resetLimit) {
-					return new Value(previousResult + ((samples.previous.value + samples.current.value) / 2) * ((samples.current.timestamp - samples.previous.timestamp) / 1000.0), samples.current.timestamp, samples.current.id);
-				}
-				else {
-					return new Value(0.0, samples.current.timestamp, samples.current.id);
-				}
-			}, null);
+			if (count < resetCountLimit) {
+				return new Value(previousResult + integrate(samples.previous.value, samples.current.value, samples.previous.timestamp, samples.current.timestamp) / 1000.0, samples.current.timestamp, samples.current.id);
+			}
+			else {
+				return new Value(0.0, samples.current.timestamp, samples.current.id);
+			}
+		}, 
+		null);
 }
 
 
+// cumulative
 function integration(x) {
 	return x.bufferWithCount(2, 1)
-			.where(buffer => buffer.length == 2)
-			.select(buffer => { return { previous: buffer[0], current: buffer[buffer.length - 1] }; })
-			.scan((result, samples) => { 
-					let previousResult = result ? result.value : 0;
-					
-					if (result && result.id === samples.current.id) {
-						console.log("SAME ID: integration");
-					}
+		.where(buffer => buffer.length == 2)
+		.select(buffer => ({ previous: buffer[0], current: buffer[buffer.length - 1] }))
+		.scan((result, samples) => {
+			let previousResult = result ? result.value : 0;
 
-					return new Value(previousResult + ((samples.previous.value + samples.current.value)/2) * ((samples.current.timestamp - samples.previous.timestamp) / 1000.0), samples.current.timestamp, samples.current.id);
-				},
-				null);
+			return new Value(previousResult + integrate(samples.previous.value, samples.current.value, samples.previous.timestamp, samples.current.timestamp) / 1000.0, samples.current.timestamp, samples.current.id);
+		},
+		null);
 }
 
 
-
-
-function calibrate(x, samples) {
-	return x.take(samples).average();
-}
-
-
-function clampOut(source, size) {
+function thresholdFilter(source, threshold) {
 	return source.select(v => {
-		return (v.value >= -size && v.value <= size)
-			 ? new Value(0, v.timestamp, v.id)
-			 : v;
-	})
+		return new Value(
+			(v.value >= -threshold && v.value <= threshold) ? 0 : v.value,
+			v.timestamp,
+			v.id
+		);
+	});
 }
-
-
-// function reset(source, reference, size, limit) {
-// 	size  = size  || 0.05;
-// 	limit = limit || 25;
-	  
-// 	let resets = Rx.Observable.create(observer => {
-// 		let count = 0;
-
-// 		return reference.subscribe(v => {
-// 			if (v.value >= -size && v.value <= size) {
-// 				count++;
-// 			}
-// 			else {
-// 				count = 0;
-// 			}
-
-// 			// observer.onNext(new Value(count >= limit, v.timestamp));
-// 			observer.onNext(count >= limit ? "reset" : "source");
-// 		});
-// 	});
-
-// 	return Rx.Observable.create(observer => {
-// 		let isResetting = false;
-// 		return source.bufferWithCount(2,2).merge(resets).subscribe(v => {
-// 			if (v === "reset") {
-// 				isResetting = true;
-// 				//console.log("reset");
-// 			}
-// 			else if (v === "source") {
-// 				isResetting = false;
-// 				//console.log("source");
-// 			}
-// 			else
-// 			{
-// 				//console.log(v[0].id);
-// 				observer.onNext(isResetting ? new Value(0, v[0].timestamp, v[0].id) : v[0]);
-// 				observer.onNext(isResetting ? new Value(0, v[1].timestamp, v[1].id) : v[1]);
-// 			}
-// 		})
-// 	});
-// }
 
 
 const FREQUENCY = 60;
 
 
-const Value = (function() {
+const Value = (function () {
 	function Value(value, timestamp, id) {
 		this.value = value;
 		this.timestamp = timestamp;
@@ -505,23 +544,24 @@ const Value = (function() {
 	return Value;
 })();
 
-const CALIBRATION_TIME = 2000;
 
-const map = {
-  "-100" : "&lArr;"
-, "010"  : "&uArr;"
-, "100"  : "&rArr;"
-, "0-10" : "&dArr;"
-, "-110" : "&nwArr;"
-, "110"  : "&neArr;"
-, "1-10" : "&seArr;"
-, "-1-10" : "&swArr;"
-};
-
-function combine(x, y, z) {
-	return Rx.Observable.zip(x, y, z, (x, y, z) => 
+function toVector2(x, y) {
+	return Rx.Observable.zip(x, y, (x, y) =>
 		new Value(
-			{ 
+			{
+				x: x.value,
+				y: y.value,
+			},
+			x.timestamp,
+			x.id
+		)
+	).share();
+}
+
+function toVector3(x, y, z) {
+	return Rx.Observable.zip(x, y, z, (x, y, z) =>
+		new Value(
+			{
 				x: x.value,
 				y: y.value,
 				z: z.value
@@ -532,100 +572,94 @@ function combine(x, y, z) {
 	).share();
 }
 
-function directionChanges2(velocity, windowSize) {
-	windowSize = windowSize || 11; 
-	return velocity.bufferWithCount(windowSize, 1)
-		.where(buffer => buffer.length == windowSize)
-		.select(buffer => { 
-			let avgX = buffer.reduce((sum, item) => sum + item.value.x, 0) / windowSize;
-			let avgY = buffer.reduce((sum, item) => sum + item.value.y, 0) / windowSize;
-			let avgZ = buffer.reduce((sum, item) => sum + item.value.z, 0) / windowSize;
-
-			let change = {
-				x: avgX,
-				y: avgY,
-				z: avgZ
-			};
-
-			let pivot = buffer[Math.floor(buffer.length / 2)];
-			return new Value(change, pivot.timestamp, pivot.id);
-		})
+function reduceVector3to2(vectors, component1, component2) { 
+	return vectors.select(v => 
+		new Value(
+			{
+				x: v.value[component1],
+				y: v.value[component2]
+			},
+			v.timestamp,
+			v.id
+		)
+	);
 }
+
 
 
 // smooth ?
-function directionChanges(xyz, windowSize) {
-	windowSize = windowSize || 11;
-	// windowStep = Math.floor(windowSize / 2);
-	return xyz.bufferWithCount(windowSize, 1)
-			.where(buffer => buffer.length == windowSize)
-			.select(buffer => { return { begin: buffer[0], end: buffer[buffer.length - 1], middle: buffer[Math.floor(buffer.length / 2)] }; })
-			.select(positions =>  {
-				// let length = Math.abs(positions.end.value - positions.begin.value);
-				// let direction = length > epsilon ? (positions.end.value - positions.begin.value) : 0.0;
-				let change = {
-					x: positions.end.value.x - positions.begin.value.x,
-					y: positions.end.value.y - positions.begin.value.y,
-					z: positions.end.value.z - positions.begin.value.z
-				}
-				return new Value(change, positions.middle.timestamp, positions.middle.id);
-			});
+// function directionChanges(xyz, windowSize) {
+// 	windowSize = windowSize || 11;
+// 	// windowStep = Math.floor(windowSize / 2);
+// 	return xyz.bufferWithCount(windowSize, 1)
+// 		.where(buffer => buffer.length == windowSize)
+// 		.select(buffer => { return { begin: buffer[0], end: buffer[buffer.length - 1], middle: buffer[Math.floor(buffer.length / 2)] }; })
+// 		.select(positions => {
+// 			// let length = Math.abs(positions.end.value - positions.begin.value);
+// 			// let direction = length > epsilon ? (positions.end.value - positions.begin.value) : 0.0;
+// 			let change = {
+// 				x: positions.end.value.x - positions.begin.value.x,
+// 				y: positions.end.value.y - positions.begin.value.y,
+// 				z: positions.end.value.z - positions.begin.value.z
+// 			}
+// 			return new Value(change, positions.middle.timestamp, positions.middle.id);
+// 		});
+// }
+
+
+
+
+function getRelativeDirections(changes) {
+	const zero = { x: 0.0, y: 0.0, z: 0.0 };
+	//minDiff = minDiff || 0.5;
+
+	return changes.select(change => {
+			let vector = change.value;
+			let max = Math.max(Math.abs(vector.x), Math.abs(vector.y), Math.abs(vector.z));
+			
+			let directionVector = zero;
+			if (max > 0) {
+				directionVector = { 
+					x: vector.x / max,
+					y: vector.y / max,
+					z: vector.z / max
+				};
+			}
+
+			return new Value(directionVector, change.timestamp, change.id);
+		});
 }
 
 
-function directions(changes, minDiff) {
-	const zero = { x: 0.0, y: 0.0, z: 0.0 };
-	minDiff = minDiff || 0.5;
+// function codeDirections(directions) {
+// 	return directions.select(direction => )
+// }
 
-	return changes.select(change => {
-		vector = change.value;
-		let max = Math.max(Math.abs(vector.x), Math.abs(vector.y), Math.abs(vector.z));
-		let dirVector = zero;
 
-		if (max > 0) {
-			dirVector = {
-				x: vector.x / max,
-				y: vector.y / max,
-				z: vector.z / max
-			};
+function evaluateDirections(directions, codesTable) {
+	const getDirectionCode = function(value, codes) {
+		if (value < 0) 
+			return codes[0];
+		else if (value > 0)
+			return codes[2];
+		return codes[1];
+	}
 
-			dirVector = {
-				x: Math.abs(dirVector.x) > minDiff ? (dirVector.x / Math.abs(dirVector.x)) : 0.0,
-				y: Math.abs(dirVector.y) > minDiff ? (dirVector.y / Math.abs(dirVector.y)) : 0.0,
-				z: Math.abs(dirVector.z) > minDiff ? (dirVector.z / Math.abs(dirVector.z)) : 0.0
-			}
-		}
+	return directions.select(direction => {
+		let directionX = getDirectionCode(direction.x, codesTable.X);
+		let directionY = getDirectionCode(direction.y, codesTable.Y);
+		let directionZ = getDirectionCode(direction.z, codesTable.Z);
+		
+		let code = `${directionX}${directionY}${directionZ}`;
 
-		return new Value(dirVector, change.timestamp, change.id);
+		return new Value(
+			Object.assign({ code: code }, direction),
+			change.timestamp,
+			change.id
+		);
 	});
 }
 
-function plotVector(vectors, target, log) {
-	let x = plot(vectors.select(v => new Value(v.value.x, v.timestamp, v.id)), target, 0, "X", log && log[0]);
-	let y = plot(vectors.select(v => new Value(v.value.y, v.timestamp, v.id)), target, 1, "Y", log && log[1]);
-	let z = plot(vectors.select(v => new Value(v.value.z, v.timestamp, v.id)), target, 2, "Z", log && log[2]);
-
-	return combine(x, y, z);
-}
-
-function toArrow(directions) {
-	return directions.select((vector) => 
-			{ 
-				let fixedX = vector.value.x.toFixed(0);
-				let fixedY = vector.value.y.toFixed(0);
-				let fixedZ = vector.value.z.toFixed(0);
-
-				let key = `${fixedX}${fixedY}0`;
-				let keyAlt = `${fixedX}${fixedZ}0`;
-				
-				return new Value(map[key] || map[keyAlt] || "", vector.timestamp, vector.id);
-			});
-}
-
-
-function showArrow(arrows) {
-	return arrows.do(arrow => { console.log(arrow); return document.getElementById("direction").innerHTML = arrow; });
-}
 
 function bufferUntil(source, predicate) {
 	return Rx.Observable.create((observer) => {
@@ -637,148 +671,189 @@ function bufferUntil(source, predicate) {
 					isFirst = false;
 					firstValue = v;
 				}
-				else if (predicate(firstValue, v))
-				{
+				else if (predicate(firstValue, v)) {
 					isFirst = false;
 					firstValue = v;
-					closings.onNext({ });
+					closings.onNext({});
 				}
 			})
-	 	    .buffer(() => closings)
-	 	    .subscribe(observer);
+			.buffer(() => closings)
+			.subscribe(observer);
 	});
 }
 
-function groupArrows(arrows) {
-	return bufferUntil(arrows, (a, b) => a.value !== b.value || b.timestamp - a.timestamp > 400)
-			.select(buffer => {
-				if ((buffer[buffer.length - 1].timestamp - buffer[0].timestamp) > 300) {
-					return buffer[0].value;
-				}
-				return null;
-			})
-			.where(a => a != null);
+
+function getMaxDirection(x, threshold) {
+	return x.select(v => {
+		let x = v.value.x;
+		let y = v.value.y;
+		let z = v.value.z;
+		let xLength = Math.abs(x);
+		let yLength = Math.abs(y);
+		let zLength = Math.abs(z);
+
+		let totalLength = xLength + yLength + zLength;
+
+		// let diff = xLength - yLength;
+
+		let direction = { x: 0, y: 0, weight: 0.0 };
+		
+		if (xLength > zLength && xLength > threshold) {
+			direction.x = parseInt((x / xLength).toFixed(0));
+			direction.weight = xLength / totalLength;
+		}
+		else if (xLength < zLength && zLength > threshold) {	// Z will be Y in 2d
+			direction.y = parseInt((z / zLength).toFixed(0));
+			direction.weight = zLength / totalLength;
+		}
+
+		return new Value(direction, v.timestamp, v.id);
+	});
 }
 
-// public static IObservable<IList<T>> Buffer<T>(this IObservable<T> source, Func<T, bool> closeBufferPredicate)
-//         {
-//             return Observable.Create<IList<T>>(
-//                 observer =>
-//                 {
-//                      bool isFirst = true;
-                    // T firstValue = default(T);
-                    // var closings = new Subject<Unit>();
 
-                    // return source.Do(value =>
-                    //              {
-                    //                  if (isFirst)
-                    //                  {
-                    //                      isFirst = false;
-                    //                      firstValue = value;
-                    //                  }   
-                    //                  else if (closeBufferPredicate.Invoke(firstValue, value))
-                    //                  {
-                    //                      isFirst = false;
-                    //                      firstValue = value;
-                    //                      closings.OnNext(Unit.Default);
-                    //                  }
-                    //              })
-                    //              .Buffer(() => closings)
-                    //              .Subscribe(observer);
-//                 });
-//         }
+function groupDirections(directions, minThreshold, maxThreshold) {
+	return bufferUntil(directions, (a, b) => (a.value.x !== b.value.x  || a.value.y !== b.value.y) || b.timestamp - a.timestamp > maxThreshold)
+		.select(buffer => {
+			let duration = Math.abs(buffer[buffer.length - 1].timestamp - buffer[0].timestamp);
+			if (duration > minThreshold) {
+				let values = mapArrayOverlapping(buffer, (previous, current) => current.value.weight * (current.timestamp - previous.timestamp));
+				let avgWeight = values.reduce((sum, value) => sum + value, 0) / duration;
+				return new Value({ x: buffer[0].value.x, y: buffer[0].value.y, weight: avgWeight }, buffer[buffer.length - 1].timestamp, buffer[buffer.length - 1].id);
+			}
+			return null;
+		})
+		.where(a => a != null);
+}
+
+
+function codeDirections(directions) {
+	const codeDirection = function(d) {
+		if (d.x == 0) {
+			if (d.y == 1)
+				return "UP";
+			else if (d.y == -1)
+				return "DOWN";
+		}
+		else if (d.y == 0) {
+			if (d.x == 1)
+				return "RIGHT";
+			else if (d.x == -1)
+				return "LEFT";
+		}
+
+		return "";
+	};
+	return directions.select(d => new Value(Object.assign({ code: codeDirection(d.value) }, d.value), d.timestamp, d.id));
+}
+
+
+
+
+function applyFilters(series, filters) {
+	for (let i = 0; i < series.length; i++) {
+		filters.forEach(filter => {
+			switch (filter.TYPE) {
+				case Constants.DIRECTION_DETECTION.SUPPORTED_FILTERS.LOW_PASS:
+					series[i] = lowPassSmoothingFilter(series[i], filter.WINDOW_SIZE, v => v.value, w => w.length);
+					break;
+				case Constants.DIRECTION_DETECTION.SUPPORTED_FILTERS.EXPONENTIAL:
+					series[i] = exponentialSmoothingFilter(series[i], fiter.ALPHA);
+					break;
+				case Constants.DIRECTION_DETECTION.SUPPORTED_FILTERS.THRESHOLD:
+					series[i] = thresholdFilter(series[i], filter.THRESHOLD_VALUE);
+					break;
+				case Constants.DIRECTION_DETECTION.SUPPORTED_FILTERS.INTEGRATION:
+					if (filter.RESET) {
+						series[i] = integrationWithReset(series[i], filter.RESET.THRESHOLD_VALUE, filter.RESET.SAMPLES_COUNT_LIMIT);
+					}
+					else {
+						series[i] = integration(series[i]);
+					}
+					break;
+			}
+
+			console.log(filter.TYPE);
+		});
+	}
+
+	return series;
+}
 
 
 function start() {
-	const samplingTime = Math.round(1000.0 / FREQUENCY);
-
-	document.getElementById("start").disabled = true;
+	Array.from(document.getElementsByClassName("button-start")).forEach(b => b.disabled = true);
 	document.getElementById("init").disabled = true;
 	document.getElementById("stop").disabled = false;
 
-	let id = 0;
-	let data = watchSensor(accelerometer, (sensor, observer, ev) => { observer.onNext({ x: ev.x, y: ev.y, z: ev.z, timestamp: new Date().getTime(), id: id++ }); }).share();
-	
+	let data = watchSensor(accelerometer, (sensor, observer, ev) => { observer.onNext({ x: ev.x, y: ev.y, z: ev.z, timestamp: new Date().getTime() }); }).share();
+
 	let x = data.select(d => new Value(d.x, d.timestamp, d.id));
 	let y = data.select(d => new Value(d.y, d.timestamp, d.id));
 	let z = data.select(d => new Value(d.z, d.timestamp, d.id));
 
+	if (Constants.DIRECTION_DETECTION.PIPELINE) {
+		Constants.DIRECTION_DETECTION.PIPELINE.forEach(group => {
+			let series = applyFilters([x, y, z], group.FILTERS);
+			x = series[0];
+			y = series[1];
+			z = series[2];
+		});
+	}
 
-	const calibrationSamplesCount = Math.round(CALIBRATION_TIME / samplingTime);
-
-	// x = x.skip(calibrationSamplesCount).combineLatest(calibrate(x.select(d => d.value), calibrationSamplesCount), (dt, offset) => new Value(dt.value - offset, dt.timestamp, dt.id));
-	// y = y.skip(calibrationSamplesCount).combineLatest(calibrate(y.select(d => d.value), calibrationSamplesCount), (dt, offset) => new Value(dt.value - offset, dt.timestamp, dt.id));
-	// z = z.skip(calibrationSamplesCount).combineLatest(calibrate(z.select(d => d.value), calibrationSamplesCount), (dt, offset) => new Value(dt.value - offset, dt.timestamp, dt.id));
+	let velocity = toVector3(x, y, z);
+	let directions = getMaxDirection(velocity, Constants.DIRECTION_DETECTION.DIRECTION.DISTANCE_THRESHOLD_MIN);
+	directions = groupDirections(directions, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_THRESHOLD_MIN, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_THRESHOLD_MAX);
 	
-	x = plot(x, "raw", 0, "X");
-	y = plot(y, "raw", 1, "Y");
-	z = plot(z, "raw", 2, "Z");
-
-	x = plot(smoothMovingAverage(x, 5), "smooth_mov", 0, "X");
-	y = plot(smoothMovingAverage(y, 5), "smooth_mov", 1, "Y");
-	z = plot(smoothMovingAverage(z, 5), "smooth_mov", 2, "Z");
-
-	// x = plot(smoothExponential(x), "smooth_exp", 0, "X");
-	// y = plot(smoothExponential(y), "smooth_exp", 1, "Y");
-	// z = plot(smoothExponential(z), "smooth_exp", 2, "Z");
+	// output
+	directions = codeDirections(directions);
+	directions = showDirections(directions, "direction");
 	
-	x = plot(clampOut(x, 0.07), "clamp", 0, "X");
-	y = plot(clampOut(y, 0.07), "clamp", 1, "Y");
-	z = plot(clampOut(z, 0.07), "clamp", 2, "Z");
+	subscription = directions.subscribe(_ => { }, (e) => console.log(e), () => { });
+}
 
-	// let resetX = plot(reset(x, 0.3, 20).select(v => new Value(v.value ? 1.0 : 0.0, v.timestamp)), "reset", 0, "X");
-	// let resetY = plot(reset(x, 0.3, 20).select(v => new Value(v.value ? 1.0 : 0.0, v.timestamp)), "reset", 0, "Y");
-	// let resetZ = plot(reset(x, 0.3, 20).select(v => new Value(v.value ? 1.0 : 0.0, v.timestamp)), "reset", 0, "Z");
 
-	//reset based on acceleration, not velocity!
-	// x = plot(integration(x), "velocity", 0, "X");
-	// y = plot(integration(y), "velocity", 1, "Y");
-	// z = plot(integration(z), "velocity", 2, "Z");
+function debug() {
+	Array.from(document.getElementsByClassName("button-start")).forEach(b => b.disabled = true);
+	document.getElementById("init").disabled = true;
+	document.getElementById("stop").disabled = false;
+	let id = 0;
 
-	// x = plot(integration(x), "position", 0, "X");	
-	// y = plot(integration(y), "position", 1, "Y");
-	// z = plot(integration(z), "position", 2, "Z");
+	let data = watchSensor(accelerometer, (sensor, observer, ev) => { observer.onNext({ x: ev.x, y: ev.y, z: ev.z, timestamp: new Date().getTime(), id: id++ }); }).share();
 
-	x = plot(integrationWithReset(x, 0.02, 4), "velocity", 0, "X");
-	y = plot(integrationWithReset(y, 0.02, 4), "velocity", 1, "Y");
-	z = plot(integrationWithReset(z, 0.02, 4), "velocity", 2, "Z");
+	let x = data.select(d => new Value(d.x, d.timestamp, d.id));
+	let y = data.select(d => new Value(d.y, d.timestamp, d.id));
+	let z = data.select(d => new Value(d.z, d.timestamp, d.id));
 
-	// x = plot(integration(x), "position", 0, "X");	
-	// y = plot(integration(y), "position", 1, "Y");
-	// z = plot(integration(z), "position", 2, "Z");
+	if (Constants.DIRECTION_DETECTION.PIPELINE) {
+		Constants.DIRECTION_DETECTION.PIPELINE.forEach(group => {
+			let series = applyFilters([x, y, z], group.FILTERS);
+			x = series[0];
+			y = series[1];
+			z = series[2];
 
-	// x = plot(integrationWithReset(x, 0.4, 5), "position", 0, "X");	
-	// y = plot(integrationWithReset(y, 0.4, 5), "position", 1, "Y");
-	// z = plot(integrationWithReset(z, 0.4, 5), "position", 2, "Z");
+			x = plot(x, group.NAME, 0, "X");
+			y = plot(y, group.NAME, 1, "Y");
+			z = plot(z, group.NAME, 2, "Z");
+		});
+	}
 
-	// x = x.do(d => console.log(d.id));
+	let velocity = toVector3(x, y, z);
+	let directions = getMaxDirection(velocity, Constants.DIRECTION_DETECTION.DIRECTION.DISTANCE_THRESHOLD_MIN);
+	directions = groupDirections(directions, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_THRESHOLD_MIN, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_THRESHOLD_MAX);
+	
+	// debug
+	directions = codeDirections(directions);
+	directions = showDirections(directions, "direction");
 
-	// x = plot(direction(x, 0.1), "direction", 0, "X");
-	// y = plot(direction(y, 0.1), "direction", 1, "Y");
-	// z = plot(direction(z, 0.1), "direction", 2, "Z");
-
-	// let dirs = showDirections(x, y, z);
-
-	let dirs = showArrow(
-		groupArrows(
-			toArrow(
-				plotVector(
-					directions(
-						directionChanges2(
-							combine(x, y, z)
-						)
-					), 
-					"direction"
-				)
-			)
-		)
-	);
-
+	// debug
+	const freq = 60;
 	let sampleTime = data.scan((previous, current) => new Value(current.timestamp - previous.timestamp, current.timestamp, current.id), new Value(0, new Date().getTime(), 0))
 	sampleTime = plot(sampleTime, "sample_time", 0, "sample_time");
-	sampleTime = plot(smoothMovingAverage(sampleTime, FREQUENCY), "sample_time", 1, "average");
+	sampleTime = plot(lowPassSmoothingFilter(sampleTime, FREQUENCY), "sample_time", 1, "average");
 
-	subscription = Rx.Observable.merge(dirs, sampleTime /*, cubeIndexX, cubeIndexY, cubeIndexZ , resetX, resetY, resetZ*/).subscribe(_ => {}, (e) => console.log(e), () => {});
+
+	subscription = Rx.Observable.merge(directions, sampleTime).subscribe(_ => { }, (e) => console.log(e), () => { });
 }
 
 
@@ -788,10 +863,10 @@ function stop() {
 		subscription = null;
 	}
 
-    Object.keys(charts).forEach(key => { charts[key].stop(); delete charts[key]; });
+	Object.keys(charts).forEach(key => { charts[key].stop(); delete charts[key]; });
 
 	while (chartsRootElement.firstChild) {
-	  	chartsRootElement.removeChild(chartsRootElement.firstChild);
+		chartsRootElement.removeChild(chartsRootElement.firstChild);
 	}
 
 	let labelContainer = document.getElementById("cubes");
@@ -801,13 +876,14 @@ function stop() {
 
 	document.getElementById("direction").innerHTML = "";
 
-	document.getElementById("start").disabled = false;
+	Array.from(document.getElementsByClassName("button-start")).forEach(b => b.disabled = false);
 	document.getElementById("init").disabled = false;
 	document.getElementById("stop").disabled = true;
 }
 
 
 init(FREQUENCY);
-document.getElementById("init" ).addEventListener("click", init);
+document.getElementById("init").addEventListener("click", init);
 document.getElementById("start").addEventListener("click", start);
-document.getElementById("stop" ).addEventListener("click", stop );
+document.getElementById("start_debug").addEventListener("click", debug);
+document.getElementById("stop").addEventListener("click", stop);
