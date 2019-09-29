@@ -25,10 +25,7 @@ class SpellSelector extends Component {
   }
 
   render() {
-    console.log(this.props.spells);
-
     let preparedPairs = _.chunk(this.props.spells, 3);
-    console.log(preparedPairs.length);
     let spellRows = preparedPairs.map(triplet => {
       return (
         <Row justify="center" type="flex" gutter={120}>

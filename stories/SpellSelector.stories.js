@@ -1,7 +1,7 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import SpellSelector from "../src/client/components/Game/SpellSelector";
-import Spell from "../src/shared/spell";
+import Spell from "../src/server/spell";
 
 import { action } from "@storybook/addon-actions";
 
