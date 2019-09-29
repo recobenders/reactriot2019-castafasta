@@ -8,10 +8,12 @@ import Title from "antd/lib/typography/Title";
 import SpellSelector from "../../Game/SpellSelector";
 
 const Wrapper = styled.section`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
 `;
 
 export class GamePage extends Component {
