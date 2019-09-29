@@ -596,14 +596,12 @@ function applyFilters(series, filters) {
 
 function start(debug) {
 	Array.from(document.getElementsByClassName("button-start")).forEach(b => b.disabled = true);
-	document.getElementById("init").disabled = true;
 	document.getElementById("stop").disabled = false;
 
-	let debugPlotDataCallback = null;
-	let fake = false;
+	let fake = document.getElementById("fake-switch").checked;
 	
+	let debugPlotDataCallback = null;
 	if (debug) {
-		fake = document.getElementById("fake-switch").checked;
 		debugPlotDataCallback = function(groupName, series) {
 			series.x = plot(series.x, groupName, 0, "X");
 			series.y = plot(series.y, groupName, 1, "Y");
@@ -670,12 +668,10 @@ function stop() {
 	document.getElementById("direction").innerHTML = "";
 
 	Array.from(document.getElementsByClassName("button-start")).forEach(b => b.disabled = false);
-	document.getElementById("init").disabled = false;
 	document.getElementById("stop").disabled = true;
 }
 
 
-// document.getElementById("init").addEventListener("click", init);
 document.getElementById("start").addEventListener("click", () => start(false));
 document.getElementById("start_debug").addEventListener("click", () => start(true));
 document.getElementById("stop").addEventListener("click", stop);
