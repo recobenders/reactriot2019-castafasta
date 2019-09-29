@@ -33,6 +33,17 @@ class MobilePage extends Component {
   constructor(props) {
     super(props);
 
+    if (!window.DeviceOrientationEvent || !('ontouchstart' in window))
+    {
+      this.props.history.push({
+        pathname: "/error",
+        state: {
+          message: "Your device or browser does not support orientation events. Try a different web browser.",
+          flair: "A true Casta need a true wand-a."
+        }
+      });
+    }
+    
     const { cookies } = props;
     this.state = {
       userName: cookies.get("user_name")
