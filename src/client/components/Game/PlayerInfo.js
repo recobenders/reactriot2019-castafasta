@@ -15,7 +15,7 @@ class PlayerInfo extends Component {
       <Fragment>
         <Row type="flex">
           <TitleWrapper tilt={tilt}>
-            <Title level={3}>{this.props.player.username}</Title>
+            <Title level={3} style={{fontFamily: "OurFont", fontSize: "5em", fontWeight: 5, margin: 0}}>{this.props.player.username}</Title>
           </TitleWrapper>
         </Row>
         <Row>

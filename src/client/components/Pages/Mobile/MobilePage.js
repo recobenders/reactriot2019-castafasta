@@ -61,7 +61,7 @@ class MobilePage extends Component {
           <Image src={wandRed} left/>
           <Image src={wandBlue}/>
         </ImagesRow>
-        <Title level={2}>Hello, I am your wand!</Title>
+        <Title level={2} style={{fontFamily: "OurFont", fontSize: "4em", fontWeight: 5}}>Hello, I am your wand!</Title>
         <NameForm
           handleFormSubmit={this.handleFormSubmit.bind(this)}
           userName={this.state.userName}

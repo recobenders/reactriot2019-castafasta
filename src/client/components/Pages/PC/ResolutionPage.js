@@ -67,7 +67,7 @@ class ResolutionPage extends Component {
           <AnimatedWizard wizardColor="red" wizardAction={this.state.redAction} repeat={false} repeatInterval={2000} />
         </WizardWrapper>
         <TitleWrapper>
-          <Title>{this.state.title}</Title>
+          <Title style={{fontFamily: "OurFont", fontSize: "17em", fontWeight: 5, margin: 0}}>{this.state.title}</Title>
         </TitleWrapper>
         <WizardWrapper top={75} left={75}>
           <AnimatedWizard wizardColor="blue" wizardAction={this.state.blueAction} repeat={false} repeatInterval={2000} tilt />
