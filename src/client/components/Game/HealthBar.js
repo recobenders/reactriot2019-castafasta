@@ -1,7 +1,6 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
 import Constants from "../../../shared/constants";
-import Text from "antd/lib/typography/Text";
 
 const Health = styled.div`
   ${({ hp }) => `width: ${(hp / Constants.PLAYER_MAX_HP) * 100}%;`}
@@ -39,7 +38,7 @@ const HealthContainer = styled.section`
 
 class HealthBar extends Component {
   render() {
-    const { hp, tilt } = this.props;
+    const { hp } = this.props;
 
     return (
       <div>
