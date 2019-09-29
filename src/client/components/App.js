@@ -56,6 +56,12 @@ class App extends Component {
       };
       notification.error(args);
     });
+
+    this.state.socket.on(Constants.MSG.WAITING_FOR_GAME, player => {
+      this.setState({
+        userId: player.id
+      });
+    });
   }
 
   render() {
