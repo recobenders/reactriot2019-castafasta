@@ -56,14 +56,23 @@ io.on("connection", socket => {
     socket.game.spellSelectedByPlayer(socket.player, spellKey);
   });
 
-  socket.on(Constants.MSG.CASTING_STEP, ({code, weight}) => {
+  socket.on(Constants.MSG.CASTING_STEP, ({ code, weight }) => {
     if (!socket.game) return;
     console.log(`received step: ${code} with weight: ${weight}`);
-    socket.game.processCastStepbyPlayer(socket.player, parseFloat(weight), parseInt(code));
+    socket.game.processCastStepbyPlayer(
+      socket.player,
+      parseFloat(weight),
+      parseInt(code)
+    );
   });
 
   socket.on(Constants.MSG.ANOTHER_GAME, ({ singlePlayer }) => {
     let player = socket.player;
+    if (!player) {
+      socket.emit(Constants.MSG.ERROR, {
+        message: "Player is missing"
+      });
+    }
     player = new Player(player.id, player.username, player.sockets, false);
     broadcastWaitAndHandleStart(io, player, queue, singlePlayer);
   });
