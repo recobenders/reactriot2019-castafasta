@@ -35,16 +35,15 @@ class AnimatedImage extends Component {
 
   animate = () => {
     const { img } = this.props;
-
+    console.log(img)
     let position = 0;
     const interval = img["interval"];
 
-    clearInterval(this.animation);
+    clearInterval(this.animationId);
 
     this.animationId = setInterval(() => {
       if (!this.ref.current) return;
       this.ref.current.style.backgroundPosition = `-${position}px 0px`;
-
       if (position < this.width * img["slices"]) {
         position += this.width;
       } else {
@@ -55,7 +54,11 @@ class AnimatedImage extends Component {
   };
 
   componentDidMount() {
+    const { repeat, repeatInterval } = this.props;
     this.animate();
+    if (repeat) {
+      this.repetitionId = setInterval(this.animate, repeatInterval ? repeatInterval : 10000)
+    }
   }
 
   componentDidUpdate(prevProps, prevState, s) {

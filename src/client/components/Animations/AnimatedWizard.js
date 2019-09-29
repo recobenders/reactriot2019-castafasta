@@ -4,7 +4,7 @@ import {wizards} from "./config";
 
 class AnimatedWizard extends Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return nextProps.update;
+        return nextProps.update || this.props.width;
     }
 
     render() {
