@@ -18,47 +18,86 @@ const Constants = Object.freeze({
 			EXPONENTIAL: "exponential",
 			THRESHOLD: "threshold",
 			INTEGRATION: "integrate",
+			CLAMP: "clamp",
+			ZERO: "zero",
+			TRANSFORM_EXP: "expTransform",
 		},
+		// pipeline for device orientation
 		PIPELINE: [
 			{
-				NAME: "smooth_raw",
+				NAME: "raw",
 				FILTERS: [
 					{
-						TYPE: "lowPass",
-						WINDOW_SIZE: 5
-					},
-					{ 
-						TYPE: "threshold",
-						THRESHOLD_VALUE: 0.07 
+						TYPE: "zero",
+						AXES: [ "y" ]
 					}
 				]
 			},
 			{
-				NAME: "velocity",
+				NAME: "smooth",
 				FILTERS: [
-				{
-					TYPE: "integrate",
-					RESET: {
-						THRESHOLD_VALUE: 0.02,
-						SAMPLES_COUNT_LIMIT: 4
-					},
-				},
-				{ 
-					TYPE: "threshold",
-					THRESHOLD_VALUE: 0.02 
-				},
-				{ 
-					TYPE: "lowPass",
-					THRESHOLD_VALUE: 15
-				}
-			]
-		}
+					{
+						TYPE: "lowPass",
+						WINDOW_SIZE: 10
+					}
+				]
+			},
+			{
+				NAME: "clamped",
+				FILTERS: [
+					{
+						TYPE: "clamp",
+						LIMIT: 50
+					}
+				]
+			}
 		],
 		DIRECTION: {
-			DISTANCE_THRESHOLD_MIN: 0.2,
-			GROUP_THRESHOLD_MIN : 100,
-			GROUP_THRESHOLD_MAX : 400,
+			DISTANCE_THRESHOLD_MIN: 8,
+			GROUP_DURATION_MIN : 100,
+			GROUP_DURATION_MAX : 400,
 		}
+			// // pipeline for device acceleration
+			// PIPELINE: [
+			// {
+			// 	NAME: "smooth_raw",
+			// 	FILTERS: [
+			// 		{
+			// 			TYPE: "lowPass",
+			// 			WINDOW_SIZE: 5
+			// 		},
+			// 		{ 
+			// 			TYPE: "threshold",
+			// 			THRESHOLD_VALUE: 0.07 
+			// 		}
+			// 	]
+			// },
+			// {
+			// 	NAME: "velocity",
+			// 	FILTERS: [
+			// 		{
+			// 			TYPE: "integrate",
+			// 			RESET: {
+			// 				THRESHOLD_VALUE: 0.02,
+			// 				SAMPLES_COUNT_LIMIT: 4
+			// 			},
+			// 		},
+			// 		{ 
+			// 			TYPE: "threshold",
+			// 			THRESHOLD_VALUE: 0.02
+			// 		},
+			// 		{ 
+			// 			TYPE: "lowPass",
+			// 			THRESHOLD_VALUE: 15
+			// 		}
+			// 	]
+			// }
+			// ],
+			// DIRECTION: {
+			// 	DISTANCE_THRESHOLD_MIN: 0.2,
+			// 	GROUP_DURATION_MIN : 100,
+			// 	GROUP_DURATION_MAX : 400,
+			// }
 	}
 });
 
@@ -257,6 +296,57 @@ const SensorAPIAccelerometer = (function () {
 
 
 
+const EventOrientationSensor = (function () {
+	function EventOrientationSensor() {
+		if (!window.DeviceOrientationEvent) {
+			let error = new Error("not supported");
+			error.name = "ReferenceError";
+			throw error;
+		}
+		this._subscription = null;
+
+		EventTargetBase.prototype.constructor.call(this);
+	}
+
+	const proto = Helpers.extend(EventOrientationSensor, EventTargetBase);
+
+	function createListener(target) {
+		return (event) => {
+			let ev = new Event("reading");
+			ev.x = event.gamma;
+			ev.y = event.alpha;
+			ev.z = event.beta;
+			target.dispatchEvent(ev);
+		};
+	}
+
+	proto.start = function () {
+		console.log("start");
+
+		let listener = createListener(this);
+
+		this._subscription = {
+			dispose: () => window.removeEventListener("deviceorientation", listener)
+		};
+
+		window.addEventListener("deviceorientation", listener);
+	}
+
+	proto.stop = function () {
+		console.log("stop");
+		let subscription = this._subscription;
+		this._subscription = null;
+
+		if (subscription) {
+			subscription.dispose();
+		}
+	}
+
+	return EventOrientationSensor;
+})();
+
+
+
 let accelerometer = null;
 
 
@@ -278,6 +368,9 @@ function init(frequency) {
 			break;
 		case "api":
 			selectedSensor = SensorAPIAccelerometer;
+			break;
+		case "orientation":
+			selectedSensor = EventOrientationSensor;
 			break;
 		default:
 		case "event":
@@ -521,6 +614,7 @@ function integration(x) {
 
 
 function thresholdFilter(source, threshold) {
+	threshold = threshold || 0;
 	return source.select(v => {
 		return new Value(
 			(v.value >= -threshold && v.value <= threshold) ? 0 : v.value,
@@ -528,6 +622,38 @@ function thresholdFilter(source, threshold) {
 			v.id
 		);
 	});
+}
+
+
+function clampFilter(source, limit) {
+	limit = limit || Number.MAX_VALUE;
+	return source.select(v => {
+		return new Value(
+			(v.value > limit) ? limit : (v.value < -limit ? -limit : v.value),
+			v.timestamp,
+			v.id
+		);
+	});
+}
+
+
+function zeroFilter(source, channel, channels) {
+	if (channels.includes(channel || [])) {
+		return source.select(v => new Value(0.0, v.timestamp, v.id));	
+	}
+	else {
+		return source;
+	}
+}
+
+
+function exponentialTransformFilter(source, power, channel, channels) {
+	if (!channels || channels.length == 0 || (channel && channels.includes(channel))) {
+		return source.select(v => new Value(Math.pow(v.value, power), v.timestamp, v.id));
+	}
+	else {
+		return source;
+	}
 }
 
 
@@ -586,29 +712,6 @@ function reduceVector3to2(vectors, component1, component2) {
 }
 
 
-
-// smooth ?
-// function directionChanges(xyz, windowSize) {
-// 	windowSize = windowSize || 11;
-// 	// windowStep = Math.floor(windowSize / 2);
-// 	return xyz.bufferWithCount(windowSize, 1)
-// 		.where(buffer => buffer.length == windowSize)
-// 		.select(buffer => { return { begin: buffer[0], end: buffer[buffer.length - 1], middle: buffer[Math.floor(buffer.length / 2)] }; })
-// 		.select(positions => {
-// 			// let length = Math.abs(positions.end.value - positions.begin.value);
-// 			// let direction = length > epsilon ? (positions.end.value - positions.begin.value) : 0.0;
-// 			let change = {
-// 				x: positions.end.value.x - positions.begin.value.x,
-// 				y: positions.end.value.y - positions.begin.value.y,
-// 				z: positions.end.value.z - positions.begin.value.z
-// 			}
-// 			return new Value(change, positions.middle.timestamp, positions.middle.id);
-// 		});
-// }
-
-
-
-
 function getRelativeDirections(changes) {
 	const zero = { x: 0.0, y: 0.0, z: 0.0 };
 	//minDiff = minDiff || 0.5;
@@ -629,11 +732,6 @@ function getRelativeDirections(changes) {
 			return new Value(directionVector, change.timestamp, change.id);
 		});
 }
-
-
-// function codeDirections(directions) {
-// 	return directions.select(direction => )
-// }
 
 
 function evaluateDirections(directions, codesTable) {
@@ -694,8 +792,6 @@ function getMaxDirection(x, threshold) {
 
 		let totalLength = xLength + yLength + zLength;
 
-		// let diff = xLength - yLength;
-
 		let direction = { x: 0, y: 0, weight: 0.0 };
 		
 		if (xLength > zLength && xLength > threshold) {
@@ -748,34 +844,41 @@ function codeDirections(directions) {
 }
 
 
-
-
 function applyFilters(series, filters) {
-	for (let i = 0; i < series.length; i++) {
+	Object.keys(series).forEach((key) => {
 		filters.forEach(filter => {
 			switch (filter.TYPE) {
 				case Constants.DIRECTION_DETECTION.SUPPORTED_FILTERS.LOW_PASS:
-					series[i] = lowPassSmoothingFilter(series[i], filter.WINDOW_SIZE, v => v.value, w => w.length);
+					series[key] = lowPassSmoothingFilter(series[key], filter.WINDOW_SIZE, v => v.value, w => w.length);
 					break;
 				case Constants.DIRECTION_DETECTION.SUPPORTED_FILTERS.EXPONENTIAL:
-					series[i] = exponentialSmoothingFilter(series[i], fiter.ALPHA);
+					series[key] = exponentialSmoothingFilter(series[key], fiter.ALPHA);
 					break;
 				case Constants.DIRECTION_DETECTION.SUPPORTED_FILTERS.THRESHOLD:
-					series[i] = thresholdFilter(series[i], filter.THRESHOLD_VALUE);
+					series[key] = thresholdFilter(series[key], filter.THRESHOLD_VALUE);
+					break;
+				case Constants.DIRECTION_DETECTION.SUPPORTED_FILTERS.CLAMP:
+					series[key] = clampFilter(series[key], filter.LIMIT);
+					break;
+				case Constants.DIRECTION_DETECTION.SUPPORTED_FILTERS.ZERO:
+					series[key] = zeroFilter(series[key], key, filter.AXES);
+					break;
+				case Constants.DIRECTION_DETECTION.SUPPORTED_FILTERS.EXP_TRANSFORM:
+					series[key] = exponentialTransformFilter(series[key], filter.POWER, key, filter.AXES);
 					break;
 				case Constants.DIRECTION_DETECTION.SUPPORTED_FILTERS.INTEGRATION:
 					if (filter.RESET) {
-						series[i] = integrationWithReset(series[i], filter.RESET.THRESHOLD_VALUE, filter.RESET.SAMPLES_COUNT_LIMIT);
+						series[key] = integrationWithReset(series[key], filter.RESET.THRESHOLD_VALUE, filter.RESET.SAMPLES_COUNT_LIMIT);
 					}
 					else {
-						series[i] = integration(series[i]);
+						series[key] = integration(series[key]);
 					}
 					break;
 			}
 
 			console.log(filter.TYPE);
 		});
-	}
+	});
 
 	return series;
 }
@@ -794,16 +897,16 @@ function start() {
 
 	if (Constants.DIRECTION_DETECTION.PIPELINE) {
 		Constants.DIRECTION_DETECTION.PIPELINE.forEach(group => {
-			let series = applyFilters([x, y, z], group.FILTERS);
-			x = series[0];
-			y = series[1];
-			z = series[2];
+			let series = applyFilters({ x: x, y: y, z: z }, group.FILTERS);
+			x = series.x;
+			y = series.y;
+			z = series.z;
 		});
 	}
 
 	let velocity = toVector3(x, y, z);
 	let directions = getMaxDirection(velocity, Constants.DIRECTION_DETECTION.DIRECTION.DISTANCE_THRESHOLD_MIN);
-	directions = groupDirections(directions, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_THRESHOLD_MIN, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_THRESHOLD_MAX);
+	directions = groupDirections(directions, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_DURATION_MIN, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_DURATION_MAX);
 	
 	// output
 	directions = codeDirections(directions);
@@ -827,10 +930,10 @@ function debug() {
 
 	if (Constants.DIRECTION_DETECTION.PIPELINE) {
 		Constants.DIRECTION_DETECTION.PIPELINE.forEach(group => {
-			let series = applyFilters([x, y, z], group.FILTERS);
-			x = series[0];
-			y = series[1];
-			z = series[2];
+			let series = applyFilters({ x: x, y: y, z: z }, group.FILTERS);
+			x = series.x;
+			y = series.y;
+			z = series.z;
 
 			x = plot(x, group.NAME, 0, "X");
 			y = plot(y, group.NAME, 1, "Y");
@@ -840,7 +943,7 @@ function debug() {
 
 	let velocity = toVector3(x, y, z);
 	let directions = getMaxDirection(velocity, Constants.DIRECTION_DETECTION.DIRECTION.DISTANCE_THRESHOLD_MIN);
-	directions = groupDirections(directions, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_THRESHOLD_MIN, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_THRESHOLD_MAX);
+	directions = groupDirections(directions, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_DURATION_MIN, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_DURATION_MAX);
 	
 	// debug
 	directions = codeDirections(directions);
