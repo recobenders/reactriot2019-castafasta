@@ -25,7 +25,7 @@ class Player {
   }
 
   isBot() {
-    return this.isBot;
+    return this.bot;
   }
 
   availableSpells() {

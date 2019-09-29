@@ -7,12 +7,16 @@ const Health = styled.div`
   ${({ hp }) => `width: ${(hp / Constants.PLAYER_MAX_HP) * 100}%;`}
   background-color: green;
   display: block;
-  height: 31px
+  height: 40px
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
   overflow: visible
+  transition: width .5s
+  }
 `;
 
 const Hp = styled.section`
-  height: 31px
+  height: 40px
   color: white
   width: auto;
   display: flex
@@ -29,6 +33,7 @@ const HealthContainer = styled.section`
   background-color: red;
   width: 100%;
   display: block;
+  border-radius: 5px;
   position: relative;
 `;
 
