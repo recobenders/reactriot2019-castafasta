@@ -18,9 +18,9 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, '../../build')));
 const server = http.createServer(app);
 
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../../build', 'index.html'))
-})
+});
 
 const io = socketIo(server);
 
