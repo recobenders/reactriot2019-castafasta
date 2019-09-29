@@ -15,7 +15,7 @@ const port = process.env.PORT || 4001;
 //Setting up express and adding socketIo middleware
 const app = express();
 app.use(cors());
-app.use(express.static(path.join(__dirname, "build")));
+app.use(express.static(path.join(__dirname, "../../build")));
 const server = http.createServer(app);
 
 app.get("*", (req, res) => {
