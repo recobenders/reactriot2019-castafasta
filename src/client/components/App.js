@@ -37,7 +37,7 @@ class App extends Component {
     if(process.env.NODE_ENV === 'production') {
       socketClient = socketIOClient();
     } else {
-      socketClient = socketIOClient(window.location.protocol + "://" + window.location.hostname + ":" + process.env.PORT);
+      socketClient = socketIOClient(window.location.hostname + ":4001");
     }
 
     this.state = {
