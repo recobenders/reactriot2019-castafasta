@@ -6,6 +6,7 @@ import GameInfo from "../../Game/GameInfo";
 import Instructions from "../../Game/Instructions";
 import ResolutionPage from "./ResolutionPage";
 import { Spin, Layout } from "antd";
+import background_castafasta from "../../Game/assets/background_castafasta.png"
 
 const Wrapper = styled.section`
   width: 100%;
@@ -65,9 +66,9 @@ export class GamePage extends Component {
     const { Content, Footer, Header } = Layout;
 
     return (
-      <Layout style={{height:"100vh"}}>
+      <Layout style={{height:"100vh", background: `url('${background_castafasta}') 0px 85%`, backgroundSize: "cover", backgroundPosition: "bottom"}}>
         <Header style={{
-          background: "#424242",
+          background: "transparent",
           marginTop: "auto",
           height: "40vh",
           textAlign: "center",
@@ -75,17 +76,18 @@ export class GamePage extends Component {
           fontSize: "15em",
           display: "flex",
           alignItems: "center",
-          justifyContent: "center"
+          justifyContent: "center",
+          color: "#00000"
         }}>
-          <Instructions spell={this.state.activeSpell} />
+          <Instructions style={{zIndex: "1000", margin: "auto"}} spell={this.state.activeSpell} />
         </Header>
-          <Content style={{background: "#424242", display: "flex"}}>
+          <Content style={{background: "transparent", display: "flex"}}>
             <Battleground
               animation={this.state.animation}
               updateBattleground={this.state.updateBattleground}
             />
         </Content>
-        <Footer style={{background: "#424242"}}>
+        <Footer style={{background: "transparent"}}>
           <GameInfo game={this.state.game} />
         </Footer>
       </Layout>
