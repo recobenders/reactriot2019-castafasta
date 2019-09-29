@@ -121,6 +121,10 @@ class Game {
     return this.playerOne.id === player.id ? this.playerTwo : this.playerOne;
   }
 
+  whichPlayer(player){
+    return this.playerOne.id === player.id ? "playerOne": "playerTwo";
+  }
+
   updatePlayer(player) {
     if (this.playerOne.id === player.id) {
       this.playerOne = player;
