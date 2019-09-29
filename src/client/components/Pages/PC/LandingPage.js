@@ -2,10 +2,9 @@ import React, { Component } from "react";
 import QRCode from "qrcode.react";
 import styled, {css} from "styled-components";
 import Constants from "../../../../shared/constants";
-import { Link } from "react-router-dom";
 import { Card, Divider } from "antd";
 import Title from "antd/lib/typography/Title";
-import TinyURL from "tinyurl";
+const http = require("http");
 
 const Wrapper = styled.section`
   position: fixed;
@@ -38,7 +37,7 @@ class LandingPage extends Component {
       qrCode: url
     };
 
-    TinyURL.shorten(url).then(res => {
+    this.fetchTinyUrl(url).then(res => {
       console.log(res);
       this.setState({ tinyUrl: res });
     }, err => {
@@ -49,6 +48,18 @@ class LandingPage extends Component {
     this.props.socket.on(Constants.MSG.WAITING_FOR_GAME, () => {
       this.props.history.push("/waiting");
     });
+  }
+
+  fetchTinyUrl(url) {
+    return new Promise((resolve, reject) => {
+      http.get('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(url), res => {
+        res.on('data', chunk => {
+          resolve(chunk.toString())
+        })
+      }).on("error", err => {
+        reject(err)
+      })
+    })
   }
 
   componentDidMount() {
