@@ -7,13 +7,15 @@ const Player = require("./player");
 const Queue = require("./queue");
 const Game = require("../server/game");
 const uuidv4 = require("uuid/v4");
+const path = require('path');
 
 //Port from environment variable or default - 4001
-const port = process.env.SOCKET_PORT || 4001;
+const port = process.env.PORT || 4001;
 
 //Setting up express and adding socketIo middleware
 const app = express();
 app.use(cors());
+app.use(express.static(path.join(__dirname, 'build')));
 const server = http.createServer(app);
 const io = socketIo(server);
 
