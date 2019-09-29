@@ -214,7 +214,7 @@ class Wand extends Component {
   }
 
   render() {
-      const player1 = true;
+    const player1 = this.props.player === "playerOne";
 
     return (
         <>
