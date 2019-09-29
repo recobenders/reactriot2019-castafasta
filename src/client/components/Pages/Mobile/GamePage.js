@@ -81,7 +81,7 @@ export class GamePage extends Component {
   activeCastingGamePage() {
     return (
       <Fragment>
-        <Wand spell={this.state.activeSpell} />
+        <Wand spell={this.state.activeSpell} socket={this.props.socket} />
         <SpellForm handleFormSubmit={this.handleDamageSubmit.bind(this)} />
       </Fragment>
     );
