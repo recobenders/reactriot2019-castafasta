@@ -100,10 +100,10 @@ const spells = Object.freeze({
     spellType: "earth",
     spellPower: "medium"
   },
-  clapOfTheTitans: {
+  titanClap: {
     id: 12,
-    key: "clapOfTheTitans",
-    name: "Clap of the Titans",
+    key: "titanClap",
+    name: "Titan Clap",
     max_dmg: 1000,
     numberOfSequences: 10,
     spellType: "earth",
