@@ -4,9 +4,17 @@ import Constants from "../../../../shared/constants";
 import Battleground from "../../Game/Battleground";
 import GameInfo from "../../Game/GameInfo";
 import ResolutionPage from "./ResolutionPage";
+import { Spin } from "antd";
 
 const Wrapper = styled.section`
   width: 100%;
+`;
+
+const CenterOnPage = styled.section`
+  height: 100vh
+  display: flex
+  justify-content: center;
+  align-items: center
 `;
 
 export class GamePage extends Component {
@@ -57,8 +65,11 @@ export class GamePage extends Component {
 
   renderGamePage() {
     if (this.state.loading) {
-      // TODO replace with a loader or make sure we get all the data on initialization
-      return <Wrapper>Loading</Wrapper>;
+      return (
+        <CenterOnPage>
+          <Spin size="large" />
+        </CenterOnPage>
+      );
     }
 
     if (this.state.finished) {
