@@ -32,6 +32,7 @@ export class GamePage extends Component {
 
   componentDidMount() {
     this.props.socket.on(Constants.MSG.GAME_UPDATE, data => {
+      console.log(data.playerOne.activeSpell);
       this.setState({
         game: data,
         loading: false,
@@ -39,15 +40,21 @@ export class GamePage extends Component {
       });
     });
 
-    this.props.socket.on(Constants.MSG.ANIMATIONS, (data) => {
-      this.setState({animation: data, updateBattleground: !this.state.updateBattleground});
+    this.props.socket.on(Constants.MSG.ANIMATIONS, data => {
+      this.setState({
+        animation: data,
+        updateBattleground: !this.state.updateBattleground
+      });
     });
   }
 
   activeGamePage() {
     return (
       <Fragment>
-        <Battleground animation={this.state.animation} updateBattleground={this.state.updateBattleground}/>
+        <Battleground
+          animation={this.state.animation}
+          updateBattleground={this.state.updateBattleground}
+        />
         <GameInfo game={this.state.game} />
       </Fragment>
     );

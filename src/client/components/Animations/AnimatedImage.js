@@ -42,13 +42,14 @@ class AnimatedImage extends Component {
     clearInterval(this.animation);
 
     this.animationId = setInterval(() => {
+      if (this.ref.current) return;
       this.ref.current.style.backgroundPosition = `-${position}px 0px`;
 
       if (position < this.width * img["slices"]) {
         position += this.width;
       } else {
         this.ref.current.style.backgroundPosition = `0px 0px`;
-        clearInterval(this.animationId)
+        clearInterval(this.animationId);
       }
     }, interval);
   };
