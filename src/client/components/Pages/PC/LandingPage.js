@@ -69,38 +69,39 @@ class LandingPage extends Component {
     const url = window.location.protocol + "//" + window.location.host + "/mobile/" + props.userId;
 
     this.state = {
-      qrCode: url
+      qrCode: url,
+      tinyUrl: url
     };
 
-    this.fetchTinyUrl(url).then(res => {
-      this.setState({ tinyUrl: res });
-    }, _ => {
-      this.setState({ tinyUrl: url });
-    });
+    // this.fetchTinyUrl(url).then(res => {
+    //   this.setState({ tinyUrl: res });
+    // }, _ => {
+    //   this.setState({ tinyUrl: url });
+    // });
 
     this.props.socket.on(Constants.MSG.WAITING_FOR_GAME, () => {
       this.props.history.push("/waiting");
     });
   }
 
-  fetchTinyUrl(url) {
-    return new Promise((resolve, reject) => {
-      fetch('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(url), {
-          // mode: 'no-cors',
-          method: 'GET'
-        },
-      ).then(response => {
-        console.log(response);
-        if (response.ok) {
-          response.text().then(body => {
-            resolve(body);
-          });
-        } else {
-          reject(response);
-        }
-      });
-    })
-  }
+  // fetchTinyUrl(url) {
+  //   return new Promise((resolve, reject) => {
+  //     fetch('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(url), {
+  //         // mode: 'no-cors',
+  //         method: 'GET'
+  //       },
+  //     ).then(response => {
+  //       console.log(response);
+  //       if (response.ok) {
+  //         response.text().then(body => {
+  //           resolve(body);
+  //         });
+  //       } else {
+  //         reject(response);
+  //       }
+  //     });
+  //   })
+  // }
 
   componentDidMount() {
     this.props.socket.emit(Constants.MSG.PREPARE_PLAYER, {
@@ -233,7 +234,7 @@ class LandingPage extends Component {
             </Centered>
             <Divider dashed />
             <Description level={5} style={{padding: 5, zIndex: 200}}>
-              or visit this link to start a game:
+              or visit this address on your mobile device:
             </Description>
             <Centered>
               <a href={this.state.tinyUrl} style={{zIndex: 100}}>
