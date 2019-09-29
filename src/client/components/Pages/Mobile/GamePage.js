@@ -136,7 +136,7 @@ export class GamePage extends Component {
             size="large"
             onClick={() => this.handleStartAnotherGame("singleplayer")}
           >
-            The bot is a fine gentleman, thank you
+            I'll have another quick round with the bot.
           </Button>
         </div>
       </Fragment>
