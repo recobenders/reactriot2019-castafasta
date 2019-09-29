@@ -86,7 +86,7 @@ function queuePlayer(queue, player) {
 }
 
 function startGameWithBot(io, player) {
-  let botPlayer = new Player(uuidv4(), "Test Player", [], true);
+  let botPlayer = new Player(uuidv4(), "Bot Mage", [], true);
   new Game(uuidv4(), io, player, botPlayer);
 }
 

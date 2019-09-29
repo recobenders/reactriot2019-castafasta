@@ -32,7 +32,7 @@ module.exports = Object.freeze({
     ANOTHER_GAME: "another_game",
     SPELL_SELECTED: "spell_selected",
     CASTING_DONE: "casting_done",
-    PLAYER_CAST_SPELL: "player_cast_spell",
+    ANIMATIONS: "animations",
     GAME_JOINED: "game_joined",
     GAME_STARTED: "game_started",
     GAME_UPDATE: "game_update",

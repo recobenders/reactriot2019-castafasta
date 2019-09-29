@@ -105,7 +105,8 @@ class Game {
       };
     } else {
       const winner = this.playerOne.hp <= 0 ? this.playerTwo : this.playerOne;
-      console.log(`Game #${this.id}: winner is ${winner.name}`);
+      this.animateEvent(winner, "Won");
+      console.log(`Game #${this.id}: winner is ${winner.username}`);
       this.result = {
         type: Constants.RESOLUTION_TYPES.VICTORY,
         winner: winner.serializeForUpdate()
@@ -129,8 +130,12 @@ class Game {
   }
 
   spellSelectedByPlayer(player, spellKey) {
-    console.log(`Game#${this.id}: Player ${player.name} selected ${spellKey}`);
+    console.log(
+      `Game#${this.id}: Player ${player.username} selected ${spellKey}`
+    );
     player.selectSpell(spellKey);
+    this.animateEvent(player, "Conjuring");
+
     this.updatePlayer(player);
     this.update();
   }
@@ -139,18 +144,24 @@ class Game {
     let spell = player.castSpell(accuracies);
     if (spell.dmg === undefined) return;
 
-    this.broadcast(Constants.MSG.PLAYER_CAST_SPELL, {
-      player: player.serializeForUpdate(),
-      spell: spell.serializeForUpdate()
-    });
+    this.animateEvent(player, "Attacking", spell.key);
 
     let opponent = this.getOpponent(player);
     opponent.takeDamage(spell.dmg);
     console.log(
-      `Game#${this.id}: Dealing ${spell.dmg} dmg to player ${opponent.name}`
+      `Game#${this.id}: Dealing ${spell.dmg} dmg to player ${opponent.username}`
     );
     this.updatePlayer(opponent);
     this.update();
+  }
+
+  animateEvent(player, type, spellKey) {
+    let color = player.id === this.playerOne.id ? "red" : "blue";
+    let eventName = `${color}${type}`;
+    this.broadcast(Constants.MSG.ANIMATIONS, {
+      event: eventName,
+      spell: spellKey
+    });
   }
 
   serializeForUpdate() {
