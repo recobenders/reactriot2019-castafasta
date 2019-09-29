@@ -97,6 +97,7 @@ export class GamePage extends Component {
     return (
       <Fragment>
         <Title level={2}>Game finished</Title>
+        <Title level={4}>One more time?</Title>
         <div>
           <Button
             onClick={event => this.handleStartAnotherGame("multiplayer")}
@@ -104,7 +105,7 @@ export class GamePage extends Component {
             style={{ marginBottom: "0.5em" }}
             size="large"
             htmlType="submit"
-            icon="smile"
+            icon="user"
           >
             Let's face another player, shall we?
           </Button>
@@ -112,11 +113,11 @@ export class GamePage extends Component {
         <div>
           <Button
             htmlType="submit"
-            icon="meh"
+            icon="code"
             size="large"
             onClick={() => this.handleStartAnotherGame("singleplayer")}
           >
-            The bot is will be fine, thank you
+            The bot is a fine gentleman, thank you
           </Button>
         </div>
       </Fragment>
