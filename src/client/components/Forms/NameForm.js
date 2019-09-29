@@ -1,6 +1,19 @@
 import React, { Component } from "react";
 import { Input, Icon, Button, Form } from "antd";
 
+const formStyle = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    maxWidth: "90vw"
+};
+
+const btnStyle = {
+    whiteSpace: "pre-wrap",
+    height: "auto",
+    padding: "10px",
+};
+
 class NameForm extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +37,7 @@ class NameForm extends Component {
 
   render() {
     return (
-      <Form>
+      <Form style={formStyle} >
         <Form.Item>
           <Input
             prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
@@ -37,7 +50,7 @@ class NameForm extends Component {
         <Button
           onClick={event => this.handleSubmit(event, "multiplayer")}
           type="primary"
-          style={{ marginBottom: "0.5em" }}
+          style={{ ...btnStyle, marginBottom: "0.5em" }}
           size="large"
           htmlType="submit"
           icon="smile"
@@ -47,6 +60,7 @@ class NameForm extends Component {
         <Button
           htmlType="submit"
           icon="meh"
+          style={{ ...btnStyle }}
           size="large"
           onClick={event => this.handleSubmit(event, "singleplayer")}
         >
