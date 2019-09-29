@@ -57,43 +57,91 @@ module.exports = Object.freeze({
       THRESHOLD: "threshold",
       INTEGRATION: "integrate",
       CLAMP: "clamp",
-      ZERO: "zero",
-      TRANSFORM_EXP: "expTransform",
+      ZERO: "zero"
     },
-    // pipeline for device orientation
-    PIPELINE: [
+    SELECTED_MODE: "orientation",
+    MODES: [
       {
-        NAME: "raw",
-        FILTERS: [
+        MODE: "orientation",
+        PIPELINE: [
           {
-            TYPE: "zero",
-            AXES: [ "y" ]
+            NAME: "raw",
+            FILTERS: [
+              {
+                TYPE: "zero",	// TODO linear transform
+                AXES: [ "y" ]	// TODO transform matrix instead
+              }
+            ]
+          },
+          {
+            NAME: "smooth",
+            FILTERS: [
+              {
+                TYPE: "lowPass",
+                WINDOW_SIZE: 10
+              }
+            ]
+          },
+          {
+            NAME: "clamped",
+            FILTERS: [
+              {
+                TYPE: "clamp",
+                LIMIT: 50
+              }
+            ]
           }
-        ]
+        ],
+        DIRECTION: {
+          DISTANCE_THRESHOLD_MIN: 8,
+          GROUP_DURATION_MIN : 100,
+          GROUP_DURATION_MAX : 400,
+        }
       },
       {
-        NAME: "smooth",
-        FILTERS: [
+        MODE: "motion",
+        INCLUDE_GRAVITY: false,
+        PIPELINE: [
           {
-            TYPE: "lowPass",
-            WINDOW_SIZE: 10
-          }
-        ]
-      },
-      {
-        NAME: "clamped",
-        FILTERS: [
+            NAME: "smooth_raw",
+            FILTERS: [
+              {
+                TYPE: "lowPass",
+                WINDOW_SIZE: 5
+              },
+              {
+                TYPE: "threshold",
+                THRESHOLD_VALUE: 0.07
+              }
+            ]
+          },
           {
-            TYPE: "clamp",
-            LIMIT: 50
+            NAME: "velocity",
+            FILTERS: [
+              {
+                TYPE: "integrate",
+                RESET: {
+                  THRESHOLD_VALUE: 0.02,
+                  SAMPLES_COUNT_LIMIT: 4
+                },
+              },
+              {
+                TYPE: "threshold",
+                THRESHOLD_VALUE: 0.02
+              },
+              {
+                TYPE: "lowPass",
+                THRESHOLD_VALUE: 15
+              }
+            ]
           }
-        ]
+        ],
+        DIRECTION: {
+          DISTANCE_THRESHOLD_MIN: 0.2,
+          GROUP_DURATION_MIN : 100,
+          GROUP_DURATION_MAX : 400,
+        }
       }
-    ],
-    DIRECTION: {
-      DISTANCE_THRESHOLD_MIN: 8,
-      GROUP_DURATION_MIN : 100,
-      GROUP_DURATION_MAX : 400,
-    }
+    ]
   }
 });

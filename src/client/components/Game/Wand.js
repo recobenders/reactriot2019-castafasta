@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { Subscription, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { Observable } from 'rxjs/Rx';
 import { map } from "rxjs/operators";
-import EventOrientationSensor from "./WandHelpers/EventOrientationSensor";
 import Value from './WandHelpers/Value';
 import { applyFilters } from './WandHelpers/Filters';
 import Constants from '../../../shared/constants';
@@ -20,15 +19,21 @@ class Wand extends Component {
   }
 
   componentDidMount() {
-    let accelerometer = new EventOrientationSensor(60, false);
-    let data = this.watchSensor(accelerometer, (sensor, observer, ev) => { observer.onNext({ x: ev.x, y: ev.y, z: ev.z, timestamp: new Date().getTime() }); }).share();
+    const selectedMode = Constants.DIRECTION_DETECTION.SELECTED_MODE;
+    const config = Constants.DIRECTION_DETECTION.MODES.find(config => config.MODE === selectedMode);
+
+    let data = this.observeEvents(config)
+      .map(ev => Object.assign({ timestamp: new Date().getTime() }, ev))
+      .share();
+
+    // console.log(data);
 
     let x = data.pipe(map(d => new Value(d.x, d.timestamp, d.id)));
     let y = data.pipe(map(d => new Value(d.y, d.timestamp, d.id)));
     let z = data.pipe(map(d => new Value(d.z, d.timestamp, d.id)));
 
-    if (Constants.DIRECTION_DETECTION.PIPELINE) {
-      Constants.DIRECTION_DETECTION.PIPELINE.forEach(group => {
+    if (config.PIPELINE) {
+      config.PIPELINE.forEach(group => {
         let series = applyFilters({ x: x, y: y, z: z }, group.FILTERS);
         x = series.x;
         y = series.y;
@@ -37,15 +42,14 @@ class Wand extends Component {
     }
 
     let velocity = this.toVector3(x, y, z);
-    let directions = this.getMaxDirection(velocity, Constants.DIRECTION_DETECTION.DIRECTION.DISTANCE_THRESHOLD_MIN);
-    directions = this.groupDirections(directions, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_DURATION_MIN, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_DURATION_MAX);
+    let directions = this.getMaxDirection(velocity, config.DIRECTION.DISTANCE_THRESHOLD_MIN);
+    directions = this.groupDirections(directions, config.DIRECTION.GROUP_DURATION_MIN, config.DIRECTION.GROUP_DURATION_MAX);
 
-    // const map = {
-    //   "LEFT": "&lArr;",
-    //   "UP": "&uArr;",
-    //   "RIGHT": "&rArr;",
-    //   "DOWN": "&dArr;"
-    // };
+    const findSpellDirectionIndex = function(d) {
+      let spell = Constants.SPELL_DIRECTIONS.find(direction => direction.x === d.x && direction.y === d.y);
+      return (spell) ? spell.value : -1;
+    };
+    directions = directions.map(d => new Value(Object.assign({ code: findSpellDirectionIndex(d.value) }, d.value), d.timestamp, d.id));
 
     directions.do(d => {
       console.log(d.value.code);
@@ -59,20 +63,19 @@ class Wand extends Component {
     });
   }
 
-  watchSensor(sensor, listener) {
-    if (sensor) {
-      return Observable.create((observer) => {
-        let eventListener = (ev) => listener(sensor, observer, ev);
+  observeEvents(config) {
+    const selectedMode = config.MODE;
 
-        sensor.start();
-        sensor.addEventListener("reading", eventListener);
+    let events = Observable.empty();
 
-        return Subscription.create(() => {
-          sensor.stop();
-          sensor.removeEventListener("reading", eventListener);
-        });
-      });
+    if (selectedMode === "orientation") {
+      events = Observable.fromEvent(window, "deviceorientation")
+        .map(event => ({ x: event.gamma, y: event.alpha, z: event.beta }));
+    } else {
+      console.log('Unsupported mode');
     }
+
+    return events;
   }
 
   toVector3(x, y, z) {
@@ -125,8 +128,7 @@ class Wand extends Component {
           return new Value({ x: buffer[0].value.x, y: buffer[0].value.y, weight: avgWeight }, buffer[buffer.length - 1].timestamp, buffer[buffer.length - 1].id);
         }
         return null;
-      });
-      // .where(a => a != null); // TODO: where is undefined
+      }).filter(a => a != null);
   }
 
   bufferUntil(source, predicate) {
