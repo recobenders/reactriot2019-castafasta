@@ -2,15 +2,6 @@ import React, { Component } from "react";
 import styled from "styled-components"
 import BattlegroundScene from "../Animations/BattlegroundScene"
 
-const defaultState = {
-    redConjuring: false,
-    redAttacking: false,
-    redWon: false,
-    blueConjuring: false,
-    blueAttacking: false,
-    blueWon: false,
-};
-
 const BattleGroundBackgroundWrapper = styled.div `
     width: 100%;
     background: #424242;
@@ -25,34 +16,83 @@ const BattlegroundWrapper = styled.div`
     margin: 0px auto;
 `;
 
+const defaultState = {
+    redConjuring: false,
+    blueConjuring: false,
+    redAttacking: false,
+    blueAttacking: false,
+    redWon: false,
+    blueWon: false,
+    redIdle: false,
+    blueIdle: false,
+    spellType: "wind",
+    spellPower: "weak",
+};
+
 class Battleground extends Component {
     state = {
-        redConjuring: false,
-        blueConjuring: false,
-        redAttacking: false,
-        blueAttacking: false,
-        redWon: false,
-        blueWon: false,
+        ...defaultState,
+        redIdle: true,
+        blueIdle: true,
+    };
+
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        return nextProps.updateBattleground !== this.props.updateBattleground
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        if(nextProps.updateBattleground !== this.props.updateBattleground && nextProps.animation) {
+            const {event, spell} = nextProps.animation;
+
+            switch (event) {
+                case "redConjuring":
+                    this.setState({...defaultState, redConjuring: true});
+                    break;
+                case "blueConjuring":
+                    this.setState({...defaultState, blueConjuring: true});
+                    break;
+                case "redAttacking":
+                    this.setState({...defaultState, redAttacking: true, ...this.getSpell(spell)});
+                    break;
+                case "blueAttacking":
+                    console.log(this.getSpell(spell))
+                    this.setState({...defaultState, blueAttacking: true, ...this.getSpell(spell)});
+                    break;
+                case "redWon":
+                    this.setState({...defaultState, redWon: true});
+                    break;
+                case "blueWon":
+                    this.setState({...defaultState, blueWon: true});
+                    break;
+                default:
+                    this.setState({...defaultState, redIdle: true, blueIdle: true});
+                    break;
+            }
+        }
+    }
+
+    getSpell = spell => {
+        switch(spell){
+            case "fireball": return {spellType: "fire", spellPower: "medium"};
+            case "tornado": return {spellType: "wind", spellPower: "strong"};
+            default: return {spellType: "wind", spellPower: "weak"};
+        }
     };
 
     render() {
-        const { redConjuring, blueConjuring, redAttacking, blueAttacking, redWon, blueWon } = this.state;
-
-        console.log(redConjuring, redAttacking, redWon, blueConjuring, blueAttacking, blueWon);
-
         return (
             <BattleGroundBackgroundWrapper>
                 <BattlegroundWrapper>
-                   <BattlegroundScene {...this.state} />
+                    {<BattlegroundScene {...this.state} />}
                 </BattlegroundWrapper>
-                <button onClick={() => this.setState({...defaultState, redConjuring: true})}>Red Conjuring</button>
-                <button onClick={() => this.setState({...defaultState, redAttacking: true})}>Red Attacking</button>
-                <button onClick={() => this.setState({redConjuring: false, redAttacking: false, redWon: false})}>Red Idle</button>
-                <button onClick={() => this.setState({...defaultState, redWon: true})}>Red Won</button>
-                <button onClick={() => this.setState({...defaultState, blueConjuring: true})}>Blue Conjuring</button>
-                <button onClick={() => this.setState({...defaultState, blueAttacking: true})}>Blue Attacking</button>
-                <button onClick={() => this.setState({blueConjuring: false, blueAttacking: false, blueWon: false})}>Blue Idle</button>
-                <button onClick={() => this.setState({...defaultState, blueWon: true})}>Blue Won</button>
+                {/*<button onClick={() => this.setState({...defaultState, redConjuring: true})}>Red Conjuring</button>*/}
+                {/*<button onClick={() => this.setState({...defaultState, redAttacking: true})}>Red Attacking</button>*/}
+                {/*<button onClick={() => this.setState({redConjuring: false, redAttacking: false, redWon: false})}>Red Idle</button>*/}
+                {/*<button onClick={() => this.setState({...defaultState, redWon: true})}>Red Won</button>*/}
+                {/*<button onClick={() => this.setState({...defaultState, blueConjuring: true})}>Blue Conjuring</button>*/}
+                {/*<button onClick={() => this.setState({...defaultState, blueAttacking: true})}>Blue Attacking</button>*/}
+                {/*<button onClick={() => this.setState({blueConjuring: false, blueAttacking: false, blueWon: false})}>Blue Idle</button>*/}
+                {/*<button onClick={() => this.setState({...defaultState, blueWon: true})}>Blue Won</button>*/}
             </BattleGroundBackgroundWrapper>
         );
     }
