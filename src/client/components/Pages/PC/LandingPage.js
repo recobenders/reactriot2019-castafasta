@@ -23,7 +23,7 @@ class LandingPage extends Component {
     super(props);
 
     this.state = {
-      qrCode: window.location.host + "/mobile/" + props.userId
+      qrCode: window.location.protocol + "//" + window.location.host + "/mobile/" + props.userId
     };
 
     this.props.socket.on(Constants.MSG.WAITING_FOR_GAME, () => {
