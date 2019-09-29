@@ -5,6 +5,7 @@ import BattlegroundScene from "../Animations/BattlegroundScene"
 const BattleGroundBackgroundWrapper = styled.div `
     width: 100%;
     background: #424242;
+    align-self: flex-end;
 `;
 
 const BattlegroundWrapper = styled.div`

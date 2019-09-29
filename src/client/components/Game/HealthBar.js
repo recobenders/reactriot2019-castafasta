@@ -3,10 +3,15 @@ import styled from "styled-components";
 import Constants from '../../../shared/constants';
 
 const Health = styled.div`
+  ${({hp}) => `width: ${(hp / Constants.PLAYER_MAX_HP) * 100}%;`}
   background-color: green;
   display: block;
   padding: 5px;
   overflow: visible;
+  ${({tilt}) => tilt && `
+    text-align: right;
+    margin-left: auto;
+  `}
 `;
 
 const HealthContainer = styled.section`
@@ -17,14 +22,11 @@ const HealthContainer = styled.section`
 
 class HealthBar extends Component {
   render() {
-    const { hp } = this.props;
-    const divStyle = { // FIXME: I couldn't figure out how to access props in a styled component.
-      width: (hp / Constants.PLAYER_MAX_HP) * 100 + '%'
-    };
+    const { hp, tilt } = this.props;
 
     return (
       <HealthContainer>
-        <Health style={divStyle}>
+        <Health hp={hp} tilt={tilt} >
           {hp} / {Constants.PLAYER_MAX_HP}
         </Health>
       </HealthContainer>
