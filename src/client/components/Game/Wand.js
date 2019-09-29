@@ -24,9 +24,6 @@ const WandImage = styled.div`
 `;
 
 class Wand extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   componentDidMount() {
     const selectedMode = Constants.DIRECTION_DETECTION.SELECTED_MODE;
@@ -80,7 +77,7 @@ class Wand extends Component {
           this.props.socket.emit(Constants.MSG.CASTING_STEP, { code: d.value.code, weight: d.value.weight })
         }
       },
-      err => console.log(err))
+      err => console.log(err)
     );
   }
 
@@ -88,7 +85,6 @@ class Wand extends Component {
     return source => {
       return Observable.create(observer => {
         let previous = null;
-        let counter = 0;
         return source.subscribe(current => {
           if (previous == null || current.value.code !== previous.value.code) {
             previous = current;
