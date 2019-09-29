@@ -35,7 +35,7 @@ const Image = styled.img`
     position: absolute;
     width: 480px;
     bottom: -70px;
-    ${({left}) => left ? "left: -150px;" : "right: -150px;"}
+    ${({left}) => left ? "left: -130px;" : "right: -130px;"}
     ${({left}) => `transform: 
         rotate3d(0, ${left ? 0 : 1}, 0, 180deg)`
     };
@@ -46,7 +46,7 @@ const Tree = styled.img`
     position: absolute;
     width: ${({left}) => left ? "350px" : "420px"}
     bottom: -60px;
-    ${({left}) => left ? "left: -300px;" : "right: -350px;"}
+    ${({left}) => left ? "left: -300px;" : "right: -330px;"}
     ${({left}) => `transform: 
         rotate3d(0, ${left ? 0 : 1}, 0, 180deg)
         `
@@ -230,14 +230,14 @@ class LandingPage extends Component {
             </Description>
             <Divider dashed />
             <Centered>
-              <QRCode value={this.state.qrCode} />
+              <QRCode value={this.state.qrCode} style={{zIndex: 100}} />
             </Centered>
             <Divider dashed />
             <Description level={5} style={{padding: 5}}>
               or visit this link to start a game:
             </Description>
             <Centered>
-              <a href={this.state.tinyUrl}>
+              <a href={this.state.tinyUrl} style={{zIndex: 100}}>
                 {this.state.tinyUrl}
               </a>
             </Centered>
