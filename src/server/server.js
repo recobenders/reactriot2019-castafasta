@@ -43,16 +43,19 @@ io.on("connection", socket => {
   });
 
   socket.on(Constants.MSG.USER_INFO, callback => {
+    if (!socket.game) return;
     let result = socket.game.whichPlayer(socket.player);
     callback(result);
   });
 
   socket.on(Constants.MSG.SPELL_SELECTED, spellKey => {
+    if (!socket.game) return;
     socket.game.spellSelectedByPlayer(socket.player, spellKey);
   });
 
   socket.on(Constants.MSG.CASTING_STEP, (code, weight) => {
     if (!socket.game) return;
+    console.log(`received step: ${code} with weight: ${weight}`);
     socket.game.processCastStepbyPlayer(socket.player, weight, code);
   });
 
