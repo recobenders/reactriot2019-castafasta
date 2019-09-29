@@ -37,7 +37,7 @@ module.exports = Object.freeze({
     GAME_JOINED: "game_joined",
     GAME_STARTED: "game_started",
     GAME_UPDATE: "game_update",
-    ERROR: "error"
+    ERROR: "server_error"
   },
 
   QUEUE_CHECK_TIME: 1000,

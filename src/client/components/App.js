@@ -14,6 +14,7 @@ import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
 import styled from "styled-components";
 
 import "antd/dist/antd.css";
+import { notification, Icon } from "antd";
 
 const Wrapper = styled.section`
   height: 100vh;
@@ -34,7 +35,7 @@ class App extends Component {
 
     let socketClient = null;
 
-    if(process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
       socketClient = socketIOClient();
     } else {
       socketClient = socketIOClient(window.location.hostname + ":4001");
@@ -47,7 +48,16 @@ class App extends Component {
 
     this.state.socket.on(Constants.MSG.ERROR, data => {
       this.setState({ error: data.message });
-      this.props.history.push("/error");
+      const args = {
+        message: "Something went wrong",
+        description: `We are really sorry Young Cast-a Padawan, this mistake is on our side. Click on this notification to be redirected to our home page and pair your mobile phone once again. But Fast-a.`,
+        icon: <Icon type="frown" style={{ color: "#108ee9" }} />,
+        duration: 10,
+        onClick: function() {
+          window.location.href = "/";
+        }
+      };
+      notification.error(args);
     });
   }
 
