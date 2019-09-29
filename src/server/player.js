@@ -36,11 +36,20 @@ class Player {
     this.activeSpell = Spell.getSpell(spellKey);
   }
 
-  castSpell(accuracies) {
+  processSpellStep(weight, capturedCode) {
+    if (this.activeSpell === undefined) return null;
+
+    if (this.activeSpell.currentRequiredSequence !== capturedCode) {
+      return null;
+    }
+    this.activeSpell.captureAccuracy(weight);
+    return this.activeSpell;
+  }
+
+  castSpell() {
     let spell = this.activeSpell;
     this.activeSpell = null;
     if (spell) {
-      spell.captureAccuracies(accuracies);
       spell.calculateDamage();
     }
     return spell;

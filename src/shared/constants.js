@@ -1,7 +1,7 @@
 module.exports = Object.freeze({
   PLAYER_MAX_HP: 1000,
 
-  ROUND_SECONDS: 30,
+  ROUND_SECONDS: 90,
   GAME_TICK: 1000,
 
   CRITICAL_CHANCE: 0.05,
@@ -32,7 +32,6 @@ module.exports = Object.freeze({
     PLAYER_LEFT_QUEUE: "player_left_queue",
     ANOTHER_GAME: "another_game",
     SPELL_SELECTED: "spell_selected",
-    CASTING_DONE: "casting_done",
     CASTING_STEP: "casting_step",
     ANIMATIONS: "animations",
     GAME_JOINED: "game_joined",

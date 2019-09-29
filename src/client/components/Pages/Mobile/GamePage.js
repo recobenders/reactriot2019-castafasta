@@ -33,8 +33,6 @@ export class GamePage extends Component {
 
   componentDidMount() {
     this.props.socket.on(Constants.MSG.GAME_UPDATE, data => {
-      console.log(data);
-
       if (data.playerOne.id === this.state.currentUserId) {
         this.setState({
           activeCasting: data.playerOne.activeSpell !== null,
@@ -61,9 +59,8 @@ export class GamePage extends Component {
     });
   }
 
-  handleDamageSubmit(value) {
-    let accuracies = value.split(" ");
-    this.props.socket.emit(Constants.MSG.CASTING_DONE, accuracies);
+  handleDamageSubmit(code, weight) {
+    this.props.socket.emit(Constants.MSG.CASTING_STEP, code, weight);
   }
 
   renderGamePage() {
@@ -136,8 +133,8 @@ export class GamePage extends Component {
       <Fragment>
         <div>Please select your spell:</div>
         <SpellSelector
-          spells={this.state.availableSpells}
-          handleSpellSelected={this.handleSpellClick}
+          spells={Object.values(this.state.availableSpells)}
+          handleSpellSelected={this.handleSpellClick.bind(this)}
         />
       </Fragment>
     );
