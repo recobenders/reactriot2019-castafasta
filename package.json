@@ -7,6 +7,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "history": "^4.10.1",
+    "lodash": "^4.17.15",
     "node-uuid": "^1.4.8",
     "qrcode.react": "^0.9.3",
     "react": "^16.10.0",
