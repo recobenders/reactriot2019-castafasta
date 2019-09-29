@@ -104,12 +104,18 @@ const Constants = Object.freeze({
 				}	
 			}
 		]
-	}
+	},
+	SPELL_DIRECTIONS: [
+		{ value: 0, x: 0, y: 1 }, // UP
+		{ value: 1, x: 0, y: -1 }, // DOWN
+		{ value: 2, x: 1, y: 0 }, // RIGHT
+		{ value: 3, x: -1, y: 0 } // LEFT
+	  ]	
 });
 
 
 function observeDeviceOrientationEvents() {
-	return Rx.Observable.fromEvent(document, "deviceorientation")
+	return Rx.Observable.fromEvent(window, "deviceorientation")
 			 			.select(event => ({ x: event.gamma, y: event.alpha, z: event.beta }));
 }
 
@@ -117,7 +123,7 @@ function observeDeviceOrientationEvents() {
 function observeDeviceMotionEvents(config) {
 	const type = config.INCLUDE_GRAVITY ? "accelerationIncludingGravity" : "acceleration";
 
-	return Rx.Observable.fromEvent(document, "devicemotion")
+	return Rx.Observable.fromEvent(window, "devicemotion")
 						.select(event => ({ x: event[type].x, y: event[type].y, z: event[type].z }));
 }
 
@@ -155,10 +161,10 @@ function observeEvents(config, fake) {
 		events = observeFakeMotionEvents(config);
 	}
 	else if (selectedMode === "orientation") {
-		events = observeDeviceOrientationEvent();
+		events = observeDeviceOrientationEvents();
 	}
 	else if (selectedMode === "motion") {
-		events = observeDeviceMotionEvent(config);
+		events = observeDeviceMotionEvents(config);
 	}
 
 	// TODO Unsupported mode
@@ -242,7 +248,7 @@ function plot(observable, target, color, label, log) {
 }
 
 
-function showDirections(directions, elementId) {
+function showDirection(d, elementId) {
 	const map = [
 		"&uArr;"	// 0: UP
 	,	"&dArr;"	// 1: DOWN
@@ -250,10 +256,8 @@ function showDirections(directions, elementId) {
 	, 	"&lArr;" 	// 3: LEFT
 	];				// -1: NONE
 
-	return directions.do(d => { 
-		console.log(`${d.value.x} ${d.value.y} ${d.value.weight}`); 
-		document.getElementById(elementId).innerHTML = `${(d.value.code >= 0 && map[`${d.value.code}`]) || ""} ${parseFloat(d.value.weight).toFixed(2)}`; 
-	});
+	console.log(`${d.value.x} ${d.value.y} ${d.value.weight} ${d.value.code}`); 
+	document.getElementById(elementId).innerHTML = `${(d.value.code >= 0 && map[d.value.code]) || ""} ${parseFloat(d.value.weight).toFixed(2)}`; 
 }
 /// <end> 
 
@@ -392,7 +396,7 @@ function clampFilter(source, limit) {
 
 
 function zeroFilter(source, channel, channels) {
-	if (channels.includes(channel || [])) {
+	if (channels && channels.includes(channel)) {
 		return source.select(v => new Value(0.0, v.timestamp, v.id));	
 	}
 	else {
@@ -544,7 +548,7 @@ function groupDirections(directions, minThreshold, maxThreshold) {
 function convertToSpellDirection(directions) {
 	const findSpellDirectionIndex = function(d) {
 		let spell = Constants.SPELL_DIRECTIONS.find(direction => direction.x == d.x && direction.y == d.y);
-		return (spell && spell.value) || -1;
+		return (spell) ? spell.value : -1;
 	};
 	return directions.select(d => new Value(Object.assign({ code: findSpellDirectionIndex(d.value) }, d.value), d.timestamp, d.id));
 }
@@ -590,22 +594,34 @@ function applyFilters(series, filters) {
 }
 
 
-function start() {
+function start(debug) {
 	Array.from(document.getElementsByClassName("button-start")).forEach(b => b.disabled = true);
-	document.getElementById("init").disabled = true;
 	document.getElementById("stop").disabled = false;
 
-	subscription = observeMovementDirections()
-						.do(d => showDirections(d, "direction"))
+	let fake = document.getElementById("fake-switch").checked;
+	
+	let debugPlotDataCallback = null;
+	if (debug) {
+		debugPlotDataCallback = function(groupName, series) {
+			series.x = plot(series.x, groupName, 0, "X");
+			series.y = plot(series.y, groupName, 1, "Y");
+			series.z = plot(series.z, groupName, 2, "Z");
+			
+			return series;
+		} 
+	}
+
+	subscription = observeMovementDirections(debugPlotDataCallback, fake)
+						.do(d => showDirection(d, "direction"))
 						.subscribe(direction => { }, (e) => console.log(e), () => { });
 }
 
 
-function observeMovementDirections() {
+function observeMovementDirections(onFilterGroupApplied, fake) {
 	const selectedMode = Constants.DIRECTION_DETECTION.SELECTED_MODE; 
-	const config = Constants.DIRECTION_DETECTION.MODES.find(config => config.NAME === selectedMode);
+	const config = Constants.DIRECTION_DETECTION.MODES.find(config => config.MODE === selectedMode);
 
-	let data = observeEvents(config)
+	let data = observeEvents(config, fake)
 				.select(ev => Object.assign({ timestamp: new Date().getTime() }, ev))
 				.share();
 
@@ -616,6 +632,10 @@ function observeMovementDirections() {
 	if (config.PIPELINE) {
 		config.PIPELINE.forEach(group => {
 			let series = applyFilters({ x: x, y: y, z: z }, group.FILTERS);
+			
+			if (onFilterGroupApplied) {
+				series = onFilterGroupApplied(group.NAME, series);
+			}
 			x = series.x;
 			y = series.y;
 			z = series.z;
@@ -627,7 +647,7 @@ function observeMovementDirections() {
 	directions = groupDirections(directions, config.DIRECTION.GROUP_DURATION_MIN, config.DIRECTION.GROUP_DURATION_MAX);
 	
 	// output
-	spells = convertToSpellDirection(directions);
+	directions = convertToSpellDirection(directions);
 
 	return directions;
 }
@@ -648,12 +668,10 @@ function stop() {
 	document.getElementById("direction").innerHTML = "";
 
 	Array.from(document.getElementsByClassName("button-start")).forEach(b => b.disabled = false);
-	document.getElementById("init").disabled = false;
 	document.getElementById("stop").disabled = true;
 }
 
 
-// document.getElementById("init").addEventListener("click", init);
-document.getElementById("start").addEventListener("click", start);
-// document.getElementById("start_debug").addEventListener("click", debug);
+document.getElementById("start").addEventListener("click", () => start(false));
+document.getElementById("start_debug").addEventListener("click", () => start(true));
 document.getElementById("stop").addEventListener("click", stop);
