@@ -48,5 +48,52 @@ module.exports = Object.freeze({
     { value: 1, x: 0, y: -1 }, // DOWN
     { value: 2, x: 1, y: 0 }, // RIGHT
     { value: 3, x: -1, y: 0 } // LEFT
-  ]
+  ],
+
+  DIRECTION_DETECTION: {
+    SUPPORTED_FILTERS: {
+      LOW_PASS: "lowPass",
+      EXPONENTIAL: "exponential",
+      THRESHOLD: "threshold",
+      INTEGRATION: "integrate",
+      CLAMP: "clamp",
+      ZERO: "zero",
+      TRANSFORM_EXP: "expTransform",
+    },
+    // pipeline for device orientation
+    PIPELINE: [
+      {
+        NAME: "raw",
+        FILTERS: [
+          {
+            TYPE: "zero",
+            AXES: [ "y" ]
+          }
+        ]
+      },
+      {
+        NAME: "smooth",
+        FILTERS: [
+          {
+            TYPE: "lowPass",
+            WINDOW_SIZE: 10
+          }
+        ]
+      },
+      {
+        NAME: "clamped",
+        FILTERS: [
+          {
+            TYPE: "clamp",
+            LIMIT: 50
+          }
+        ]
+      }
+    ],
+    DIRECTION: {
+      DISTANCE_THRESHOLD_MIN: 8,
+      GROUP_DURATION_MIN : 100,
+      GROUP_DURATION_MAX : 400,
+    }
+  }
 });
