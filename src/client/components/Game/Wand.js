@@ -8,6 +8,17 @@ import { applyFilters } from './WandHelpers/Filters';
 import Constants from '../../../shared/constants';
 
 class Wand extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      code: null,
+      x: null,
+      y: null,
+      weight: null
+    }
+  }
+
   componentDidMount() {
     let accelerometer = new EventOrientationSensor(60, false);
     let data = this.watchSensor(accelerometer, (sensor, observer, ev) => { observer.onNext({ x: ev.x, y: ev.y, z: ev.z, timestamp: new Date().getTime() }); }).share();
@@ -28,6 +39,24 @@ class Wand extends Component {
     let velocity = this.toVector3(x, y, z);
     let directions = this.getMaxDirection(velocity, Constants.DIRECTION_DETECTION.DIRECTION.DISTANCE_THRESHOLD_MIN);
     directions = this.groupDirections(directions, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_DURATION_MIN, Constants.DIRECTION_DETECTION.DIRECTION.GROUP_DURATION_MAX);
+
+    // const map = {
+    //   "LEFT": "&lArr;",
+    //   "UP": "&uArr;",
+    //   "RIGHT": "&rArr;",
+    //   "DOWN": "&dArr;"
+    // };
+
+    directions.do(d => {
+      console.log(d.value.code);
+      console.log(`${d.value.x} ${d.value.y} ${d.value.weight}`);
+      this.setState({
+        code: d.value.code,
+        x: d.value.x,
+        y: d.value.y,
+        weight: d.value.weight
+      });
+    });
   }
 
   watchSensor(sensor, listener) {
@@ -97,7 +126,7 @@ class Wand extends Component {
         }
         return null;
       });
-      // .where(a => a != null); where is undefined
+      // .where(a => a != null); // TODO: where is undefined
   }
 
   bufferUntil(source, predicate) {
@@ -134,6 +163,10 @@ class Wand extends Component {
     return (
       <div>
         WAND
+        Code: {this.state.code}
+        X: {this.state.x}
+        Y: {this.state.y}
+        Weight: {this.state.weight}
       </div>
     );
   }
