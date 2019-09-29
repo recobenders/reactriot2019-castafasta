@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import styled from "styled-components";
 import Constants from "../../../../shared/constants";
 import SpellForm from "../../Forms/SpellForm";
+import Wand from "../../Game/Wand";
 
 const Wrapper = styled.section`
   position: fixed;
@@ -17,6 +18,7 @@ export class GamePage extends Component {
     this.state = {
       currentUserId: this.props.userId,
       activeCasting: false,
+      activeSpell: null,
       game: null,
       loading: true,
       finished: false,
@@ -31,11 +33,13 @@ export class GamePage extends Component {
       if (data.playerOne.id === this.state.currentUserId) {
         this.setState({
           activeCasting: data.playerOne.activeSpell !== null,
+          activeSpell: data.playerOne.activeSpell,
           availableSpells: data.playerOne.availableSpells
         });
       } else {
         this.setState({
           activeCasting: data.playerTwo.activeSpell !== null,
+          activeSpell: data.playerTwo.activeSpell,
           availableSpells: data.playerTwo.availableSpells
         });
       }
@@ -74,7 +78,7 @@ export class GamePage extends Component {
   activeCastingGamePage() {
     return (
       <Fragment>
-        <div>Active Casting: {}</div>
+        <Wand spell={this.state.activeSpell} />
         <SpellForm handleFormSubmit={this.handleDamageSubmit.bind(this)} />
       </Fragment>
     );

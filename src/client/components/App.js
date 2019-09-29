@@ -32,6 +32,10 @@ class App extends Component {
 
     let socketUrl = "http://localhost:4001";
 
+    if(process.env.NODE_ENV === 'development') {
+      socketUrl = "http://" + window.location.hostname + ":4001";
+    }
+
     this.state = {
       socket: socketIOClient(socketUrl),
       userId: userId
