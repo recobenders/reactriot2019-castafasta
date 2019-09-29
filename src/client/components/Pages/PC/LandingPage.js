@@ -94,6 +94,7 @@ class LandingPage extends Component {
         }
         )
         .then((response) => {
+          console.log(response);
           if (response.body === null) {
             reject(response);
           }
@@ -234,7 +235,7 @@ class LandingPage extends Component {
               <QRCode value={this.state.qrCode} />
             </Centered>
             <Divider dashed />
-            <Description level={5}>
+            <Description level={5} style={{padding: 5}}>
               or visit this link to start a game:
             </Description>
             <Centered>
