@@ -1,9 +1,27 @@
 import React, { Component } from 'react';
+import styled from "styled-components";
 import { Subject, Observable, fromEvent, empty } from 'rxjs';
 import { map, zip, tap, share, filter, buffer } from 'rxjs/operators';
 import Value from './WandHelpers/Value';
 import { applyFilters } from './WandHelpers/Filters';
 import Constants from '../../../shared/constants';
+import wandBlue from "./assets/wiz_wand_blue.png"
+import wandRed from "./assets/wiz_wand_red.png"
+
+const WandImage = styled.div`
+    position: absolute;
+    z-index: -1;
+    top: 0px;
+    left: 0px;
+    width: 100vw;
+    height: 100vh; 
+    ${({red}) => `
+        background: url('${red? wandRed : wandBlue}') 0px 0px;
+    `}
+    background-size: auto;
+    background-repeat: no-repeat;
+    background-position: center;
+`;
 
 class Wand extends Component {
   constructor(props) {
@@ -196,14 +214,19 @@ class Wand extends Component {
   }
 
   render() {
+      const player1 = true;
+
     return (
-      <div>
-        WAND
-        Code: {this.state.code}
-        X: {this.state.x}
-        Y: {this.state.y}
-        Weight: {this.state.weight}
-      </div>
+        <>
+          <WandImage red={player1} />
+          <div>
+            WAND
+            Code: {this.state.code}
+            X: {this.state.x}
+            Y: {this.state.y}
+            Weight: {this.state.weight}
+          </div>
+        </>
     );
   }
 }
