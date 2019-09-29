@@ -3,7 +3,8 @@ import styled from "styled-components";
 import Constants from "../../../../shared/constants";
 import SpellForm from "../../Forms/SpellForm";
 import Wand from "../../Game/Wand";
-import { Spin } from "antd";
+import { Spin, Button } from "antd";
+import Title from "antd/lib/typography/Title";
 
 const Wrapper = styled.section`
   position: fixed;
@@ -95,16 +96,28 @@ export class GamePage extends Component {
   resolvedGamePage() {
     return (
       <Fragment>
-        <div>Game finished</div>
+        <Title level={2}>Game finished</Title>
         <div>
-          <button onClick={() => this.handleStartAnotherGame("multiplayer")}>
-            Start New Multiplayer Game
-          </button>
+          <Button
+            onClick={event => this.handleStartAnotherGame("multiplayer")}
+            type="primary"
+            style={{ marginBottom: "0.5em" }}
+            size="large"
+            htmlType="submit"
+            icon="smile"
+          >
+            Let's face another player, shall we?
+          </Button>
         </div>
         <div>
-          <button onClick={() => this.handleStartAnotherGame("singleplayer")}>
-            Start New Singleplayer Game
-          </button>
+          <Button
+            htmlType="submit"
+            icon="meh"
+            size="large"
+            onClick={() => this.handleStartAnotherGame("singleplayer")}
+          >
+            The bot is will be fine, thank you
+          </Button>
         </div>
       </Fragment>
     );
