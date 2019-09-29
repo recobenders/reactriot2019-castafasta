@@ -26,14 +26,6 @@ const WandImage = styled.div`
 class Wand extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      message: null,
-      code: null,
-      x: null,
-      y: null,
-      weight: null
-    }
   }
 
   componentDidMount() {
@@ -88,12 +80,7 @@ class Wand extends Component {
           this.props.socket.emit(Constants.MSG.CASTING_STEP, { code: d.value.code, weight: d.value.weight })
         }
       },
-      err => this.setState({ // TODO remove
-        code: err,
-        x: -1,
-        y: -1,
-        weight: 0
-      })
+      err => console.log(err))
     );
   }
 
@@ -114,11 +101,6 @@ class Wand extends Component {
 
             observer.next(new Value(resetValue, current.timestamp, current.id));
           }
-
-          this.setState( {
-            message: `${previous.value.code}  ${current.value.code}`,
-            code: counter
-          });
         });
       });
     }
@@ -219,14 +201,6 @@ class Wand extends Component {
     return (
         <>
           <WandImage red={player1} />
-          <div>
-            WAND <br />
-            Message: <b>{this.state.message}</b> <br />
-            Code: {this.state.code}
-            X: {this.state.x}
-            Y: {this.state.y}
-            Weight: {this.state.weight}
-          </div>
         </>
     );
   }
