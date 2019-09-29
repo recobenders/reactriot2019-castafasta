@@ -52,6 +52,7 @@ io.on("connection", socket => {
   });
 
   socket.on(Constants.MSG.CASTING_STEP, (code, weight) => {
+    if (!socket.game) return;
     socket.game.processCastStepbyPlayer(socket.player, weight, code);
   });
 
