@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react";
 import styled from "styled-components";
 import Constants from "../../../../shared/constants";
-import SpellForm from "../../Forms/SpellForm";
 import Wand from "../../Game/Wand";
 import { Spin, Button } from "antd";
 import Title from "antd/lib/typography/Title";
@@ -95,7 +94,6 @@ export class GamePage extends Component {
           socket={this.props.socket}
           player={this.state.player}
         />
-        <SpellForm handleFormSubmit={this.handleDamageSubmit.bind(this)} />
       </Fragment>
     );
   }
