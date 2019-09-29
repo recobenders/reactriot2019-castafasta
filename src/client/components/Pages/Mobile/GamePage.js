@@ -5,6 +5,7 @@ import SpellForm from "../../Forms/SpellForm";
 import Wand from "../../Game/Wand";
 import { Spin, Button } from "antd";
 import Title from "antd/lib/typography/Title";
+import SpellSelector from "../../Game/SpellSelector";
 
 const Wrapper = styled.section`
   position: fixed;
@@ -128,24 +129,14 @@ export class GamePage extends Component {
     this.props.socket.emit(Constants.MSG.SPELL_SELECTED, spellKey);
   }
 
-  renderSpellItem(spells) {
-    return Object.keys(spells).map(key => {
-      return (
-        <li onClick={() => this.handleSpellClick(key)} key={spells[key].id}>
-          {spells[key].name} ({spells[key].max_dmg} dmg,{" "}
-          {spells[key].numberOfSequences} steps)
-        </li>
-      );
-    });
-  }
-
   spellSummaryGamePage() {
     return (
       <Fragment>
         <div>Please select your spell:</div>
-        <div>
-          <ul>{this.renderSpellItem(this.state.availableSpells)}</ul>
-        </div>
+        <SpellSelector
+          spells={this.state.availableSpells}
+          handleSpellSelected={this.handleSpellClick}
+        />
       </Fragment>
     );
   }

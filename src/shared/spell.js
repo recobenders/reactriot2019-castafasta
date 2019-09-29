@@ -8,8 +8,22 @@ const spells = Object.freeze({
     max_dmg: 200,
     numberOfSequences: 4
   },
-  tornado: {
+  ice: {
     id: 2,
+    key: "ice-blast",
+    name: "Ice Blast",
+    max_dmg: 250,
+    numberOfSequences: 5
+  },
+  earthquake: {
+    id: 3,
+    key: "earthquake",
+    name: "Earthquake",
+    max_dmg: 300,
+    numberOfSequences: 6
+  },
+  tornado: {
+    id: 4,
     key: "tornado",
     name: "Tornado",
     max_dmg: 400,
