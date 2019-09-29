@@ -18,12 +18,6 @@ const SpellWrapper = styled.div`
     ${({left}) => left ? `left: ${left}px` : `left: 20px`}
 `;
 
-const ShotWrapper = styled.div`
-    position: absolute;
-    ${({bottom}) => bottom ? `bottom: ${bottom}px` : `bottom: 20px`}
-    ${({left}) => left ? `left: ${left}px` : `left: 20px`}
-`;
-
 
 const defautState = {
       redAction: "init",
@@ -145,6 +139,8 @@ class BattlegroundScene extends Component {
             initedBlueSpell,
         } = this.state;
 
+        const {spellType, spellPower} = this.props;
+
         return (
             <>
                 <WizzardWrapper>
@@ -156,16 +152,14 @@ class BattlegroundScene extends Component {
                         update={updateRedWizard}
                     />
                     {initedRedSpell &&
-                        <SpellWrapper bottom={spells["fire"]["strong"]["bottom"]} left={spells["fire"]["strong"]["left"]}>
+                        <SpellWrapper bottom={spells[spellType][spellPower]["bottom"]} left={spells[spellType][spellPower]["left"]}>
                             <AnimatedSpell
-                                spell={spells["fire"]["strong"]}
+                                spell={spells[spellType][spellPower]}
                                 update={updateRedSpell}
                             />
                         </SpellWrapper>
                     }
-                    <ShotWrapper bottom={100} left={200}>
-                        <AnimatedShot shotType="fire" update={updateBlueSpell} />
-                    </ShotWrapper>
+                    <AnimatedShot shotType={spellType} update={updateBlueSpell} />
                 </WizzardWrapper>
                 <WizzardWrapper rotate={true}>
                     <AnimatedWizard
@@ -176,16 +170,14 @@ class BattlegroundScene extends Component {
                         update={updateBlueWizard}
                     />
                     {initedBlueSpell &&
-                        <SpellWrapper bottom={spells["fire"]["strong"]["bottom"]} left={spells["fire"]["strong"]["left"]}>
+                        <SpellWrapper bottom={spells[spellType][spellPower]["bottom"]} left={spells[spellType][spellPower]["left"]}>
                             <AnimatedSpell
-                                spell={spells["fire"]["strong"]}
+                                spell={spells[spellType][spellPower]}
                                 update={updateBlueSpell}
                             />
                         </SpellWrapper>
                     }
-                    <ShotWrapper bottom={100} left={100}>
-                        <AnimatedShot shotType="fire" update={updateRedSpell}/>
-                    </ShotWrapper>
+                    <AnimatedShot shotType={spellType} update={updateRedSpell}/>
                 </WizzardWrapper>
             </>
         );
