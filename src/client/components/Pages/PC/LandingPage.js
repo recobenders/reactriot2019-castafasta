@@ -222,7 +222,7 @@ class LandingPage extends Component {
             <Description>
               Prepare yourself for some really fast magic duels with a very
               extraordinary twist. All you need to do is to keep this page opened
-              and scan QR code on this page with your mobile phone.
+              and scan QR code on this page with your smartphone.
             </Description>
             <Divider dashed />
             <Centered>
