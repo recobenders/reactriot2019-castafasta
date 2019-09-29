@@ -4,7 +4,7 @@ import Constants from "../../../../shared/constants";
 import Battleground from "../../Game/Battleground";
 import GameInfo from "../../Game/GameInfo";
 import ResolutionPage from "./ResolutionPage";
-import { Spin } from "antd";
+import { Spin, Layout } from "antd";
 
 const Wrapper = styled.section`
   width: 100%;
@@ -49,14 +49,20 @@ export class GamePage extends Component {
   }
 
   activeGamePage() {
+    const { Content, Footer } = Layout;
+
     return (
-      <Fragment>
-        <Battleground
-          animation={this.state.animation}
-          updateBattleground={this.state.updateBattleground}
-        />
-        <GameInfo game={this.state.game} />
-      </Fragment>
+      <Layout style={{height:"100vh"}}>
+        <Content style={{background: "#424242", display: "flex"}}>
+          <Battleground
+            animation={this.state.animation}
+            updateBattleground={this.state.updateBattleground}
+          />
+        </Content>
+        <Footer style={{background: "#424242"}}>
+          <GameInfo game={this.state.game} />
+        </Footer>
+      </Layout>
     );
   }
 

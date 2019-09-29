@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import PlayerInfo from "./PlayerInfo";
 import styled from "styled-components";
+import Title from "antd/lib/typography/Title";
 
 const Row = styled.div`
   display: flex;
@@ -23,9 +24,9 @@ class GameInfo extends Component {
       <Fragment>
         <Row>
           <Column>
-            <div style={{ textAlign: "center" }}>
+            <Title level={4} style={{ textAlign: "center" }}>
               {this.props.game.roundTime}
-            </div>
+            </Title>
           </Column>
         </Row>
         <Row>
@@ -33,7 +34,7 @@ class GameInfo extends Component {
             <PlayerInfo player={this.props.game.playerOne} />
           </Column>
           <Column>
-            <PlayerInfo player={this.props.game.playerTwo} />
+            <PlayerInfo player={this.props.game.playerTwo} tilt />
           </Column>
         </Row>
       </Fragment>
