@@ -4,7 +4,7 @@ import { Icon } from "antd";
 class Arrow extends Component {
   render() {
     const { direction } = this.props;
-
+    
     let arrowType = null;
     switch (direction) {
       case 0:
