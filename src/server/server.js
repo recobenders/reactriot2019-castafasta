@@ -45,6 +45,7 @@ io.on("connection", socket => {
   socket.on(Constants.MSG.USER_INFO, callback => {
     if (!socket.game || socket.game === undefined) {
       callback(null);
+      return;
     }
     let result = socket.game.whichPlayer(socket.player);
     callback(result);
