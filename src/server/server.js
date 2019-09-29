@@ -114,7 +114,7 @@ function startGameWithBot(io, player) {
 }
 
 function broadcastWaitAndHandleStart(io, player, queue, singlePlayer) {
-  player.broadcast(Constants.MSG.WAITING_FOR_GAME);
+  player.broadcast(Constants.MSG.WAITING_FOR_GAME, player.serializeForUpdate());
 
   if (singlePlayer) {
     startGameWithBot(io, player);
