@@ -22,13 +22,7 @@ const incomingPlayers = [];
 io.on("connection", socket => {
   socket.on(Constants.MSG.NEW_PLAYER, ({ uuid, name, singlePlayer }) => {
     let player = createPlayer(uuid, name, socket);
-    player.broadcast(Constants.MSG.WAITING_FOR_GAME);
-
-    if (singlePlayer) {
-      startGameWithBot(io, player);
-    } else {
-      queuePlayer(queue, player);
-    }
+    broadcastWaitAndHandleStart(io, player, queue, singlePlayer);
   });
 
   socket.on(Constants.MSG.PREPARE_PLAYER, ({ uuid }) => {
@@ -43,6 +37,12 @@ io.on("connection", socket => {
 
   socket.on(Constants.MSG.CASTING_DONE, spellAccuracies => {
     socket.game.spellCastedbyPlayer(socket.player, spellAccuracies);
+  });
+
+  socket.on(Constants.MSG.ANOTHER_GAME, ({ singlePlayer }) => {
+    let player = socket.player;
+    player = new Player(player.id, player.username, player.sockets, false);
+    broadcastWaitAndHandleStart(io, player, queue, singlePlayer);
   });
 
   socket.on("disconnect", () => {
@@ -88,6 +88,16 @@ function queuePlayer(queue, player) {
 function startGameWithBot(io, player) {
   let botPlayer = new Player(uuidv4(), "Test Player", [], true);
   new Game(uuidv4(), io, player, botPlayer);
+}
+
+function broadcastWaitAndHandleStart(io, player, queue, singlePlayer) {
+  player.broadcast(Constants.MSG.WAITING_FOR_GAME);
+
+  if (singlePlayer) {
+    startGameWithBot(io, player);
+  } else {
+    queuePlayer(queue, player);
+  }
 }
 
 setInterval(() => {

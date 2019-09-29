@@ -46,6 +46,10 @@ export class GamePage extends Component {
         finished: data.state === Constants.GAME_STATES.FINISHED
       });
     });
+
+    this.props.socket.on(Constants.MSG.WAITING_FOR_GAME, () => {
+      this.props.history.push("/mobile/waiting");
+    });
   }
 
   handleDamageSubmit(value) {
@@ -76,8 +80,29 @@ export class GamePage extends Component {
     );
   }
 
+  handleStartAnotherGame(type) {
+    let singlePlayer = type === "singleplayer";
+    this.props.socket.emit(Constants.MSG.ANOTHER_GAME, {
+      singlePlayer: singlePlayer
+    });
+  }
+
   resolvedGamePage() {
-    return <Fragment>Game finished</Fragment>;
+    return (
+      <Fragment>
+        <div>Game finished</div>
+        <div>
+          <button onClick={() => this.handleStartAnotherGame("multiplayer")}>
+            Start New Multiplayer Game
+          </button>
+        </div>
+        <div>
+          <button onClick={() => this.handleStartAnotherGame("singleplayer")}>
+            Start New Singleplayer Game
+          </button>
+        </div>
+      </Fragment>
+    );
   }
 
   handleSpellClick(spellKey) {

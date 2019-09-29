@@ -29,6 +29,7 @@ module.exports = Object.freeze({
     WAITING_FOR_GAME: "waiting_for_game",
     NEW_PLAYER: "new_player",
     PLAYER_LEFT_QUEUE: "player_left_queue",
+    ANOTHER_GAME: "another_game",
     SPELL_SELECTED: "spell_selected",
     CASTING_DONE: "casting_done",
     PLAYER_CAST_SPELL: "player_cast_spell",
