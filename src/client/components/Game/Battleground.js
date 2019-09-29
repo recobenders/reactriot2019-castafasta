@@ -52,10 +52,10 @@ class Battleground extends Component {
                     this.setState({...defaultState, blueConjuring: true});
                     break;
                 case "redAttacking":
-                    this.setState({...defaultState, redAttacking: true, ...this.getSpell(spell)});
+                    this.setState({...defaultState, redAttacking: true, ...spell});
                     break;
                 case "blueAttacking":
-                    this.setState({...defaultState, blueAttacking: true, ...this.getSpell(spell)});
+                    this.setState({...defaultState, blueAttacking: true, ...spell});
                     break;
                 case "redWon":
                     this.setState({...defaultState, redWon: true});
@@ -69,14 +69,6 @@ class Battleground extends Component {
             }
         }
     }
-
-    getSpell = spell => {
-        switch(spell){
-            case "fireball": return {spellType: "fire", spellPower: "medium"};
-            case "tornado": return {spellType: "wind", spellPower: "strong"};
-            default: return {spellType: "wind", spellPower: "weak"};
-        }
-    };
 
     render() {
         return (
