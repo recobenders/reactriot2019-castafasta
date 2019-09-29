@@ -39,8 +39,10 @@ class Player {
   castSpell(accuracies) {
     let spell = this.activeSpell;
     this.activeSpell = null;
-    spell.captureAccuracies(accuracies);
-    spell.calculateDamage();
+    if (spell) {
+      spell.captureAccuracies(accuracies);
+      spell.calculateDamage();
+    }
     return spell;
   }
 

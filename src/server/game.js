@@ -142,7 +142,7 @@ class Game {
 
   spellCastedbyPlayer(player, accuracies) {
     let spell = player.castSpell(accuracies);
-    if (spell.dmg === undefined) return;
+    if (spell == null || spell.dmg === undefined) return;
 
     this.animateEvent(player, "Attacking", spell.key);
 
