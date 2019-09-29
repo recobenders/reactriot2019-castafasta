@@ -4,13 +4,17 @@ import styled, {css} from "styled-components";
 import Constants from "../../../../shared/constants";
 import { Card, Divider } from "antd";
 import Title from "antd/lib/typography/Title";
-const http = require("http");
+import wiz_red from "./assets/redLP.png"
+import wiz_blue from "./assets/blueLP.png"
+import tree from "./assets/tree.png"
+
 
 const Wrapper = styled.section`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Centered = styled.section`
@@ -23,6 +27,38 @@ const Description = styled.section`
   justify-content: center;
   text-align: center;
   font-size: 1.5em;
+  font-weight: bold;
+  padding: 50px;
+`;
+
+const Image = styled.img`
+    position: absolute;
+    width: 480px;
+    bottom: -70px;
+    ${({left}) => left ? "left: -150px;" : "right: -150px;"}
+    ${({left}) => `transform: 
+        rotate3d(0, ${left ? 0 : 1}, 0, 180deg)`
+    };
+    z-index: 10;
+`;
+
+const Tree = styled.img`
+    position: absolute;
+    width: ${({left}) => left ? "350px" : "420px"}
+    bottom: -60px;
+    ${({left}) => left ? "left: -300px;" : "right: -350px;"}
+    ${({left}) => `transform: 
+        rotate3d(0, ${left ? 0 : 1}, 0, 180deg)
+        `
+    };
+    z-index: 5;
+`;
+
+const HoverAnimation = styled.div`
+       transition: all 1s ease-in-out
+       &:hover{
+           transform: scale(1.2)
+       }
 `;
 
 class LandingPage extends Component {
@@ -38,10 +74,8 @@ class LandingPage extends Component {
     };
 
     this.fetchTinyUrl(url).then(res => {
-      console.log(res);
       this.setState({ tinyUrl: res });
-    }, err => {
-      console.log(err);
+    }, _ => {
       this.setState({ tinyUrl: url });
     });
 
@@ -52,13 +86,21 @@ class LandingPage extends Component {
 
   fetchTinyUrl(url) {
     return new Promise((resolve, reject) => {
-      http.get('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(url), res => {
-        res.on('data', chunk => {
-          resolve(chunk.toString())
-        })
-      }).on("error", err => {
-        reject(err)
-      })
+      fetch(
+        'https://tinyurl.com/api-create.php?url=' + encodeURIComponent(url),
+        {
+          method: 'GET',
+          mode: 'no-cors'
+        }
+        )
+        .then((response) => {
+          if (response.body === null) {
+            reject(response);
+          }
+          resolve(response.body);
+        }).catch((response) => {
+          reject(response);
+        });
     })
   }
 
@@ -87,7 +129,7 @@ class LandingPage extends Component {
         return {
             x: x,
             y: y,
-            r: 12 * s,
+            r: 20 * s,
             w: 5 * s,
             dx: dx,
             dy: dy,
@@ -172,25 +214,38 @@ class LandingPage extends Component {
             <canvas id="canvas" style={{width: "100%", height: "100%", backgroundImage: "linear-gradient(#1a1aff, cyan)", zIndex: -1}} />
           </div>
         <Wrapper>
-          <Card style={{background: "rgba(255, 255, 255, .8)", borderRadius: "5px"}}>
+          <Card style={{position: "relative", background: "rgba(255, 255, 255, .8)", borderRadius: "5px", maxWidth:"60vw"}}>
             <Centered>
-              <Title style={{fontFamily: "OurFont", fontSize: "8em", fontWeight: 5}}>Casta Fasta</Title>
+              <HoverAnimation>
+                  <Title style={{
+                      fontFamily: "OurFont",
+                      fontSize: "10em",
+                      fontWeight: 10
+                  }}>Casta Fasta</Title>
+              </HoverAnimation>
             </Centered>
-            <Description level={5}>
+            <Description>
               Prepare yourself for some really fast magic duels with a very
               extraordinary twist. All you need to do is to keep this page opened
-              and scan QR code on this page with your mobile phone.
+              and scan QR code on this page with your smartphone.
             </Description>
             <Divider dashed />
             <Centered>
               <QRCode value={this.state.qrCode} />
             </Centered>
             <Divider dashed />
+            <Description level={5}>
+              or visit this link to start a game:
+            </Description>
             <Centered>
               <a href={this.state.tinyUrl}>
-                Or visit this link to join the game.
+                {this.state.tinyUrl}
               </a>
             </Centered>
+            <Image src={wiz_red} left />
+            <Image src={wiz_blue} />
+            {/*<Tree src={tree} left />*/}
+            <Tree src={tree}  />
           </Card>
         </Wrapper>
       </>
