@@ -4,7 +4,6 @@ import styled, {css} from "styled-components";
 import Constants from "../../../../shared/constants";
 import { Card, Divider } from "antd";
 import Title from "antd/lib/typography/Title";
-const http = require("http");
 
 const Wrapper = styled.section`
   position: fixed;
@@ -38,10 +37,8 @@ class LandingPage extends Component {
     };
 
     this.fetchTinyUrl(url).then(res => {
-      console.log(res);
       this.setState({ tinyUrl: res });
-    }, err => {
-      console.log(err);
+    }, _ => {
       this.setState({ tinyUrl: url });
     });
 
@@ -52,13 +49,21 @@ class LandingPage extends Component {
 
   fetchTinyUrl(url) {
     return new Promise((resolve, reject) => {
-      http.get('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(url), res => {
-        res.on('data', chunk => {
-          resolve(chunk.toString())
-        })
-      }).on("error", err => {
-        reject(err)
-      })
+      fetch(
+        'https://tinyurl.com/api-create.php?url=' + encodeURIComponent(url),
+        {
+          method: 'GET',
+          mode: 'no-cors'
+        }
+        )
+        .then((response) => {
+          if (response.body === null) {
+            reject(response);
+          }
+          resolve(response.body);
+        }).catch((response) => {
+          reject(response);
+        });
     })
   }
 
@@ -186,9 +191,12 @@ class LandingPage extends Component {
               <QRCode value={this.state.qrCode} />
             </Centered>
             <Divider dashed />
+            <Description level={5}>
+              or visit this link to start a game:
+            </Description>
             <Centered>
               <a href={this.state.tinyUrl}>
-                Or visit this link to join the game.
+                {this.state.tinyUrl}
               </a>
             </Centered>
           </Card>
