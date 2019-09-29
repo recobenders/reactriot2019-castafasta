@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import styled from "styled-components";
 import Constants from "../../../../shared/constants";
-import NameForm from "../../Forms/NameForm";
+import SpellForm from "../../Forms/SpellForm";
 
 const Wrapper = styled.section`
   position: fixed;
@@ -70,8 +70,8 @@ export class GamePage extends Component {
   activeCastingGamePage() {
     return (
       <Fragment>
-        <div>Active Casting</div>
-        <NameForm handleFormSubmit={this.handleDamageSubmit.bind(this)} />
+        <div>Active Casting: {}</div>
+        <SpellForm handleFormSubmit={this.handleDamageSubmit.bind(this)} />
       </Fragment>
     );
   }
