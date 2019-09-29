@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withCookies } from "react-cookie";
 import NameForm from "../../Forms/NameForm";
 import styled from "styled-components";
 import Constants from "../../../../shared/constants";
@@ -14,12 +15,19 @@ class MobilePage extends Component {
   constructor(props) {
     super(props);
 
+    const { cookies } = props;
+    this.state = {
+      userName: cookies.get("user_name")
+    };
+
     this.props.socket.on(Constants.MSG.WAITING_FOR_GAME, () => {
       this.props.history.push("/mobile/waiting");
     });
   }
 
   handleFormSubmit(name, type) {
+    const { cookies } = this.props;
+    cookies.set("user_name", name);
     let singlePlayer = type === "singleplayer";
     this.props.socket.emit(Constants.MSG.NEW_PLAYER, {
       uuid: this.props.match.params.userId,
@@ -31,11 +39,11 @@ class MobilePage extends Component {
   render() {
     return (
       <Wrapper>
-        Hello, I am you wand!
-        <NameForm handleFormSubmit={this.handleFormSubmit.bind(this)} />
+        Hello, I am your wand!
+        <NameForm handleFormSubmit={this.handleFormSubmit.bind(this)} userName={this.state.userName} />
       </Wrapper>
     );
   }
 }
 
-export default MobilePage;
+export default withCookies(MobilePage);

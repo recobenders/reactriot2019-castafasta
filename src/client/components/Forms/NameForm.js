@@ -5,7 +5,7 @@ class NameForm extends Component {
     super(props);
 
     this.state = {
-      name: ""
+      name: props.userName
     };
 
     this.handleChange = this.handleChange.bind(this);
