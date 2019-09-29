@@ -23,6 +23,8 @@ export class GamePage extends Component {
 
     this.state = {
       game: null,
+      animation: null,
+      updateBattleground: false,
       loading: true,
       finished: false
     };
@@ -37,16 +39,15 @@ export class GamePage extends Component {
       });
     });
 
-    this.props.socket.on(Constants.MSG.ANIMATIONS, ({ event, spell }) => {
-      console.log(event);
-      console.log(spell);
+    this.props.socket.on(Constants.MSG.ANIMATIONS, (data) => {
+      this.setState({animation: data, updateBattleground: !this.state.updateBattleground});
     });
   }
 
   activeGamePage() {
     return (
       <Fragment>
-        <Battleground />
+        <Battleground animation={this.state.animation} updateBattleground={this.state.updateBattleground}/>
         <GameInfo game={this.state.game} />
       </Fragment>
     );

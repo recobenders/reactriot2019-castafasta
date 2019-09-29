@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import styled from "styled-components"
 import AnimatedImage from "./AnimatedImage"
 
 class AnimatedSpell extends Component {
@@ -10,12 +9,13 @@ class AnimatedSpell extends Component {
 
     render() {
       const { spell } = this.props;
-      return (
+          console.log("spell", spell);
+
+      return spell &&
         <AnimatedImage
             img={spell}
             width={300}
         />
-      );
     }
 }
 
