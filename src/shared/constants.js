@@ -56,11 +56,11 @@ module.exports = Object.freeze({
       LOW_PASS: "lowPass",
       EXPONENTIAL: "exponential",
       THRESHOLD: "threshold",
-      INTEGRATION: "integrate",
       CLAMP: "clamp",
+      INTEGRATION: "integrate",
       ZERO: "zero"
     },
-    SELECTED_MODE: "orientation",
+    SELECTED_MODE: "motion",
     MODES: [
       {
         MODE: "orientation",

@@ -111,7 +111,15 @@ class Wand extends Component {
       events = fromEvent(window, "deviceorientation").pipe(
         map(event => ({ x: event.gamma, y: event.alpha, z: event.beta }))
       );
-    } else {
+    }
+    else if (selectedMode === "motion") {
+      const motionEventType = config.INCLUDE_GRAVITY ? "accelerationIncludingGravity" : "acceleration";
+
+      return fromEvent(window, "devicemotion").pipe(
+        map(event => ({ x: event[motionEventType].x, y: event[motionEventType].y, z: event[motionEventType].z }))
+      );
+    } 
+    else {
       console.log('Unsupported mode');
     }
 
