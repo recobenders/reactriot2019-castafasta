@@ -150,13 +150,6 @@ class Game {
 
     if (returnedSpell.isCastingDone()) {
       this.animateAndDealDamage(player);
-      returnedSpell.calculateDamage();
-      this.animateEvent(player, "Attacking", returnedSpell);
-      let opponent = this.getOpponent(player);
-      opponent.takeDamage(returnedSpell.dmg);
-      console.log(
-        `Game#${this.id}: Player ${player.username} is dealing ${returnedSpell.dmg} dmg to player ${opponent.username}`
-      );
     }
     this.updatePlayer(player);
     this.update();
@@ -170,7 +163,7 @@ class Game {
     opponent.takeDamage(spell.dmg);
     this.updatePlayer(opponent);
     console.log(
-      `Game#${this.id}: Player ${player.username} dealing ${spell.dmg} dmg to player ${opponent.username}`
+      `Game#${this.id}: Player ${player.username} dealing ${spell.dmg} dmg to player ${opponent.username} with ${spell.name}`
     );
   }
 
