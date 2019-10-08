@@ -140,7 +140,7 @@ class Game {
     this.update();
   }
 
-  processCastStepbyPlayer(player, weight, capturedCode) {
+  processCastStepByPlayer(player, weight, capturedCode) {
     let returnedSpell = player.processSpellStep(weight, capturedCode);
 
     if (!returnedSpell) return;
@@ -166,11 +166,11 @@ class Game {
     let spell = player.castSpell();
     this.animateEvent(player, "Attacking", spell);
 
-    let opponent = this.getOpponent(spell);
+    let opponent = this.getOpponent(player);
     opponent.takeDamage(spell.dmg);
     this.updatePlayer(opponent);
     console.log(
-      `Game#${this.id}: Bot dealing ${spell.dmg} dmg to player ${opponent.username}`
+      `Game#${this.id}: Player ${player.username} dealing ${spell.dmg} dmg to player ${opponent.username}`
     );
   }
 
