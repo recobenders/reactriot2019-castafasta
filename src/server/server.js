@@ -59,7 +59,7 @@ io.on("connection", socket => {
   socket.on(Constants.MSG.CASTING_STEP, ({ code, weight }) => {
     if (!socket.game) return;
     console.log(`received step: ${code} with weight: ${weight}`);
-    socket.game.processCastStepbyPlayer(
+    socket.game.processCastStepByPlayer(
       socket.player,
       parseFloat(weight),
       parseInt(code)

@@ -140,7 +140,7 @@ class Game {
     this.update();
   }
 
-  processCastStepbyPlayer(player, weight, capturedCode) {
+  processCastStepByPlayer(player, weight, capturedCode) {
     let returnedSpell = player.processSpellStep(weight, capturedCode);
 
     if (!returnedSpell) return;
