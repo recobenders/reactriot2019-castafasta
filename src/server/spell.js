@@ -31,7 +31,7 @@ class Spell {
       y: Math.floor(Constants.SPELL_GRID_SIZE / 2)
     };
 
-    let movement = null;
+    let lastMovement = null;
     while (this.requiredSequences.length < numberOfSequences) {
       let possibleMovements = Constants.SPELL_DIRECTIONS.filter(
         direction =>
@@ -41,17 +41,19 @@ class Spell {
           position.y + direction.y < Constants.SPELL_GRID_SIZE
       );
 
-      if (movement) {
+      if (lastMovement) {
         possibleMovements = possibleMovements.filter(
-          direction => direction.value !== movement.value
+          direction => direction.value !== lastMovement.value
         );
       }
 
-      movement =
+      let movement =
         possibleMovements[Math.floor(Math.random() * possibleMovements.length)];
       position.x += movement.x;
       position.y += movement.y;
       this.requiredSequences.push(movement.value);
+
+      lastMovement = movement;
     }
 
     return this.requiredSequences;
