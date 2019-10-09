@@ -77,8 +77,10 @@ class Player {
   }
 
   generateRandomAccuracies() {
+    const min = Constants.BOT.MIN_ACCURACY;
+
     return this.activeSpell.requiredSequences.map(el => {
-      return Math.random();
+      return Math.random() * (1 - min) + min;
     });
   }
 

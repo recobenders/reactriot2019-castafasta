@@ -45,11 +45,15 @@ module.exports = Object.freeze({
   SPELL_GRID_SIZE: 3,
 
   SPELL_DIRECTIONS: [
-    { value: 0, x: 0, y: 1 }, // UP
-    { value: 1, x: 0, y: -1 }, // DOWN
-    { value: 2, x: 1, y: 0 }, // RIGHT
-    { value: 3, x: -1, y: 0 } // LEFT
+    { value: 0, x:  0, y:  1 }, // UP
+    { value: 1, x:  0, y: -1 }, // DOWN
+    { value: 2, x:  1, y:  0 }, // RIGHT
+    { value: 3, x: -1, y:  0 }  // LEFT
   ],
+
+  BOT: {
+    MIN_ACCURACY: 0.6
+  },
 
   DIRECTION_DETECTION: {
     SUPPORTED_FILTERS: {
